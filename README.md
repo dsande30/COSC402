@@ -1,3 +1,3 @@
 # COSC402
 
-Testing with slack
+Hello, world
