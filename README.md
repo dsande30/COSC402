@@ -9,7 +9,7 @@
 `npm install -g create-react-native-app`  
 
 4. Install Expo-CLI.  
-`npm install -g exp-cli`
+`npm install -g expo-cli`
 
 5. Install watchman. Idk what this does, something with syncing your changes locally everytime?  
 `brew install watchman`
