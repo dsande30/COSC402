@@ -29,6 +29,6 @@
 
 10. Download **Expo Client** from the iOS app store and sign in to your account.
 
-11. Go to the **Projects** tab in the bottom left of the app, and you should see your app in "Recently In Development".
+11. Go to the **Projects** tab in the bottom left of the app, and you should see your app in "Recently In Development". If you do not see it, quit the project from command line and type `expo start` again to restart it.
 
 **NOTE**: Matt you might want to look into getting a VM setup with MAC OS running so you can simulate an iPhone. Setting up the VM info is [here](https://blog.udemy.com/xcode-on-windows/) and working with an iOS Simulator can be found [here](https://docs.expo.io/versions/latest/guides/up-and-running.html#open-the-app-on-your-phone-or).
