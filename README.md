@@ -5,7 +5,7 @@
 2. Check to see that both installed. Ensure that your Node version is 6+.  
 `npm -v` and `node -v`  
 
-3. Install react-native  
+3. Install react-native.  
 `npm install -g react-native`
 
 4. Install create-react-native-app.  
