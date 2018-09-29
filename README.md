@@ -1,15 +1,12 @@
-# React Native Dev Setup
+# IOS React Native Dev Setup
 1. Install Node and Node Package Manager if you have not.  
-MacOS: `brew install node`   
-Windows: `...`  
+`brew install node`    
 
 2. Check to see that both installed. Ensure that your Node version is 6+.  
-MacOS: `npm -v` and `node -v`  
-Windows: `..`
+`npm -v` and `node -v`  
 
 3. Install create-react-native-app.  
-MacOS: `npm install -g create-react-native-app`  
-Windows: `..`
+`npm install -g create-react-native-app`  
 
 This should prompt you with the following, make sure you reply with 'Y':
 ```
@@ -21,4 +18,14 @@ Do you want to install it globally [Y/n]? Y
 `git clone git@github.com:dsande30/COSC402.git` or   
 `git clone https://github.com/dsande30/COSC402.git`  
 
-5. Download
+5. Start the project  
+`cd UTKMentorApp`  
+`expo start`  
+
+6. Create an Expo account (also used to sign in to one) using the command `s`
+
+7. Download **Expo Client** from the iOS app store and sign in to your account.
+
+8. Go to the **Projects** tab in the bottom left of the app, and you should see your app in "Recently In Development".
+
+**NOTE**: Matt you might want to look into getting a VM setup with MAC OS running so you can simulate an iPhone. Setting up the VM info is [here](https://blog.udemy.com/xcode-on-windows/) and working with an iOS Simulator can be found [here](https://docs.expo.io/versions/latest/guides/up-and-running.html#open-the-app-on-your-phone-or).
