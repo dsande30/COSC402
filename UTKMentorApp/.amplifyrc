@@ -1,0 +1,14 @@
+{
+    "providers": {
+        "awscloudformation": {
+            "AuthRoleName": "entorpp-20181005182310-authRole",
+            "UnauthRoleArn": "arn:aws:iam::572530317251:role/entorpp-20181005182310-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::572530317251:role/entorpp-20181005182310-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "entorpp-20181005182310-deployment",
+            "UnauthRoleName": "entorpp-20181005182310-unauthRole",
+            "StackName": "entorpp-20181005182310",
+            "StackId": "arn:aws:cloudformation:us-east-1:572530317251:stack/entorpp-20181005182310/3e28b660-c8ed-11e8-959d-0ecb4f4abeea"
+        }
+    }
+}
