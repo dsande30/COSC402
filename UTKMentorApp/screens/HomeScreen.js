@@ -1,188 +1,118 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Button
 } from 'react-native';
-import { WebBrowser } from 'expo';
 
-import { MonoText } from '../components/StyledText';
+import { Auth } from 'aws-amplify';
 
-export default class HomeScreen extends React.Component {
-  static navigationOptions = {
-    header: null,
-  };
+export default class Home extends Component {
+  state = {
+    name: '',
+    role: ''
+  }
 
+  signOut() {
+    Auth.signOut()
+      .then(data => {
+        console.log('succesful sign out: ', data)
+        this.props.navigation.navigate('SignIn')
+      })
+      .catch(err => console.log(err));
+  }
+
+  onChangeText(key, value) {
+    this.setState({
+      [key]: value
+    })
+  }
+
+  async getUser() {
+    const info = await Auth.currentAuthenticatedUser()
+    return info
+  }
+
+  setAttributes() {
+    this.getUser().then((data) => this.setState({
+      name: data.attributes.name,
+      role: data.attributes['custom:role']
+    }))
+  }
   render() {
+    this.setAttributes();
+    let body;
+    if (this.state.role === 'Mentee') {
+      body = <Text style={styles.formText}>You have signed up as a
+        <Text style={{fontWeight: 'bold'}}> Mentee</Text>.
+          To help us learn more about your interests and find your mentor,
+          please fill out the survey below.
+        </Text>
+    }
+    else if (this.state.role === 'Mentor') {
+      body = <Text style={styles.formText}>You have signed up as a
+        <Text style={{fontWeight: 'bold'}}> Mentor</Text>.
+          To help us learn more about your interests and match you with mentees,
+          please fill out the survey below.
+        </Text>
+    }
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-            <Image
-              source={
-                __DEV__
-                  ? require('../assets/images/robot-dev.png')
-                  : require('../assets/images/robot-prod.png')
-              }
-              style={styles.welcomeImage}
-            />
-          </View>
-
-          <View style={styles.getStartedContainer}>
-            {this._maybeRenderDevelopmentModeWarning()}
-
-            <Text style={styles.getStartedText}>Get started by opening</Text>
-
-            <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
-            </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-
-        <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-          <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
-          </View>
+        <Text style={styles.welcomeText}>Welcome,</Text>
+        <Text style={styles.nameText}>{this.state.name}</Text>
+        {body}
+        <View style={styles.btnContainer}>
+          <TouchableOpacity
+            style={styles.btnSurvey}
+            onPress={console.log('pressed button')}>
+            <Text style={styles.btnText}>Begin Survey</Text>
+          </TouchableOpacity>
         </View>
+        <Button style={styles.btnSignOut} title="Sign Out" onPress={this.signOut.bind(this)} />
       </View>
     );
   }
-
-  _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
-        </Text>
-      );
-
-      return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use useful development
-          tools. {learnMoreButton}
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
-    }
-  }
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/guides/development-mode');
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
-    );
-  };
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF',
+    justifyContent: 'center'
   },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
+  btnSurvey: {
+    alignItems: 'center',
+    backgroundColor: '#58595B',
+    width: '50%',
+    borderRadius: 20,
+    padding: 10,
+  },
+  btnText: {
     textAlign: 'center',
+    color: '#FFF',
+    fontWeight: 'bold',
   },
-  contentContainer: {
-    paddingTop: 30,
-  },
-  welcomeContainer: {
+  btnContainer: {
     alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 200,
   },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
+  welcomeText: {
+    color: '#58595B',
+    fontWeight: 'bold',
+    fontSize: 24,
+    textAlign: 'center'
   },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
+  nameText: {
+    color: '#FF8200',
+    fontWeight: 'bold',
+    fontSize: 24,
+    textAlign: 'center'
   },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
+  formText: {
     textAlign: 'center',
-  },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
-  },
+    padding: 20,
+    marginTop: 100,
+  }
 });
