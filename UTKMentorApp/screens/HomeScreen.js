@@ -7,7 +7,7 @@ import {
   Button
 } from 'react-native';
 
-import { Auth } from 'aws-amplify';
+import Amplify, { Auth, API } from 'aws-amplify';
 
 export default class Home extends Component {
   state = {
@@ -41,6 +41,36 @@ export default class Home extends Component {
       role: data.attributes['custom:role']
     }))
   }
+
+  post = async () => {
+    let sample_form = {}
+    let sample_goals = {}
+    let sample_pair = ["james"]
+    sample_form.whoThis = "andrey"
+    sample_goals.getBitches = true
+    console.log('calling api');
+    const response = await API.post('dynamoAPI', '/items', {
+      body: {
+        userid: 'akarnauc@vols.utk.edu',
+        form_data: sample_form,
+        mentor: false,
+        pairings: sample_pair,
+        goals: sample_goals
+      }
+    });
+    alert(JSON.stringify(response, null, 2));
+  }
+  get = async () => {
+    console.log('calling api');
+    const response = await API.get('dynamoAPI', '/items/akarnauc@vols.utk.edu');
+    alert(JSON.stringify(response, null, 2));
+  }
+  list = async () => {
+    console.log('calling api');
+    const response = await API.get('dynamoAPI', '/items/akarnauc@vols.utk.edu');
+    alert(JSON.stringify(response, null, 2));
+  }
+
   render() {
     this.setAttributes();
     let body;
@@ -70,8 +100,12 @@ export default class Home extends Component {
             <Text style={styles.btnText}>Begin Survey</Text>
           </TouchableOpacity>
         </View>
+        <Button onPress={this.post.bind(this)} title="POST" />
+        <Button onPress={this.get.bind(this)} title="GET" />
+        <Button onPress={this.list.bind(this)} title="LIST" />
         <Button style={styles.btnSignOut} title="Sign Out" onPress={this.signOut.bind(this)} />
       </View>
+
     );
   }
 }

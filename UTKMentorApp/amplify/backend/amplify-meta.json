@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/auth/userpool-cloudformation-template.yml",
 				"logicalId": "authuserpool"
 			},
-			"lastPushTimeStamp": "2018-10-05T22:29:23.607Z",
+			"lastPushTimeStamp": "2018-10-19T22:29:57.180Z",
 			"output": {
 				"AppClientSecret": "3p9le83g038dc236svu0emlukd0pkj7ml8l1bl2t1pioufk8jvt",
 				"UserPoolId": "us-east-1_LL1T6C8Pe",
@@ -30,6 +30,82 @@
 				"UserPoolName": "userpool"
 			},
 			"lastPushDirHash": "VnqhktycN4Jn7ISxRGIcWem6G90="
+		}
+	},
+	"storage": {
+		"profiles": {
+			"service": "DynamoDB",
+			"providerPlugin": "awscloudformation",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/storage/profiles-cloudformation-template.json",
+				"logicalId": "storageprofiles"
+			},
+			"lastPushTimeStamp": "2018-10-19T22:29:57.181Z",
+			"output": {
+				"PartitionKeyName": "userid",
+				"Region": "us-east-1",
+				"Arn": "arn:aws:dynamodb:us-east-1:572530317251:table/profile_data",
+				"PartitionKeyType": "S",
+				"Name": "profile_data"
+			},
+			"lastPushDirHash": "nkAI4XLe/RRf45KCTmS/dwYwC+k="
+		}
+	},
+	"function": {
+		"dynamoLambda": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "profiles",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			],
+			"lastBuildTimeStamp": "2018-10-19T22:27:44.360Z",
+			"lastPackageTimeStamp": "2018-10-19T22:27:47.467Z",
+			"distZipFilename": "dynamoLambda-1539988062-latest-build.zip",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/function/dynamoLambda-cloudformation-template.json",
+				"logicalId": "functiondynamoLambda"
+			},
+			"lastPushTimeStamp": "2018-10-19T22:29:57.189Z",
+			"output": {
+				"Region": "us-east-1",
+				"Arn": "arn:aws:lambda:us-east-1:572530317251:function:table_slave",
+				"Name": "table_slave"
+			},
+			"lastPushDirHash": "ixtOfmiCw3PBarufZ/SZnC1ta+Y="
+		}
+	},
+	"api": {
+		"dynamoAPI": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "dynamoLambda",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			],
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/api/dynamoAPI-cloudformation-template.json",
+				"logicalId": "apidynamoAPI"
+			},
+			"lastPushTimeStamp": "2018-10-19T22:29:57.189Z",
+			"output": {
+				"ApiName": "dynamoAPI",
+				"RootUrl": "https://yzt4bz7ei8.execute-api.us-east-1.amazonaws.com/Prod"
+			},
+			"lastPushDirHash": "JsIzik7yOEZnqximHOVf4jvDhBc="
 		}
 	}
 }

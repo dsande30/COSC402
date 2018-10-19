@@ -127,6 +127,57 @@
 					"authRoleArn": "arn:aws:iam::572530317251:role/entorpp-20181005182310-authRole"
 				}
 			}
+		},
+		"storageprofiles": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/storage/profiles-cloudformation-template.json",
+				"Parameters": {
+					"tableName": "profile_data",
+					"partitionKeyName": "userid",
+					"partitionKeyType": "S"
+				}
+			}
+		},
+		"functiondynamoLambda": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/function/dynamoLambda-cloudformation-template.json",
+				"Parameters": {
+					"storageprofilesName": {
+						"Fn::GetAtt": [
+							"storageprofiles",
+							"Outputs.Name"
+						]
+					},
+					"storageprofilesArn": {
+						"Fn::GetAtt": [
+							"storageprofiles",
+							"Outputs.Arn"
+						]
+					}
+				}
+			}
+		},
+		"apidynamoAPI": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/api/dynamoAPI-cloudformation-template.json",
+				"Parameters": {
+					"functiondynamoLambdaName": {
+						"Fn::GetAtt": [
+							"functiondynamoLambda",
+							"Outputs.Name"
+						]
+					},
+					"functiondynamoLambdaArn": {
+						"Fn::GetAtt": [
+							"functiondynamoLambda",
+							"Outputs.Arn"
+						]
+					}
+				}
+			}
 		}
 	},
 	"Outputs": {
