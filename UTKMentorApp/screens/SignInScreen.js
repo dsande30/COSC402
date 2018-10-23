@@ -55,6 +55,7 @@ export default class SignUp extends React.Component {
             onChangeText={value => this.onChangeText('email', value)}
             style={styles.input}
             keyboardType='email-address'
+            underlineColorAndroid='transparent'
             autoCorrect={false}
             autoCapitalize='none'
             onSubmitEditing={() => this.passwordInput.focus()}
@@ -64,8 +65,9 @@ export default class SignUp extends React.Component {
           <TextInput
             onChangeText={value => this.onChangeText('password', value)}
             style={styles.input}
+            underlineColorAndroid='transparent'
             secureTextEntry={true}
-            placeholder='passsword'
+            placeholder='password'
             onSubmitEditing={this.signIn.bind(this)}
             returnKeyType='go'
             ref={(input) => this.passwordInput = input}
