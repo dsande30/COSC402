@@ -19,7 +19,7 @@ import RadioForm, {
   RadioButtonLabel
 } from 'react-native-simple-radio-button';
 
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify, { Auth, API } from 'aws-amplify';
 
 export default class SignUp extends React.Component {
 
@@ -51,6 +51,31 @@ export default class SignUp extends React.Component {
     })
     .then( () => {
       Auth.signIn(this.state.email, this.state.password)
+      .then( async () => {
+        let form_data = {}
+        let sample_goals = {}
+        let sample_pair = []
+        let user_role = false
+        form_data.name = this.state.name
+        form_data.email = this.state.email
+        form_data.phone = this.state.phone_number
+        if (this.state.role === 'Mentee') {
+          user_role = false
+        }
+        else {
+          user_role = true
+        }
+        console.log('calling api');
+        const response = await API.post('dynamoAPI', '/items', {
+          body: {
+            userid: this.state.email,
+            form_data: form_data,
+            mentor: user_role,
+            pairings: sample_pair,
+            goals: sample_goals
+          }
+        });
+      })
       .then(user => {
         this.props.navigation.navigate('Home', { data: user })
         console.log('successful sign in!')

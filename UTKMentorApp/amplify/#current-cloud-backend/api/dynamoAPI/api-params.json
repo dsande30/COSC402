@@ -1,0 +1,35 @@
+{
+    "paths": [
+        {
+            "name": "/items",
+            "lambdaFunction": "dynamoLambda",
+            "privacy": {
+                "private": true,
+                "auth": "rw"
+            }
+        }
+    ],
+    "resourceName": "dynamoAPI",
+    "apiName": "utkmentorapp1c2a88ec",
+    "functionArns": [
+        {
+            "lambdaFunction": "dynamoLambda"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 0,
+        "authRoleName": "entorpp-20181005182310-authRole",
+        "unAuthRoleName": "entorpp-20181005182310-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "dynamoLambda",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}
