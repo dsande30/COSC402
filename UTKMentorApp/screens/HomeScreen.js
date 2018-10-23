@@ -30,6 +30,10 @@ export default class Home extends Component {
     })
   }
 
+  getApplication(screenName) {
+    this.props.navigation.navigate(screenName)
+  }
+
   async getUser() {
     const info = await Auth.currentAuthenticatedUser()
     return info
@@ -74,12 +78,14 @@ export default class Home extends Component {
   render() {
     this.setAttributes();
     let body;
+    let appButton;
     if (this.state.role === 'Mentee') {
       body = <Text style={styles.formText}>You have signed up as a
         <Text style={{fontWeight: 'bold'}}> Mentee</Text>.
           To help us learn more about your interests and find your mentor,
           please fill out the survey below.
         </Text>
+      appButton = <Button title="Begin Survey" onPress={() => this.props.navigation.navigate('MenteeApp')} />
     }
     else if (this.state.role === 'Mentor') {
       body = <Text style={styles.formText}>You have signed up as a
@@ -87,6 +93,7 @@ export default class Home extends Component {
           To help us learn more about your interests and match you with mentees,
           please fill out the survey below.
         </Text>
+      appButton = <Button title="Begin Survey" onPress={() => this.props.navigation.navigate('MentorApp')} />
     }
     return (
       <View style={styles.container}>
@@ -97,7 +104,7 @@ export default class Home extends Component {
           <TouchableOpacity
             style={styles.btnSurvey}
             onPress={console.log('pressed button')}>
-            <Text style={styles.btnText}>Begin Survey</Text>
+            {appButton}
           </TouchableOpacity>
         </View>
         <Button onPress={this.post.bind(this)} title="POST" />
