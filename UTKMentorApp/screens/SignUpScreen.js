@@ -6,12 +6,17 @@ import {
   Platform,
   StatusBar,
   StyleSheet,
+  Keyboard,
   View,
   Picker,
   Image,
   TouchableOpacity,
-  Text
+  Text,
+  ScrollView
 } from 'react-native';
+import {
+  KeyboardAwareScrollView
+} from 'react-native-keyboard-aware-scroll-view';
 
 import RadioForm, {
   RadioButton,
@@ -66,74 +71,90 @@ export default class SignUp extends React.Component {
       {label: 'Mentor', value: 'Mentor' }
     ];
     return (
-      <KeyboardAvoidingView style={styles.container}  behavior="padding" enabled>
-        <View style={styles.logoContainer}>
-          <Image
-            style={styles.logo}
-            source={require('../assets/logo.png')}
-            />
-        </View>
-        <View style={styles.form}>
-          <Text style={styles.title}>New Account Registration</Text>
-          <TextInput
-            onChangeText={value => this.onChangeText('email', value)}
-            style={styles.input}
-            keyboardType='email-address'
-            autoCorrect={false}
-            autoCapitalize='none'
-            onSubmitEditing={() => this.passwordInput.focus()}
-            returnKeyType='next'
-            placeholder='email'
-          />
-          <TextInput
-            onChangeText={value => this.onChangeText('password', value)}
-            style={styles.input}
-            secureTextEntry={true}
-            placeholder='passsword'
-            returnKeyType='next'
-            onSubmitEditing={() => this.nameInput.focus()}
-            ref={(input) => this.passwordInput = input}
-          />
-          <TextInput
-            onChangeText={value => this.onChangeText('name', value)}
-            style={styles.input}
-            placeholder='name'
-            returnKeyType='next'
-            onSubmitEditing={() => this.phoneInput.focus()}
-            ref={(input) => this.nameInput = input}
-          />
-          <TextInput
-            onChangeText={value => this.onChangeText('phone_number', value)}
-            style={styles.input}
-            keyboardType='phone-pad'
-            returnKeyType='done'
-            placeholder='phone number'
-            ref={(input) => this.phoneInput = input}
-          />
-        <View style={styles.registeringAs}>
-            <Text style={styles.registerText}>Registering as:</Text>
-          </View>
-          <View style={styles.radio}>
-            <RadioForm
-              radio_props={roles}
-              initial={0}
-              buttonColor={'#FF8200'}
-              selectedButtonColor={'#FF8200'}
-              formHorizontal={true}
-              labelHorizontal={true}
-              radioStyle={{paddingRight: 20}}
-              onPress={(value) => this.onChangeText('role', value)}
-            />
-          </View>
-        </View>
-        <View style={styles.btnContainer}>
-          <TouchableOpacity
-            style={styles.btnSignUp}
-            onPress={this.signUp.bind(this)}>
-            <Text style={styles.btnText}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
+      <KeyboardAwareScrollView enableOnAndroid={true}
+       enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
+          <KeyboardAvoidingView style={styles.container}  behavior="padding" enabled>
+            <View style={styles.logoContainer}>
+              <Image
+                style={styles.logo}
+                source={require('../assets/logo.png')}
+                />
+            </View>
+            <View style={styles.form}>
+              <Text style={styles.title}>New Account Registration</Text>
+              <TextInput
+                onChangeText={value => this.onChangeText('email', value)}
+                style={styles.input}
+                keyboardType='email-address'
+                keyboardAppearance='dark'
+                autoCorrect={false}
+                autoCapitalize='none'
+                blurOnSubmit={false}
+                underlineColorAndroid='transparent'
+                onSubmitEditing={() => this.passwordInput.focus()}
+                returnKeyType='next'
+                placeholder='email'
+              />
+              <TextInput
+                onChangeText={value => this.onChangeText('password', value)}
+                style={styles.input}
+                secureTextEntry={true}
+                blurOnSubmit={false}
+                underlineColorAndroid='transparent'
+                keyboardAppearance='dark'
+                placeholder='password'
+                returnKeyType='next'
+                onSubmitEditing={() => this.nameInput.focus()}
+                ref={(input) => this.passwordInput = input}
+              />
+              <TextInput
+                onChangeText={value => this.onChangeText('name', value)}
+                style={styles.input}
+                blurOnSubmit={false}
+                keyboardAppearance='dark'
+                underlineColorAndroid='transparent'
+                placeholder='name'
+                returnKeyType='next'
+                onSubmitEditing={() => this.phoneInput.focus()}
+                ref={(input) => this.nameInput = input}
+              />
+              <TextInput
+                onChangeText={value => this.onChangeText('phone_number', value)}
+                style={styles.input}
+                blurOnSubmit={false}
+                keyboardType='phone-pad'
+                keyboardAppearance='dark'
+                returnKeyType='done'
+                underlineColorAndroid='transparent'
+                placeholder='phone number'
+                onSubmitEditing={() => Keyboard.dismiss()}
+                ref={(input) => this.phoneInput = input}
+              />
+            <View style={styles.registeringAs}>
+                <Text style={styles.registerText}>Registering as:</Text>
+              </View>
+              <View style={styles.radio}>
+                <RadioForm
+                  radio_props={roles}
+                  initial={0}
+                  buttonColor={'#FF8200'}
+                  selectedButtonColor={'#FF8200'}
+                  formHorizontal={true}
+                  labelHorizontal={true}
+                  radioStyle={{paddingRight: 20}}
+                  onPress={(value) => this.onChangeText('role', value)}
+                />
+              </View>
+            </View>
+            <View style={styles.btnContainer}>
+              <TouchableOpacity
+                style={styles.btnSignUp}
+                onPress={this.signUp.bind(this)}>
+                <Text style={styles.btnText}>Sign Up</Text>
+              </TouchableOpacity>
+            </View>
+          </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     );
   }
 }
@@ -143,6 +164,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     justifyContent: 'center',
+  },
+  fix: {
+    flex: 1,
   },
   form: {
     padding: 20,
