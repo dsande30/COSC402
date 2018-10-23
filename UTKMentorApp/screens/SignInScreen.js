@@ -11,6 +11,9 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native';
+import {
+  KeyboardAwareScrollView
+} from 'react-native-keyboard-aware-scroll-view';
 
 import Amplify, { Auth } from 'aws-amplify';
 
@@ -42,51 +45,52 @@ export default class SignUp extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Image
-            style={styles.logo}
-            source={require('../assets/logo.png')}
-          />
-          <Text style={styles.title}>The Engineering Mentor Program</Text>
-        </View>
-        <KeyboardAvoidingView style={styles.form} behavior="padding" enabled>
-          <TextInput
-            onChangeText={value => this.onChangeText('email', value)}
-            style={styles.input}
-            keyboardType='email-address'
-            underlineColorAndroid='transparent'
-            autoCorrect={false}
-            autoCapitalize='none'
-            onSubmitEditing={() => this.passwordInput.focus()}
-            returnKeyType='next'
-            placeholder='email'
-          />
-          <TextInput
-            onChangeText={value => this.onChangeText('password', value)}
-            style={styles.input}
-            underlineColorAndroid='transparent'
-            secureTextEntry={true}
-            placeholder='password'
-            onSubmitEditing={this.signIn.bind(this)}
-            returnKeyType='go'
-            ref={(input) => this.passwordInput = input}
-          />
-        </KeyboardAvoidingView>
-        <View style={styles.btnContainer}>
-          <TouchableOpacity
-            style={styles.btnSignIn}
-            onPress={this.signIn.bind(this)}>
-            <Text style={styles.btnText}>Sign In</Text>
-          </TouchableOpacity>
-          <Text style={styles.signUpText}>New user? Sign up below!</Text>
-          <TouchableOpacity
-            style={styles.btnSignUp}
-            onPress={() => this.props.navigation.navigate('SignUp')}>
-            <Text style={styles.btnText}>Create a New Account</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+        <KeyboardAwareScrollView enableOnAndroid={true}
+         enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
+            <View style={styles.logoContainer}>
+              <Image
+                style={styles.logo}
+                source={require('../assets/logo.png')}
+              />
+              <Text style={styles.title}>The Engineering Mentor Program</Text>
+            </View>
+            <KeyboardAvoidingView style={styles.form} behavior="padding" enabled>
+              <TextInput
+                onChangeText={value => this.onChangeText('email', value)}
+                style={styles.input}
+                keyboardType='email-address'
+                underlineColorAndroid='transparent'
+                autoCorrect={false}
+                autoCapitalize='none'
+                onSubmitEditing={() => this.passwordInput.focus()}
+                returnKeyType='next'
+                placeholder='email'
+              />
+              <TextInput
+                onChangeText={value => this.onChangeText('password', value)}
+                style={styles.input}
+                underlineColorAndroid='transparent'
+                secureTextEntry={true}
+                placeholder='password'
+                onSubmitEditing={this.signIn.bind(this)}
+                returnKeyType='go'
+                ref={(input) => this.passwordInput = input}
+              />
+            </KeyboardAvoidingView>
+            <View style={styles.btnContainer}>
+              <TouchableOpacity
+                style={styles.btnSignIn}
+                onPress={this.signIn.bind(this)}>
+                <Text style={styles.btnText}>Sign In</Text>
+              </TouchableOpacity>
+              <Text style={styles.signUpText}>New user? Sign up below!</Text>
+              <TouchableOpacity
+                style={styles.btnSignUp}
+                onPress={() => this.props.navigation.navigate('SignUp')}>
+                <Text style={styles.btnText}>Create a New Account</Text>
+              </TouchableOpacity>
+            </View>
+        </KeyboardAwareScrollView>
     );
   }
 }
