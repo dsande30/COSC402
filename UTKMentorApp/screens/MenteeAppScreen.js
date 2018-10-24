@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 import ModalSelector from 'react-native-modal-selector';
-import MultipleChoice from 'react-native-multiple-choice';
+import MultipleChoice from 'rn-multiple-choice';
 import Amplify, { Auth, API } from 'aws-amplify';
 
 export default class MenteeApplication extends Component {
@@ -23,22 +23,23 @@ export default class MenteeApplication extends Component {
     grad_school: '',
     research: '',
     honors: '',
-    interests: {'cooking/baking': false,
-                'coops/internships': false,
-                'crafting/diy/making': false,
-                'entrepreneurship/business': false,
-                'fitness': false,
-                'hiking/backpacking': false,
-                'movies/tv': false,
-                'music': false,
-                'politics': false,
-                'research': false,
-                'social media': false,
-                'sports': false,
-                'sustainability': false,
-                'travel': false,
-                'video games': false
-              },
+    interests: {
+                  'Cooking/Baking': false,
+                  'Coops/Internships': false,
+                  'Crafting/DIY/Making': false,
+                  'Entrepreneurship/Business': false,
+                  'Fitness': false,
+                  'Hiking/Backpacking': false,
+                  'Movies/TV': false,
+                  'Music': false,
+                  'Politics': false,
+                  'Research': false,
+                  'Social Media': false,
+                  'Sports': false,
+                  'Sustainability': false,
+                  'Travel': false,
+                  'Video Games': false
+    },
     weekend: '',
     job: '',
     agree: ''
@@ -49,7 +50,18 @@ export default class MenteeApplication extends Component {
       [key]: value
     })
     console.log(key)
-    console.log(this.state.class_year)
+    console.log(this.state[key])
+  }
+
+  setStateInterest(key) {
+    if (this.state.interests[key] == false) {
+      console.log('in here')
+      this.state.interests[key] == true
+    } else {
+      this.state.interests[key] == true
+    }
+    console.log(key)
+    console.log(this.state.interests[key])
   }
 
   render () {
@@ -123,6 +135,7 @@ export default class MenteeApplication extends Component {
           initValue="Select"
           onChange={(option) => this.setStateHelper('major', option.key)} />
 
+        <Text>Minors</Text>
         <TextInput
           onChangeText={value => this.setStateHelper('minors', value)}
           blurOnSubmit={false}
@@ -156,6 +169,7 @@ export default class MenteeApplication extends Component {
           initValue="No"
           onChange={(option) => this.setStateHelper('honors', option.key)} />
 
+        <Text>What are your interest?</Text>
         <MultipleChoice
           options={[
             'Cooking/Baking',
@@ -174,8 +188,10 @@ export default class MenteeApplication extends Component {
             'Travel',
             'Video Games'
           ]}
+          onSelection={(option) => this.setStateInterest(option)}
         />
 
+        <Text>What is a typical weekend like?</Text>
         <TextInput
           onChangeText={value => this.setStateHelper('weekend', value)}
           blurOnSubmit={false}
@@ -185,6 +201,7 @@ export default class MenteeApplication extends Component {
           placeholder='Weekend'
         />
 
+        <Text>What is your dream job?</Text>
         <TextInput
           onChangeText={value => this.setStateHelper('job', value)}
           blurOnSubmit={false}
