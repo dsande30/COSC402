@@ -23,23 +23,21 @@ export default class MenteeApplication extends Component {
     grad_school: '',
     research: '',
     honors: '',
-    interests: {
-                  'Cooking/Baking': false,
-                  'Coops/Internships': false,
-                  'Crafting/DIY/Making': false,
-                  'Entrepreneurship/Business': false,
-                  'Fitness': false,
-                  'Hiking/Backpacking': false,
-                  'Movies/TV': false,
-                  'Music': false,
-                  'Politics': false,
-                  'Research': false,
-                  'Social Media': false,
-                  'Sports': false,
-                  'Sustainability': false,
-                  'Travel': false,
-                  'Video Games': false
-    },
+    Cooking: false,
+    Coops: false,
+    Crafting: false,
+    Entrepreneurship: false,
+    Fitness: false,
+    Hiking: false,
+    Movies: false,
+    Music: false,
+    Politics: false,
+    Research: false,
+    Social: false,
+    Sports: false,
+    Sustainability: false,
+    Travel: false,
+    Video: false,
     weekend: '',
     job: '',
     agree: ''
@@ -49,19 +47,18 @@ export default class MenteeApplication extends Component {
     this.setState({
       [key]: value
     })
-    console.log(key)
-    console.log(this.state[key])
   }
 
   setStateInterest(key) {
-    if (this.state.interests[key] == false) {
-      console.log('in here')
-      this.state.interests[key] == true
+    if (this.state[key] == false) {
+      this.setState({
+        [key]: true
+      })
     } else {
-      this.state.interests[key] == true
+      this.setState({
+        [key]: false
+      })
     }
-    console.log(key)
-    console.log(this.state.interests[key])
   }
 
   render () {
@@ -172,13 +169,13 @@ export default class MenteeApplication extends Component {
         <Text>What are your interest?</Text>
         <MultipleChoice
           options={[
-            'Cooking/Baking',
-            'Coops/Internships',
-            'Crafting/DIY/Making',
-            'Entrepreneurship/Business',
+            'Cooking / Baking',
+            'Coops / Internships',
+            'Crafting / DIY / Making',
+            'Entrepreneurship / Business',
             'Fitness',
-            'Hiking/Backpacking',
-            'Movies/TV',
+            'Hiking / Backpacking',
+            'Movies / TV',
             'Music',
             'Politics',
             'Research',
@@ -188,7 +185,7 @@ export default class MenteeApplication extends Component {
             'Travel',
             'Video Games'
           ]}
-          onSelection={(option) => this.setStateInterest(option)}
+          onSelection={(option) => this.setStateInterest(option.split(' ', 1))}
         />
 
         <Text>What is a typical weekend like?</Text>
