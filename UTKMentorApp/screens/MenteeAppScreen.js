@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   Button,
   ScrollView,
+  Modal,
+  TouchableHighlight,
+  Keyboard
 } from 'react-native';
 import ModalSelector from 'react-native-modal-selector';
 import MultipleChoice from 'rn-multiple-choice';
@@ -23,24 +26,11 @@ export default class MenteeApplication extends Component {
     grad_school: '',
     research: '',
     honors: '',
-    Cooking: false,
-    Coops: false,
-    Crafting: false,
-    Entrepreneurship: false,
-    Fitness: false,
-    Hiking: false,
-    Movies: false,
-    Music: false,
-    Politics: false,
-    Research: false,
-    Social: false,
-    Sports: false,
-    Sustainability: false,
-    Travel: false,
-    Video: false,
+    interests: [],
     weekend: '',
     job: '',
-    agree: ''
+    agrees: false,
+    visible: false
   }
 
   setStateHelper(key, value) {
@@ -49,14 +39,23 @@ export default class MenteeApplication extends Component {
     })
   }
 
-  setStateInterest(key) {
-    if (this.state[key] == false) {
+  setModalVisible(visibleVal) {
+    this.setState({visible: visibleVal});
+  }
+
+  setStateInterest(value) {
+    if (this.state.interests.includes(value)) {
+      console.log("removing " + value)
+      let copy = [...this.state.interests]
+      copy.splice(copy.indexOf(value), 1)
       this.setState({
-        [key]: true
+        interests: copy
       })
-    } else {
+    }
+    else {
+      console.log("inserting " + value)
       this.setState({
-        [key]: false
+        interests: [...this.state.interests, value]
       })
     }
   }
@@ -111,6 +110,7 @@ export default class MenteeApplication extends Component {
       {key: 'Yes', label: 'Yes'},
       {key: 'No', label: 'No'}
     ];
+    let interests = [];
 
     return (
       <ScrollView style={styles.container}>
@@ -134,8 +134,9 @@ export default class MenteeApplication extends Component {
 
         <Text>Minors</Text>
         <TextInput
+          style={styles.inputs}
           onChangeText={value => this.setStateHelper('minors', value)}
-          blurOnSubmit={false}
+          blurOnSubmit={true}
           keyboardAppearance='dark'
           returnKeyType='done'
           underlineColorAndroid='transparent'
@@ -185,13 +186,15 @@ export default class MenteeApplication extends Component {
             'Travel',
             'Video Games'
           ]}
-          onSelection={(option) => this.setStateInterest(option.split(' ', 1))}
+          onSelection={(option) => this.setStateInterest(option.split(' ', 1)[0])
+          }
         />
 
         <Text>What is a typical weekend like?</Text>
         <TextInput
+          style={styles.inputs}
           onChangeText={value => this.setStateHelper('weekend', value)}
-          blurOnSubmit={false}
+          blurOnSubmit={true}
           keyboardAppearance='dark'
           returnKeyType='done'
           underlineColorAndroid='transparent'
@@ -200,15 +203,42 @@ export default class MenteeApplication extends Component {
 
         <Text>What is your dream job?</Text>
         <TextInput
+          style={styles.inputs}
           onChangeText={value => this.setStateHelper('job', value)}
-          blurOnSubmit={false}
+          blurOnSubmit={true}
           keyboardAppearance='dark'
           returnKeyType='done'
           underlineColorAndroid='transparent'
           placeholder='Dream Job'
         />
+      <Button
+        title="Terms and Conditions"
+        onPress={() => {
+          this.setState({ visible: true });
+        }}
+        />
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={this.state.visible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+        }}>
+        <View style={{marginTop: 22}}>
+          <View>
+            <Text>Hello World!</Text>
 
-      </ScrollView>
+            <TouchableHighlight
+              onPress={() => {
+                this.setModalVisible(!this.state.visible);
+              }}>
+              <Text>Hide Modal</Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </Modal>
+      <Text>I agree to the terms and conditions.</Text>
+    </ScrollView>
     );
   }
 }
@@ -217,5 +247,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
+    marginBottom: 50
+  },
+  inputs: {
+    height: 50,
+    borderBottomWidth: 2,
+    borderBottomColor: '#FF8200',
+    margin: 10
   }
 });
