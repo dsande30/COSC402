@@ -61,9 +61,9 @@ export default class SignUp extends React.Component {
         let sample_goals = {}
         let sample_pair = []
         let user_role = false
-        form_data.name = this.state.name
-        form_data.email = this.state.email
-        form_data.phone = this.state.phone_number
+        user_data.name = this.state.name
+        user_data.email = this.state.email
+        user_data.phone = this.state.phone_number
         if (this.state.role === 'Mentee') {
           user_role = false
         }
@@ -74,7 +74,7 @@ export default class SignUp extends React.Component {
         const response = await API.post('dynamoAPI', '/items', {
           body: {
             userid: this.state.email,
-            form_data: form_data,
+            user_data: user_data,
             mentor: user_role,
             pairings: sample_pair,
             goals: sample_goals
