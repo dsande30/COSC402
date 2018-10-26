@@ -17,6 +17,7 @@ import {
 import {
   KeyboardAwareScrollView
 } from 'react-native-keyboard-aware-scroll-view';
+import { TextField } from 'react-native-material-textfield';
 
 import RadioForm, {
   RadioButton,
@@ -43,7 +44,18 @@ export default class SignUp extends React.Component {
     })
   }
 
+  checkNumber(number){
+      if(number.slice(0, 2) != '+1'){
+          console.log('not +1')
+          this.state.phone_number = '+1' + number
+      }
+      if(number.length != 10 || number.length != 12){
+
+      }
+  }
+
   signUp() {
+    num = this.checkNumber(this.state.phone_number)
     Auth.signUp({
       username: this.state.email,
       password: this.state.password,
@@ -109,7 +121,7 @@ export default class SignUp extends React.Component {
               <Text style={styles.title}>New Account Registration</Text>
               <TextInput
                 onChangeText={value => this.onChangeText('email', value)}
-                style={styles.input}
+                /*style={styles.input}*/
                 keyboardType='email-address'
                 keyboardAppearance='dark'
                 autoCorrect={false}
@@ -120,21 +132,33 @@ export default class SignUp extends React.Component {
                 returnKeyType='next'
                 placeholder='email'
               />
-              <TextInput
+          <TextField
                 onChangeText={value => this.onChangeText('password', value)}
-                style={styles.input}
+                label='Password'
+                value={this.state.password}
+                error={this.state.error}
+                /*style={styles.input}*/
                 secureTextEntry={true}
                 blurOnSubmit={false}
                 underlineColorAndroid='transparent'
                 keyboardAppearance='dark'
-                placeholder='password'
+                /*placeholder='password'*/
                 returnKeyType='next'
-                onSubmitEditing={() => this.nameInput.focus()}
+                onSubmitEditing={() => {
+                    this.nameInput.focus()
+                    console.log(this.state.password.length)
+                    if(this.state.password.length < 8){
+                        this.setState({error: 'Text must be entered!'});
+                    }
+                    else{
+                        this.setState({error: ''});
+                    }
+                }}
                 ref={(input) => this.passwordInput = input}
               />
               <TextInput
                 onChangeText={value => this.onChangeText('name', value)}
-                style={styles.input}
+                /*style={styles.input}*/
                 blurOnSubmit={false}
                 keyboardAppearance='dark'
                 underlineColorAndroid='transparent'
@@ -145,7 +169,7 @@ export default class SignUp extends React.Component {
               />
               <TextInput
                 onChangeText={value => this.onChangeText('phone_number', value)}
-                style={styles.input}
+                /*style={styles.input}*/
                 blurOnSubmit={false}
                 keyboardType='phone-pad'
                 keyboardAppearance='dark'
@@ -233,12 +257,12 @@ const styles = StyleSheet.create({
   radio: {
     margin: 10,
   },
-  input: {
+  /*input: {
     height: 50,
     borderBottomWidth: 2,
     borderBottomColor: '#FF8200',
     margin: 10
-  },
+  },*/
   registeringAs: {
     margin: 10,
   },
