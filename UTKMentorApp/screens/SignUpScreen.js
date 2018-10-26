@@ -57,7 +57,7 @@ export default class SignUp extends React.Component {
     .then( () => {
       Auth.signIn(this.state.email, this.state.password)
       .then( async () => {
-        let form_data = {}
+        let user_data = {}
         let sample_goals = {}
         let sample_pair = []
         let user_role = false
