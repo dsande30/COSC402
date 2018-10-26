@@ -2,13 +2,17 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  TextInput,
   StyleSheet,
   TouchableOpacity,
   Button,
   ScrollView,
-  Picker
+  Modal,
+  TouchableHighlight,
+  Keyboard
 } from 'react-native';
-import ModalSelector from 'react-native-modal-selector'
+import ModalSelector from 'react-native-modal-selector';
+import MultipleChoice from 'rn-multiple-choice';
 import Amplify, { Auth, API } from 'aws-amplify';
 
 export default class MenteeApplication extends Component {
@@ -16,18 +20,44 @@ export default class MenteeApplication extends Component {
     class_year: 'Freshman',
     gender: '',
     major: '',
+    minors: '',
+    high_GPA: '',
     grad_interested: '',
     grad_school: '',
     research: '',
-    honors: ''
+    honors: '',
+    interests: [],
+    weekend: '',
+    job: '',
+    agrees: false,
+    visible: false
   }
 
   setStateHelper(key, value) {
     this.setState({
       [key]: value
     })
-    console.log(key)
-    console.log(this.state.class_year)
+  }
+
+  setModalVisible(visibleVal) {
+    this.setState({visible: visibleVal});
+  }
+
+  setStateInterest(value) {
+    if (this.state.interests.includes(value)) {
+      console.log("removing " + value)
+      let copy = [...this.state.interests]
+      copy.splice(copy.indexOf(value), 1)
+      this.setState({
+        interests: copy
+      })
+    }
+    else {
+      console.log("inserting " + value)
+      this.setState({
+        interests: [...this.state.interests, value]
+      })
+    }
   }
 
   render () {
@@ -80,15 +110,135 @@ export default class MenteeApplication extends Component {
       {key: 'Yes', label: 'Yes'},
       {key: 'No', label: 'No'}
     ];
+    let interests = [];
 
     return (
       <ScrollView style={styles.container}>
         <Text>Class For Year of 2018-2019</Text>
         <ModalSelector
           data={class_years}
-          initValue="Class Year"
+          initValue="Select"
           onChange={(option) => this.setStateHelper('class_year', option.key)} />
-      </ScrollView>
+
+        <Text>Gender</Text>
+        <ModalSelector
+          data={genders}
+          initValue="Select"
+          onChange={(option) => this.setStateHelper('gender', option.key)} />
+
+        <Text>Major</Text>
+        <ModalSelector
+          data={majors}
+          initValue="Select"
+          onChange={(option) => this.setStateHelper('major', option.key)} />
+
+        <Text>Minors</Text>
+        <TextInput
+          style={styles.inputs}
+          onChangeText={value => this.setStateHelper('minors', value)}
+          blurOnSubmit={true}
+          keyboardAppearance='dark'
+          returnKeyType='done'
+          underlineColorAndroid='transparent'
+          placeholder='Minors'
+        />
+
+        <Text>Are you interested in graduate or professional education?</Text>
+        <ModalSelector
+          data={prof_options}
+          initValue="Select"
+          onChange={(option) => this.setStateHelper('grad_interested', option.key)} />
+
+        <Text>What type of postsecondary education?</Text>
+        <ModalSelector
+          data={grad_schools}
+          initValue="Select"
+          onChange={(option) => this.setStateHelper('grad_school', option.key)} />
+
+        <Text>Are you interested in research at UT?</Text>
+        <ModalSelector
+          data={research_involvement}
+          initValue="No"
+          onChange={(option) => this.setStateHelper('research', option.key)} />
+
+        <Text>Are you in an honors program?</Text>
+        <ModalSelector
+          data={in_honors}
+          initValue="No"
+          onChange={(option) => this.setStateHelper('honors', option.key)} />
+
+        <Text>What are your interest?</Text>
+        <MultipleChoice
+          options={[
+            'Cooking / Baking',
+            'Coops / Internships',
+            'Crafting / DIY / Making',
+            'Entrepreneurship / Business',
+            'Fitness',
+            'Hiking / Backpacking',
+            'Movies / TV',
+            'Music',
+            'Politics',
+            'Research',
+            'Social Media',
+            'Sports',
+            'Sustainability',
+            'Travel',
+            'Video Games'
+          ]}
+          onSelection={(option) => this.setStateInterest(option.split(' ', 1)[0])
+          }
+        />
+
+        <Text>What is a typical weekend like?</Text>
+        <TextInput
+          style={styles.inputs}
+          onChangeText={value => this.setStateHelper('weekend', value)}
+          blurOnSubmit={true}
+          keyboardAppearance='dark'
+          returnKeyType='done'
+          underlineColorAndroid='transparent'
+          placeholder='Weekend'
+        />
+
+        <Text>What is your dream job?</Text>
+        <TextInput
+          style={styles.inputs}
+          onChangeText={value => this.setStateHelper('job', value)}
+          blurOnSubmit={true}
+          keyboardAppearance='dark'
+          returnKeyType='done'
+          underlineColorAndroid='transparent'
+          placeholder='Dream Job'
+        />
+      <Button
+        title="Terms and Conditions"
+        onPress={() => {
+          this.setState({ visible: true });
+        }}
+        />
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={this.state.visible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+        }}>
+        <View style={{marginTop: 22}}>
+          <View>
+            <Text>Hello World!</Text>
+
+            <TouchableHighlight
+              onPress={() => {
+                this.setModalVisible(!this.state.visible);
+              }}>
+              <Text>Hide Modal</Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </Modal>
+      <Text>I agree to the terms and conditions.</Text>
+    </ScrollView>
     );
   }
 }
@@ -97,5 +247,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
+    marginBottom: 50
+  },
+  inputs: {
+    height: 50,
+    borderBottomWidth: 2,
+    borderBottomColor: '#FF8200',
+    margin: 10
   }
 });
