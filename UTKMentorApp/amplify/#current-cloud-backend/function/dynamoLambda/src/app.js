@@ -14,7 +14,7 @@ AWS.config.update({ region: process.env.TABLE_REGION });
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-let tableName = "profile_data";
+let tableName = "profiles";
 
 const userIdPresent = false; // TODO: update in case is required to use that definition
 const partitionKeyName = "userid";
@@ -57,7 +57,7 @@ app.get(path + hashKeyPath, function(req, res) {
   condition[partitionKeyName] = {
     ComparisonOperator: 'EQ'
   }
-
+  
   if (userIdPresent && req.apiGateway) {
     condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
   } else {
@@ -71,7 +71,7 @@ app.get(path + hashKeyPath, function(req, res) {
   let queryParams = {
     TableName: tableName,
     KeyConditions: condition
-  }
+  } 
 
   dynamodb.query(queryParams, (err, data) => {
     if (err) {
@@ -130,7 +130,7 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 *************************************/
 
 app.put(path, function(req, res) {
-
+  
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
@@ -153,7 +153,7 @@ app.put(path, function(req, res) {
 *************************************/
 
 app.post(path, function(req, res) {
-
+  
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }

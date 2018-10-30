@@ -16,7 +16,7 @@
 			"Type": "AWS::Lambda::Function",
 			"Properties": {
 				"Handler": "index.handler",
-				"FunctionName": "table_slave",
+				"FunctionName": "dynamoLambda",
 				"Role": {
 					"Fn::GetAtt": [
 						"LambdaExecutionRole",
@@ -27,14 +27,14 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "entorpp-20181005182310-deployment",
-					"S3Key": "amplify-builds/dynamoLambda-1539988064-latest-build.zip"
+					"S3Key": "amplify-builds/dynamoLambda-1540861416-latest-build.zip"
 				}
 			}
 		},
 		"LambdaExecutionRole": {
 			"Type": "AWS::IAM::Role",
 			"Properties": {
-				"RoleName": "utkmentorappLambdaRolefb55f65e",
+				"RoleName": "utkmentorappLambdaRole40f47935",
 				"AssumeRolePolicyDocument": {
 					"Version": "2012-10-17",
 					"Statement": [

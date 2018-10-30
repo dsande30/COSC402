@@ -84,7 +84,7 @@
 				"TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/auth/userpool-cloudformation-template.yml",
 				"Parameters": {
 					"identityPoolName": "utkmentorapp",
-					"allowUnauthenticatedIdentities": true,
+					"allowUnauthenticatedIdentities": false,
 					"thirdPartyAuth": false,
 					"lambdaLogPolicy": "userpool_lambda_log_policy",
 					"openIdLambdaRoleName": "userpool_openid_lambda_role",
@@ -100,10 +100,10 @@
 					"policyName": "userpool-sns-policy",
 					"smsAuthenticationMessage": "Your authentication code is {####}",
 					"smsVerificationMessage": "Your verification code is {####}",
-					"emailVerificationSubject": "Your verification code",
+					"emailVerificationSubject": "UTK Mentor App Verification",
 					"emailVerificationMessage": "Your verification code is {####}",
 					"defaultPasswordPolicy": true,
-					"passwordPolicyMinLength": 8,
+					"passwordPolicyMinLength": "8",
 					"passwordPolicyCharacters": "Requires Lowercase,Requires Numbers",
 					"requiredAttributes": "name,phone_number,email",
 					"userpoolClientName": "userpool_app_client",
@@ -133,7 +133,7 @@
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/storage/profiles-cloudformation-template.json",
 				"Parameters": {
-					"tableName": "profile_data",
+					"tableName": "profiles",
 					"partitionKeyName": "userid",
 					"partitionKeyType": "S"
 				}

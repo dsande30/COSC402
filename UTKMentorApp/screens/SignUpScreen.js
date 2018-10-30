@@ -66,40 +66,18 @@ export default class SignUp extends React.Component {
         'custom:role': this.state.role
       }
     })
-    .then( () => {
-      Auth.signIn(this.state.email, this.state.password)
-      .then( async () => {
-        let user_data = {}
-        let sample_goals = {}
-        let sample_pair = []
-        let user_role = false
-        user_data.name = this.state.name
-        user_data.email = this.state.email
-        user_data.phone = this.state.phone_number
-        if (this.state.role === 'Mentee') {
-          user_role = false
-        }
-        else {
-          user_role = true
-        }
-        console.log('calling api');
-        const response = await API.post('dynamoAPI', '/items', {
-          body: {
-            userid: this.state.email,
-            user_data: user_data,
-            mentor: user_role,
-            pairings: sample_pair,
-            goals: sample_goals
-          }
-        });
+    .then(data => {
+      console.log("success!" + data)
+      this.props.navigation.navigate('Verify', {
+        username: this.state.email,
+        password: this.state.password,
+        name: this.state.name,
+        phone_number: this.state.phone_number,
+        role: this.state.role,
+        name: this.state.name
       })
-      .then(user => {
-        this.props.navigation.navigate('Home', { data: user })
-        console.log('successful sign in!')
-      })
-      .catch(err => console.log('error signing in: ', err))
     })
-    .catch(err => console.log('error signing up: ', err))
+    .catch(err => console.log("error signingup pt1" + err))
   }
 
   render() {

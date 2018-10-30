@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/auth/userpool-cloudformation-template.yml",
 				"logicalId": "authuserpool"
 			},
-			"lastPushTimeStamp": "2018-10-19T22:29:57.180Z",
+			"lastPushTimeStamp": "2018-10-30T01:30:58.391Z",
 			"output": {
 				"AppClientSecret": "3p9le83g038dc236svu0emlukd0pkj7ml8l1bl2t1pioufk8jvt",
 				"UserPoolId": "us-east-1_LL1T6C8Pe",
@@ -29,7 +29,8 @@
 				"IdentityPoolName": "utkmentorapp",
 				"UserPoolName": "userpool"
 			},
-			"lastPushDirHash": "VnqhktycN4Jn7ISxRGIcWem6G90="
+			"lastPushDirHash": "xPUQVfxcLN2bSnRWHjouJVCSJGs=",
+			"[object Object]": {}
 		}
 	},
 	"storage": {
@@ -40,15 +41,15 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/storage/profiles-cloudformation-template.json",
 				"logicalId": "storageprofiles"
 			},
-			"lastPushTimeStamp": "2018-10-19T22:29:57.181Z",
+			"lastPushTimeStamp": "2018-10-30T01:30:58.382Z",
+			"lastPushDirHash": "cNy30Sqr6faekg6U0VhW8mwM2zs=",
 			"output": {
 				"PartitionKeyName": "userid",
 				"Region": "us-east-1",
-				"Arn": "arn:aws:dynamodb:us-east-1:572530317251:table/profile_data",
+				"Arn": "arn:aws:dynamodb:us-east-1:572530317251:table/profiles",
 				"PartitionKeyType": "S",
-				"Name": "profile_data"
-			},
-			"lastPushDirHash": "nkAI4XLe/RRf45KCTmS/dwYwC+k="
+				"Name": "profiles"
+			}
 		}
 	},
 	"function": {
@@ -66,20 +67,20 @@
 					]
 				}
 			],
-			"lastBuildTimeStamp": "2018-10-19T22:27:44.360Z",
-			"lastPackageTimeStamp": "2018-10-19T22:27:47.467Z",
-			"distZipFilename": "dynamoLambda-1539988062-latest-build.zip",
+			"lastBuildTimeStamp": "2018-10-30T01:03:36.470Z",
+			"lastPackageTimeStamp": "2018-10-30T01:03:38.741Z",
+			"distZipFilename": "dynamoLambda-1540861416-latest-build.zip",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/function/dynamoLambda-cloudformation-template.json",
 				"logicalId": "functiondynamoLambda"
 			},
-			"lastPushTimeStamp": "2018-10-19T22:29:57.189Z",
+			"lastPushTimeStamp": "2018-10-30T01:30:58.389Z",
+			"lastPushDirHash": "lJgg0PC1xjQ+5NU6vgJRCd9mBjY=",
 			"output": {
 				"Region": "us-east-1",
-				"Arn": "arn:aws:lambda:us-east-1:572530317251:function:table_slave",
-				"Name": "table_slave"
-			},
-			"lastPushDirHash": "ixtOfmiCw3PBarufZ/SZnC1ta+Y="
+				"Arn": "arn:aws:lambda:us-east-1:572530317251:function:dynamoLambda",
+				"Name": "dynamoLambda"
+			}
 		}
 	},
 	"api": {
@@ -100,12 +101,12 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/entorpp-20181005182310-deployment/amplify-cfn-templates/api/dynamoAPI-cloudformation-template.json",
 				"logicalId": "apidynamoAPI"
 			},
-			"lastPushTimeStamp": "2018-10-19T22:29:57.189Z",
+			"lastPushTimeStamp": "2018-10-30T01:30:58.389Z",
+			"lastPushDirHash": "DONs00wMseP7L1R6Zhaers72obM=",
 			"output": {
 				"ApiName": "dynamoAPI",
-				"RootUrl": "https://yzt4bz7ei8.execute-api.us-east-1.amazonaws.com/Prod"
-			},
-			"lastPushDirHash": "JsIzik7yOEZnqximHOVf4jvDhBc="
+				"RootUrl": "https://0nwve2n1ca.execute-api.us-east-1.amazonaws.com/Prod"
+			}
 		}
 	}
 }
