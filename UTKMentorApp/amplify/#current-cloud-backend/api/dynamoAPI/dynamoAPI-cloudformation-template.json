@@ -25,13 +25,13 @@
     "Resources": {
         
         
-        "PolicyAPIGWutkmentorapp1c2a88ecauth": {
+        "PolicyAPIGWutkmentorapp2d787365auth": {
             "DependsOn": [
-              "utkmentorapp1c2a88ec"
+              "utkmentorapp2d787365"
             ],
             "Type": "AWS::IAM::Policy",
             "Properties": {
-              "PolicyName": "PolicyAPIGWutkmentorapp1c2a88ecauth",
+              "PolicyName": "PolicyAPIGWutkmentorapp2d787365auth",
               "Roles": [
                 "entorpp-20181005182310-authRole"
               ],
@@ -61,7 +61,7 @@
                             },
                             ":",
                             {
-                              "Ref": "utkmentorapp1c2a88ec"
+                              "Ref": "utkmentorapp2d787365"
                             },
                             "/Prod/*",
                             "/items/*"
@@ -82,7 +82,7 @@
                             },
                             ":",
                             {
-                              "Ref": "utkmentorapp1c2a88ec"
+                              "Ref": "utkmentorapp2d787365"
                             },
                             "/Prod/*",
                             "/items"
@@ -103,16 +103,16 @@
           },
         
         
-      "utkmentorapp1c2a88ec": {
+      "utkmentorapp2d787365": {
         "Type": "AWS::ApiGateway::RestApi",
         "Properties": {
           "Description": "",
-          "Name": "utkmentorapp1c2a88ec",
+          "Name": "utkmentorapp2d787365",
           "Body": {
             "swagger": "2.0",
             "info": {
               "version": "2018-05-24T17:52:00Z",
-              "title": "utkmentorapp1c2a88ec"
+              "title": "utkmentorapp2d787365"
             },
             "host": {
                 "Fn::Join": [
@@ -386,7 +386,7 @@
                   
         
         
-        "functiondynamoLambdaPermissionutkmentorapp1c2a88ec": {
+        "functiondynamoLambdaPermissionutkmentorapp2d787365": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
                 "FunctionName": 
@@ -410,7 +410,7 @@
                             },
                             ":",
                             {
-                                "Ref": "utkmentorapp1c2a88ec"
+                                "Ref": "utkmentorapp2d787365"
                             },
                             "/*/*/*"
                         ]
@@ -423,13 +423,13 @@
         
         
         
-      "DeploymentAPIGWutkmentorapp1c2a88ec": {
+      "DeploymentAPIGWutkmentorapp2d787365a707bfe3": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",
           "StageName": "Prod",
           "RestApiId": {
-            "Ref": "utkmentorapp1c2a88ec"
+            "Ref": "utkmentorapp2d787365"
           }
         }
       }
@@ -437,7 +437,7 @@
     "Outputs": {
         "RootUrl": {
             "Description": "Root URL of the API gateway",
-            "Value": {"Fn::Join": ["", ["https://", {"Ref": "utkmentorapp1c2a88ec"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/Prod"]]}
+            "Value": {"Fn::Join": ["", ["https://", {"Ref": "utkmentorapp2d787365"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/Prod"]]}
         },
         "ApiName": {
           "Description": "API Friendly name",

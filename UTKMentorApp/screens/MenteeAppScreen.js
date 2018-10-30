@@ -17,6 +17,7 @@ import Amplify, { Auth, API } from 'aws-amplify';
 
 export default class MenteeApplication extends Component {
   state = {
+    user_id: '',
     class_year: 'Freshman',
     gender: '0',
     major: '0',
@@ -30,7 +31,7 @@ export default class MenteeApplication extends Component {
     weekend: '0',
     job: '0',
     agree: false,
-    visible: false
+    visible: false,
   }
 
   setStateHelper(key, value) {
@@ -47,13 +48,14 @@ export default class MenteeApplication extends Component {
     }, function(newState) {
       let form_data = {}
       for (var data in this.state) {
-        if (data != 'visible')
-        form_data[data] = this.state[data]
+        if (data != 'visible' && data != 'user_id')
+          form_data[data] = this.state[data]
       }
+      console.log(this.state.user_id)
       const response = API.put('dynamoAPI', '/items', {
         body: {
-          userid: 'butt@water.con',
-          form_data: form_data
+          userid: this.state.user_id,
+          form_data: {hi: "hello"}
         }
       });
       console.log(JSON.stringify(response, null, 2));
@@ -132,6 +134,13 @@ export default class MenteeApplication extends Component {
       {key: 'No', label: 'No'}
     ];
     let interests = [];
+    let { navigation } = this.props;
+    let user_id = navigation.getParam('user_id', 'NO-ID');
+    if (this.state.user_id == '') {
+      this.setState({
+        user_id: user_id
+      });
+    }
 
     return (
       <ScrollView style={styles.container}>

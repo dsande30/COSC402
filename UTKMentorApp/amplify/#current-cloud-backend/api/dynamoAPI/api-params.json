@@ -10,7 +10,7 @@
         }
     ],
     "resourceName": "dynamoAPI",
-    "apiName": "utkmentorapp1c2a88ec",
+    "apiName": "utkmentorapp2d787365",
     "functionArns": [
         {
             "lambdaFunction": "dynamoLambda"
@@ -31,5 +31,6 @@
                 "Arn"
             ]
         }
-    ]
+    ],
+    "uuid": "a707bfe3"
 }
