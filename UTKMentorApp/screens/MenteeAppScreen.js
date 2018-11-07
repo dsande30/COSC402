@@ -56,22 +56,7 @@ export default class MenteeApplication extends Component {
         if (data != 'visible' && data != 'user_id')
           form_data[data] = this.state[data]
       }
-      {/*
-      async function get() {
-        API.get('dynamoAPI', '/items/' + this.state.user_id)
-        .then((rv) => {
-          result = rv[0]
-          user_data = result.user_data
-          goals = result.goals
-          mentor = result.mentor
-          pairings = result.pairings
-          console.log("Done GETTING!");
-        })
-        .catch(error => {
-          console.log(error.response)
-        });
-      }
-      */}
+
       async function getData() {
         const get_response = await API.get('dynamoAPI', '/items/' + user);
         return get_response;
@@ -102,43 +87,6 @@ export default class MenteeApplication extends Component {
         .then((data) => {console.log(data)});
       })
       .catch(() => { console.log('2')});
-      {/*
-      post = async() => {
-        let put_body = {
-          body: {
-            userid: this.state.user_id,
-            user_data: user_data,
-            form_data: form_data,
-            goals: goals,
-            mentor: mentor,
-            pairings: pairings
-          }
-        }
-        const post_response = await API.put('dynamoAPI', '/items?userid=' + this.state.user_id, put_body)
-        console.log((JSON.stringify(post_response, null, 2));
-      }
-      async function put() {
-        await get();
-        console.log("About to PUT!");
-        API.put('dynamoAPI', '/items?userid=' + this.state.user_id, {
-          body: {
-            userid: this.state.user_id,
-            user_data: user_data,
-            form_data: form_data,
-            goals: goals,
-            mentor: mentor,
-            pairings: pairings
-          }
-        })
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error.response)
-        });
-      }
-      put();
-      */}
     })
   }
 
