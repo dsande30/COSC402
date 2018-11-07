@@ -56,9 +56,10 @@ export default class MenteeApplication extends Component {
         if (data != 'visible' && data != 'user_id')
           form_data[data] = this.state[data]
       }
+      {/*
       async function get() {
         API.get('dynamoAPI', '/items/' + this.state.user_id)
-        .then(rv => {
+        .then((rv) => {
           result = rv[0]
           user_data = result.user_data
           goals = result.goals
@@ -69,6 +70,52 @@ export default class MenteeApplication extends Component {
         .catch(error => {
           console.log(error.response)
         });
+      }
+      */}
+      async function getData() {
+        const get_response = await API.get('dynamoAPI', '/items/' + user);
+        return get_response;
+      }
+      async function putData() {
+        let put_body = {
+          body: {
+            userid: user,
+            user_data: user_data,
+            form_data: form_data,
+            goals: goals,
+            mentor: mentor,
+            pairings: pairings
+          }
+        }
+        const put_response = await API.put('dynamoAPI', '/items?userid=' + user, put_body);
+        return put_response;
+      }
+      getData()
+      .then((rv) => {
+        result = rv[0]
+        user_data = result.user_data
+        goals = result.goals
+        mentor = result.mentor
+        pairings = result.pairings
+        console.log("Done GETTING!");
+        putData()
+        .then((data) => {console.log(data)});
+      })
+      .catch(() => { console.log('2')});
+      {/*
+      post = async() => {
+        let put_body = {
+          body: {
+            userid: this.state.user_id,
+            user_data: user_data,
+            form_data: form_data,
+            goals: goals,
+            mentor: mentor,
+            pairings: pairings
+          }
+        }
+        const post_response = await API.put('dynamoAPI', '/items?userid=' + this.state.user_id, put_body)
+        console.log((JSON.stringify(post_response, null, 2));
       }
       async function put() {
         await get();
@@ -91,6 +138,7 @@ export default class MenteeApplication extends Component {
         });
       }
       put();
+      */}
     })
   }
 
