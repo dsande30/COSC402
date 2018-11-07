@@ -51,37 +51,46 @@ export default class MenteeApplication extends Component {
       let pairings = []
       let mentor = false
       let form_data = {}
+      let user = this.state['user_id']
       for (var data in this.state) {
         if (data != 'visible' && data != 'user_id')
           form_data[data] = this.state[data]
       }
-      API.get('dynamoAPI', '/items/' + this.state.user_id)
-      .then(rv => {
-        result = rv[0]
-        user_data = result.user_data
-        goals = result.goals
-        mentor = result.mentor
-        pairings = result.pairings
-      })
-      .catch(error => {
-        console.log(error.response)
-      });
-      API.put('dynamoAPI', '/items?userid=' + this.state.user_id, {
-        body: {
-          userid: this.state.user_id,
-          user_data: user_data,
-          form_data: form_data,
-          goals: goals,
-          mentor: mentor,
-          pairings: pairings
-        }
-      })
-      .then(response => {
-        console.log(response)
-      })
-      .catch(error => {
-        console.log(error.response)
-      });
+      async function get() {
+        API.get('dynamoAPI', '/items/' + this.state.user_id)
+        .then(rv => {
+          result = rv[0]
+          user_data = result.user_data
+          goals = result.goals
+          mentor = result.mentor
+          pairings = result.pairings
+          console.log("Done GETTING!");
+        })
+        .catch(error => {
+          console.log(error.response)
+        });
+      }
+      async function put() {
+        await get();
+        console.log("About to PUT!");
+        API.put('dynamoAPI', '/items?userid=' + this.state.user_id, {
+          body: {
+            userid: this.state.user_id,
+            user_data: user_data,
+            form_data: form_data,
+            goals: goals,
+            mentor: mentor,
+            pairings: pairings
+          }
+        })
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error.response)
+        });
+      }
+      put();
     })
   }
 
