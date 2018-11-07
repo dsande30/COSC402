@@ -18,7 +18,7 @@ import Amplify, { Auth, API } from 'aws-amplify';
 export default class MenteeApplication extends Component {
   state = {
     user_id: '',
-    class_year: 'Freshman',
+    class_year: '0',
     gender: '0',
     major: '0',
     minors: '0',
@@ -176,7 +176,7 @@ export default class MenteeApplication extends Component {
 
     return (
       <ScrollView style={styles.container}>
-        <Text>Class For Year of 2018-2019</Text>
+        <Text>Class for this academic year?</Text>
         <ModalSelector
           data={class_years}
           initValue="Select"
@@ -223,7 +223,7 @@ export default class MenteeApplication extends Component {
           initValue="No"
           onChange={(option) => this.setStateHelper('research', option.key)} />
 
-        <Text>Are you in an honors program?</Text>
+        <Text>Are you in an honors program? (CHP, Engineering Honors, etc)</Text>
         <ModalSelector
           data={in_honors}
           initValue="No"
