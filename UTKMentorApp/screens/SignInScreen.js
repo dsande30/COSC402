@@ -98,9 +98,17 @@ export default class SignIn extends React.Component {
           this.props.navigation.navigate('Home', {data: user});
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log('err'));
     })
-    .catch(err => console.log('error signing in: ', err))
+    .catch(err => {
+      console.log('error signing in: ', err)
+      if (err.code == 'NotAuthorizedException') {
+        this.setState({
+          ['password_error']: 'Password and Email do not match',
+          ['password']: ''
+        })
+      }
+    })
   }
 
   render() {
