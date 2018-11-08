@@ -14,6 +14,7 @@ import {
 import ModalSelector from 'react-native-modal-selector';
 import MultipleChoice from 'rn-multiple-choice';
 import Amplify, { Auth, API } from 'aws-amplify';
+import { TextField } from 'react-native-material-textfield';
 
 export default class MenteeApplication extends Component {
   state = {
@@ -192,16 +193,25 @@ export default class MenteeApplication extends Component {
           initValue="Select"
           onChange={(option) => this.setStateHelper('major', option.key)} />
 
-        <Text>Minors</Text>
-        <TextInput
-          style={styles.inputs}
-          onChangeText={value => this.setStateHelper('minors', value)}
-          blurOnSubmit={true}
-          keyboardAppearance='dark'
-          returnKeyType='done'
-          underlineColorAndroid='transparent'
-          placeholder='Minors'
-        />
+          <TextField
+            onChangeText={value => this.onChangeText('minors', value)}
+            label='Minor(s)'
+            value={this.state.minors}
+            /*style={styles.input}*/
+            secureTextEntry={false}
+            blurOnSubmit={false}
+            tintColor='#FF8200'
+            underlineColorAndroid='transparent'
+            keyboardAppearance='dark'
+            /*placeholder='password'*/
+            returnKeyType='next'
+            onSubmitEditing={() => {
+              this.phoneInput.focus()
+              this.checkFull('name')
+              this.checkErrors()
+            }}
+            ref={(input) => this.nameInput = input}
+          />
 
         <Text>Are you interested in graduate or professional education?</Text>
         <ModalSelector

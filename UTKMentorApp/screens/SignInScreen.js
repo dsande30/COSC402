@@ -80,6 +80,10 @@ export default class SignIn extends React.Component {
     .catch(err => console.log('error signing in: ', err))
   }
 
+  fastForm() {
+    this.props.navigation.navigate('MenteeApp');
+  }
+
   signIn() {
     let form_data = {};
     const { email, password } = this.state;
@@ -190,6 +194,11 @@ export default class SignIn extends React.Component {
                 style={styles.btnSignUp}
                 onPress={this.fastSignIn.bind(this)}>
                 <Text style={styles.btnText}>Fast Sign In</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.btnSignUp}
+                onPress={this.fastForm.bind(this)}>
+                <Text style={styles.btnText}>Fast Form</Text>
               </TouchableOpacity>
             </View>
         </KeyboardAwareScrollView>
