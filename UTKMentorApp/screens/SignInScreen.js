@@ -32,7 +32,8 @@ export default class SignIn extends React.Component {
   onChangeText(key, value) {
     console.log(key);
     this.setState({
-      [key]: value
+      [key]: value,
+      [key+'_error']: ''
     })
   }
 
@@ -102,11 +103,21 @@ export default class SignIn extends React.Component {
     })
     .catch(err => {
       console.log('error signing in: ', err)
+      if (err.code == 'UserNotFoundException') {
+        this.setState({
+          ['email_error']: 'No user with that email',
+          ['email']: ''
+        })
+      }
       if (err.code == 'NotAuthorizedException') {
         this.setState({
-          ['password_error']: 'Password and Email do not match',
+          ['password_error']: 'Password and email do not match',
           ['password']: ''
         })
+      }
+      if (err.code == 'UserNotConfirmedException') {
+        console.log('Redirected to verification!');
+        this.props.navigation.navigate('Verify');
       }
     })
   }
