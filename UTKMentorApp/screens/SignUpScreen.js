@@ -218,6 +218,7 @@ export default class SignUp extends React.Component {
                 /*style={styles.input}*/
                 secureTextEntry={false}
                 blurOnSubmit={false}
+                tintColor='#FF8200'
                 underlineColorAndroid='transparent'
                 keyboardAppearance='dark'
                 keyboardType='email-address'
@@ -239,6 +240,7 @@ export default class SignUp extends React.Component {
                 /*style={styles.input}*/
                 secureTextEntry={true}
                 blurOnSubmit={false}
+                tintColor='#FF8200'
                 underlineColorAndroid='transparent'
                 keyboardAppearance='dark'
                 /*placeholder='password'*/
@@ -259,6 +261,7 @@ export default class SignUp extends React.Component {
                 /*style={styles.input}*/
                 secureTextEntry={true}
                 blurOnSubmit={false}
+                tintColor='#FF8200'
                 underlineColorAndroid='transparent'
                 keyboardAppearance='dark'
                 /*placeholder='password'*/
@@ -279,6 +282,7 @@ export default class SignUp extends React.Component {
                 /*style={styles.input}*/
                 secureTextEntry={false}
                 blurOnSubmit={false}
+                tintColor='#FF8200'
                 underlineColorAndroid='transparent'
                 keyboardAppearance='dark'
                 /*placeholder='password'*/
@@ -300,6 +304,7 @@ export default class SignUp extends React.Component {
                 /*style={styles.input}*/
                 secureTextEntry={false}
                 blurOnSubmit={false}
+                tintColor='#FF8200'
                 underlineColorAndroid='transparent'
                 keyboardAppearance='dark'
                 keyboardType='number-pad'
