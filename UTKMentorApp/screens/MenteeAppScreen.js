@@ -15,6 +15,8 @@ import ModalSelector from 'react-native-modal-selector';
 import MultipleChoice from 'rn-multiple-choice';
 import Amplify, { Auth, API } from 'aws-amplify';
 import { TextField } from 'react-native-material-textfield';
+import file from '../assets/TermsandConditions.json'
+text = file.text.join('\n');
 
 export default class MenteeApplication extends Component {
   state = {
