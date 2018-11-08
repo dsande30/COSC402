@@ -15,9 +15,9 @@ import {
   KeyboardAwareScrollView
 } from 'react-native-keyboard-aware-scroll-view';
 
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify, { Auth, API } from 'aws-amplify';
 
-export default class SignUp extends React.Component {
+export default class SignIn extends React.Component {
 
   state = {
     email: '',
@@ -32,13 +32,61 @@ export default class SignUp extends React.Component {
     })
   }
 
-  signIn() {
-    const { email, password } = this.state
+  async getData() {
+    const get_response = await API.get('dynamoAPI', '/items/' + this.state.email);
+    return get_response;
+  }
+
+  async getAndrey() {
+    const get_response = await API.get('dynamoAPI', '/items/akarnauc@vols.utk.edu');
+    return get_response;
+  }
+
+  fastSignIn() {
+    let form_data = {};
+    const email = 'akarnauc@vols.utk.edu'
+    const password = 'testy123'
     Auth.signIn(email, password)
     .then(user => {
       this.setState({ user })
-      this.props.navigation.navigate('Home', { data: user })
-      console.log('successful sign in!')
+      this.getAndrey()
+      .then((rv) => {
+        result = rv[0];
+        form_data = result.form_data;
+        if (Object.keys(form_data).length !== 0) {
+          console.log('successful PROF sign in!');
+          this.props.navigation.navigate('Profile', { data: user });
+        }
+        else {
+          console.log('successful HOME sign in!');
+          this.props.navigation.navigate('Home', {data: user});
+        }
+      })
+      .catch((err) => console.log(err));
+    })
+    .catch(err => console.log('error signing in: ', err))
+  }
+
+  signIn() {
+    let form_data = {};
+    const { email, password } = this.state;
+    Auth.signIn(email, password)
+    .then(user => {
+      this.setState({ user })
+      this.getData()
+      .then((rv) => {
+        result = rv[0];
+        form_data = result.form_data;
+        if (Object.keys(form_data).length !== 0) {
+          console.log('successful PROF sign in!');
+          this.props.navigation.navigate('Profile', { data: user });
+        }
+        else {
+          console.log('successful HOME sign in!');
+          this.props.navigation.navigate('Home', {data: user});
+        }
+      })
+      .catch((err) => console.log(err));
     })
     .catch(err => console.log('error signing in: ', err))
   }
@@ -88,6 +136,11 @@ export default class SignUp extends React.Component {
                 style={styles.btnSignUp}
                 onPress={() => this.props.navigation.navigate('SignUp')}>
                 <Text style={styles.btnText}>Create a New Account</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.btnSignUp}
+                onPress={this.fastSignIn.bind(this)}>
+                <Text style={styles.btnText}>Fast Sign In</Text>
               </TouchableOpacity>
             </View>
         </KeyboardAwareScrollView>

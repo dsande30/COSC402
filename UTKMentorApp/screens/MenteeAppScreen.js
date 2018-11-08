@@ -84,7 +84,9 @@ export default class MenteeApplication extends Component {
         pairings = result.pairings
         console.log("Done GETTING!");
         putData()
-        .then((data) => {console.log(data)});
+        .then((data) => {
+          this.props.navigation.navigate('Profile');
+        });
       })
       .catch(() => { console.log('2')});
     })
@@ -123,18 +125,18 @@ export default class MenteeApplication extends Component {
       {key: 'NA', label: 'Prefer not to say'}
     ];
     let majors = [
-      {key: 'Aerospace', label: 'Aerospace'},
-      {key: 'Biomedical', label: 'Biomedical'},
-      {key: 'Biosystems', label: 'Biosystems'},
-      {key: 'Chemical', label: 'Chemical'},
-      {key: 'Civil', label: 'Civil'},
-      {key: 'CompE', label: 'Computer Engineering'},
-      {key: 'CompS', label: 'Computer Science'},
-      {key: 'Electrical', label: 'Electrical'},
-      {key: 'Industrial', label: 'Industrial'},
-      {key: 'Materials', label: 'Materials Science'},
-      {key: 'Mechanical', label: 'Mechanical'},
-      {key: 'Nuclear', label: 'Nuclear'},
+      {key: 'Aerospace Engineering', label: 'Aerospace Engineering'},
+      {key: 'Biomedical Engineering', label: 'Biomedical Engineering'},
+      {key: 'Biosystems Engineering', label: 'Biosystems Engineering'},
+      {key: 'Chemical Engineering', label: 'Chemical Engineering'},
+      {key: 'Civil Engineering', label: 'Civil Engineering'},
+      {key: 'Computer Engineering', label: 'Computer Engineering'},
+      {key: 'Computer Science', label: 'Computer Science'},
+      {key: 'Electrical Engineering', label: 'Electrical Engineering'},
+      {key: 'Industrial Engineering', label: 'Industrial Engineering'},
+      {key: 'Materials Science', label: 'Materials Science'},
+      {key: 'Mechanical Engineering', label: 'Mechanical Engineering'},
+      {key: 'Nuclear Engineering', label: 'Nuclear Engineering'},
       {key: 'Other', label: 'Other'}
     ];
     let prof_options = [
@@ -144,13 +146,13 @@ export default class MenteeApplication extends Component {
     ];
     let grad_schools = [
       {key: 'None', label: 'None'},
-      {key: 'Dental', label: 'Dental School'},
-      {key: 'Graduate', label: 'Graduate School'},
-      {key: 'Law', label: 'Law School'},
-      {key: 'MBA', label: 'MBA Program'},
-      {key: 'Medical', label: 'Medical School'},
-      {key: 'Pharmacy', label: 'Pharmacy School'},
-      {key: 'Veterinary', label: 'Veterinary School'}
+      {key: 'Dental School', label: 'Dental School'},
+      {key: 'Graduate School', label: 'Graduate School'},
+      {key: 'Law School', label: 'Law School'},
+      {key: 'MBA Program', label: 'MBA Program'},
+      {key: 'Medical School', label: 'Medical School'},
+      {key: 'Pharmacy School', label: 'Pharmacy School'},
+      {key: 'Veterinary School', label: 'Veterinary School'}
     ];
     let research_involvement = [
       {key: 'Yes', label: 'Yes'},
