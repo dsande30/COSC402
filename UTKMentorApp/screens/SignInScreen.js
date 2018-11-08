@@ -14,6 +14,8 @@ import {
 import {
   KeyboardAwareScrollView
 } from 'react-native-keyboard-aware-scroll-view';
+import { TextField } from 'react-native-material-textfield';
+
 
 import Amplify, { Auth, API } from 'aws-amplify';
 
@@ -21,7 +23,9 @@ export default class SignIn extends React.Component {
 
   state = {
     email: '',
+    email_error: '',
     password: '',
+    password_error: '',
     user: {}
   };
 
@@ -30,6 +34,14 @@ export default class SignIn extends React.Component {
     this.setState({
       [key]: value
     })
+  }
+
+  checkFull(key) {
+    if (this.state[key] == '') {
+      this.setState({
+        [key+'_error']: 'Oops! You forgot this one'
+      })
+    }
   }
 
   async getData() {
@@ -103,25 +115,43 @@ export default class SignIn extends React.Component {
               <Text style={styles.title}>The Engineering Mentor Program</Text>
             </View>
             <KeyboardAvoidingView style={styles.form} behavior="padding" enabled>
-              <TextInput
+              <TextField
                 onChangeText={value => this.onChangeText('email', value)}
-                style={styles.input}
+                label='Email'
+                value={this.state.email}
+                error={this.state.email_error}
+                /*style={styles.input}*/
+                secureTextEntry={false}
+                blurOnSubmit={false}
+                underlineColorAndroid='transparent'
+                tintColor='#FF8200'
+                keyboardAppearance='dark'
                 keyboardType='email-address'
-                underlineColorAndroid='transparent'
-                autoCorrect={false}
-                autoCapitalize='none'
-                onSubmitEditing={() => this.passwordInput.focus()}
+                /*placeholder='password'*/
                 returnKeyType='next'
-                placeholder='email'
+                onSubmitEditing={() => {
+                  this.passwordInput.focus()
+                  this.checkFull('email')
+                }}
               />
-              <TextInput
+              <TextField
                 onChangeText={value => this.onChangeText('password', value)}
-                style={styles.input}
-                underlineColorAndroid='transparent'
+                label='Password'
+                value={this.state.password}
+                error={this.state.password_error}
+                title='At least one lower, upper, and symbol'
+                /*style={styles.input}*/
                 secureTextEntry={true}
-                placeholder='password'
-                onSubmitEditing={this.signIn.bind(this)}
-                returnKeyType='go'
+                blurOnSubmit={false}
+                tintColor='#FF8200'
+                underlineColorAndroid='transparent'
+                keyboardAppearance='dark'
+                /*placeholder='password'*/
+                returnKeyType='next'
+                onSubmitEditing={() => {
+                  Keyboard.dismiss()
+                  this.checkFull('password')
+                }}
                 ref={(input) => this.passwordInput = input}
               />
             </KeyboardAvoidingView>
@@ -181,6 +211,7 @@ const styles = StyleSheet.create({
     width: '50%',
     borderRadius: 20,
     padding: 10,
+    marginTop: 10,
   },
   btnSignUp: {
     alignItems: 'center',
@@ -200,7 +231,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   signUpText: {
-    marginTop: 120,
+    marginTop: 80,
   },
   input: {
     height: 50,
