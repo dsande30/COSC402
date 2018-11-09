@@ -9,7 +9,6 @@ import {
   Button,
   ScrollView,
   Modal,
-  ImageBackground,
   TouchableHighlight,
   Keyboard
 } from 'react-native';
@@ -29,48 +28,6 @@ export default class Individual extends Component {
       });
     }
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.imageContainer}>
-            <Image
-              style={styles.image}
-              source={require('../assets/andrey.jpeg')}
-            />
-          </View>
-        </View>
-      </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-  },
-  imageContainer: {
-    height: 120,
-    width: 120,
-    borderRadius: 60,
-    overflow: 'hidden'
-  },
-  image: {
-    height: 120,
-    width: 120,
-    borderRadius: 60,
-    borderColor: 'white',
-    borderWidth: 2,
-  },
-  header: {
-    alignItems: 'center',
-    height: '30%',
-    backgroundColor: '#B9E1E2',
-    justifyContent: 'center'
-  },
-  topHalf: {
-
-  },
-  bottomHalf: {
-
-  }
-})
