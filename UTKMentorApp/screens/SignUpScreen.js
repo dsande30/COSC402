@@ -187,7 +187,15 @@ export default class SignUp extends React.Component {
         name: this.state.name
       })
     })
-    .catch(err => console.log("error signingup pt1" + err))
+    .catch(err => {
+      console.log('error signing in: ', err)
+      if (err.code == 'UsernameExistsException') {
+        console.log('User already exists');
+        this.setState({
+          ['email_error']: 'A user with this email already exists'
+        });
+      }
+    })
   }
 
   render() {

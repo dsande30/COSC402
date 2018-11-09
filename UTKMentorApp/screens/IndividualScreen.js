@@ -10,8 +10,12 @@ import {
   ScrollView,
   Modal,
   TouchableHighlight,
-  Keyboard
+  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
+import {
+  KeyboardAwareScrollView
+} from 'react-native-keyboard-aware-scroll-view';
 import { ListItem } from 'react-native-elements'
 
 import Amplify, { Auth, API } from 'aws-amplify';
@@ -26,23 +30,11 @@ export default class Individual extends Component {
     navi = navigation.getParam('data')
     console.log(navi)
 
-    const list = []
-    if (navi.form_data.grad_interested == 'Yes' &&
-        navi.form_data.grad_school != 'None') {
-      list.push({
-        title: 'Interested in '+ navi.form_data.grad_school,
-        avatar: require('../assets/cap.png')
-      })
-    }
-    if (navi.honors == 'Yes') {
-      list.push({
-        title: 'In honors program',
-        avatar: require('../assets/star.png')
-      })
-    }
+    const headList = []
+
     if (navi.role == 'Mentor') {
       if (navi.form_data.research == 'Yes') {
-        list.push({
+        headList.push({
           title: 'Doing research on campus',
           avatar: require('../assets/flask.png')
         })
@@ -50,21 +42,53 @@ export default class Individual extends Component {
     }
     else if (navi.role == 'Mentee') {
       if (navi.form_data.research == 'Yes') {
-        list.push({
+        headList.push({
           title: 'Interested in doing research',
           avatar: require('../assets/flask.png')
         })
       }
       else if (navi.form_data.research == 'Currently') {
-        list.push({
+        headList.push({
           title: 'Doing research on campus',
           avatar: require('../assets/flask.png')
         })
       }
     }
+    if (navi.honors == 'Yes') {
+      headList.push({
+        title: 'In honors program',
+        avatar: require('../assets/star.png')
+      })
+    }
+    if (navi.form_data.grad_interested == 'Yes' &&
+        navi.form_data.grad_school != 'None') {
+      headList.push({
+        title: 'Pursuing '+ navi.form_data.grad_school,
+        avatar: require('../assets/cap.png')
+      })
+    }
+
+    const interestList1 = []
+    const interestList2 = []
+
+
+    for (var i in navi.form_data.interests) {
+      if ( i < navi.form_data.interests.length / 2) {
+        console.log('1')
+        interestList1.push({
+          title: navi.form_data.interests[i]
+        })
+      } else {
+        console.log('2')
+        interestList2.push({
+          title: navi.form_data.interests[i]
+        })
+      }
+    }
 
     return (
-      <View style={styles.container}>
+      <KeyboardAwareScrollView style={styles.container} enableOnAndroid={true}
+       enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
         <View style={styles.header}>
           <View style={styles.imageContainer}>
             <Image
@@ -79,24 +103,47 @@ export default class Individual extends Component {
           </View>
         </View>
         {
-          list.map((l, i) => (
+          headList.map((l, i) => (
             <ListItem
+              containerStyle={styles.listContainer}
               key={i}
               avatar={l.avatar}
               title={l.title}
               avatarStyle={{backgroundColor:'#FFFFFF'}}
+              hideChevron
             />
           ))
         }
+        <Text style={styles.interestText}>Interested in</Text>
         <View style={styles.flexBlock}>
           <View style={styles.flexContainer}>
-            <Text>Entrepreneurship / Business</Text>
+           {
+              interestList1.map((l, i) => (
+                <ListItem
+                  containerStyle={styles.listContainer}
+                  key={i}
+                  title={l.title}
+                  avatarStyle={{backgroundColor:'#FFFFFF'}}
+                  hideChevron
+                />
+              ))
+            }
           </View>
           <View style={styles.flexContainer}>
-            <Text>Entrepreneurship / Business</Text>
+            {
+              interestList2.map((l, i) => (
+                <ListItem
+                  containerStyle={styles.listContainer}
+                  key={i}
+                  title={l.title}
+                  avatarStyle={{backgroundColor:'#FFFFFF'}}
+                  hideChevron
+                />
+              ))
+            }
           </View>
         </View>
-      </View>
+      </KeyboardAwareScrollView>
     )
   }
 }
@@ -140,6 +187,13 @@ const styles = StyleSheet.create({
     padding: 0,
     marginBottom: 5
   },
+  listContainer: {
+    borderBottomColor: 'transparent',
+  },
+  interestText: {
+    fontSize: 18,
+    textAlign: 'center',
+  },
   bio: {
 
   },
@@ -151,13 +205,9 @@ const styles = StyleSheet.create({
   },
   flexBlock: {
     flexDirection: 'row',
-    alignItems: 'center'
   },
   flexContainer: {
     flex: 1,
-    marginTop: 25,
-    alignItems: 'center',
-    justifyContent: 'center'
   },
   terms: {
     marginTop: 22,
