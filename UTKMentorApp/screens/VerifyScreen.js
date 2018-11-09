@@ -61,7 +61,7 @@ export default class Verify extends Component {
         });
       })
       .then(user => {
-        this.props.navigation.navigate('Home', { data: user })
+        this.props.navigation.navigate('Profile', { data: user })
         console.log('successful sign in!')
       })
       .catch(err => console.log('error signing in: ', err))

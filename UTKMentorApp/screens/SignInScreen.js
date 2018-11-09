@@ -73,7 +73,7 @@ export default class SignIn extends React.Component {
         }
         else {
           console.log('successful HOME sign in!');
-          this.props.navigation.navigate('Home', {data: user});
+          this.props.navigation.navigate('Profile', {data: user});
         }
       })
       .catch((err) => console.log(err.response));
@@ -101,7 +101,7 @@ export default class SignIn extends React.Component {
         }
         else {
           console.log('successful HOME sign in!');
-          this.props.navigation.navigate('Home', {data: user});
+          this.props.navigation.navigate('Profile', {data: user});
         }
       })
       .catch((err) => console.log('err'));
