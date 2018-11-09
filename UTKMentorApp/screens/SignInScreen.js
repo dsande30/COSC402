@@ -9,7 +9,8 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  Keyboard
 } from 'react-native';
 import {
   KeyboardAwareScrollView

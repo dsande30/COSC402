@@ -180,7 +180,7 @@ export default class MenteeApplication extends Component {
     return (
         <KeyboardAwareScrollView enableOnAndroid={true}
           enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
-          <KeyboardAvoidingView style={styles.container}  behavior="padding" enabled>  
+          <KeyboardAvoidingView style={styles.container}  behavior="padding" enabled>
             <Text>Class for this academic year?</Text>
             <ModalSelector
               data={class_years}
