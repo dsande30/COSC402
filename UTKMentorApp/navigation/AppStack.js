@@ -6,10 +6,12 @@ import HomeScreen from '../screens/HomeScreen'
 import MenteeAppScreen from '../screens/MenteeAppScreen'
 import MentorAppScreen from '../screens/MentorAppScreen'
 
-const AppStack = createStackNavigator({
-  Home: HomeScreen,
-  MenteeApp: MenteeAppScreen,
-  MentorApp: MentorAppScreen
+export const MenteeForm = createStackNavigator({
+  MenteeForm: MenteeAppScreen
 });
 
-export default AppStack;
+export const MentorForm = createStackNavigator({
+  MentorForm: MentorAppScreen
+});
+
+export default {MenteeForm, MentorForm};

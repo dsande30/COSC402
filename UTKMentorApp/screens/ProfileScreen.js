@@ -55,6 +55,25 @@ export default class Profile extends Component {
     }))
   }
 
+  signOut() {
+    Auth.signOut()
+      .then(data => {
+        console.log('succesful sign out: ', data)
+        this.props.navigation.navigate('SignIn')
+      })
+      .catch(err => console.log(err));
+  }
+
+  onChangeText(key, value) {
+    this.setState({
+      [key]: value
+    })
+  }
+
+  getApplication(screenName) {
+    this.props.navigation.navigate(screenName)
+  }
+
   setStateHelper(key, value) {
     this.setState({
       [key]: value
@@ -64,8 +83,30 @@ export default class Profile extends Component {
   }
 
   render () {
-    this.setUserAttributes();
-    this.setData();
+    if (this.state.user_id == '') {
+      this.setUserAttributes();
+    }
+    if (this.state.mentor == '') {
+      this.setData();
+    }
+    let body;
+    let appButton;
+    if (this.state.role === 'Mentee') {
+      body = <Text style={styles.formText}>You have signed up as a
+        <Text style={{fontWeight: 'bold'}}> Mentee</Text>.
+          To help us learn more about your interests and find your mentor,
+          please fill out the survey below.
+        </Text>
+      appButton = <Button title="Begin Survey" onPress={() => this.props.navigation.navigate('MenteeForm', { user_id: this.state.user_id })} />
+    }
+    else if (this.state.role === 'Mentor') {
+      body = <Text style={styles.formText}>You have signed up as a
+        <Text style={{fontWeight: 'bold'}}> Mentor</Text>.
+          To help us learn more about your interests and match you with mentees,
+          please fill out the survey below.
+        </Text>
+      appButton = <Button title="Begin Survey" onPress={() => this.props.navigation.navigate('MentorForm', { user_id: this.state.user_id })} />
+    }
     return (
       <ScrollView style={styles.container}>
         <View style={styles.imageBlock}>
@@ -73,11 +114,11 @@ export default class Profile extends Component {
             <TouchableHighlight onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
               <Image
                 style={styles.image}
-                source={require('../assets/face.png')}
+                source={require('../assets/andrey.jpeg')}
                 />
             </TouchableHighlight>
-            <Text>{this.state.name}</Text>
           </View>
+          <Text>{this.state.name}</Text>
           <View style={styles.imageContainer}>
             <TouchableHighlight onPress={() => this.props.navigation.navigate('Individual')}>
               <Image
@@ -85,8 +126,8 @@ export default class Profile extends Component {
                 source={require('../assets/mentor.png')}
                 />
             </TouchableHighlight>
-            <Text>?</Text>
           </View>
+          <Text>?</Text>
         </View>
         <Button
           onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}
@@ -97,6 +138,17 @@ export default class Profile extends Component {
             <Text>Hi</Text>
           </TouchableHighlight>
         </View>
+        <Text style={styles.welcomeText}>Welcome,</Text>
+        <Text style={styles.nameText}>{this.state.name}</Text>
+        {body}
+        <View style={styles.btnContainer}>
+          <TouchableOpacity
+            style={styles.btnSurvey}
+            onPress={console.log('pressed button')}>
+            {appButton}
+          </TouchableOpacity>
+        </View>
+        <Button style={styles.btnSignOut} title="Sign Out" onPress={this.signOut.bind(this)} />
       </ScrollView>
     );
   }
@@ -119,27 +171,69 @@ const styles = StyleSheet.create({
   },
   imageBlock: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    height: '25%',
+    backgroundColor: '#B9E1E2',
+    justifyContent: 'center'
   },
   imageContainer: {
     flex: 1,
-    marginTop: 25,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+    overflow: 'hidden'
   },
   terms: {
     marginTop: 22,
     marginBottom: 22
   },
   image: {
-    width: 100,
-    height: 100,
     marginBottom: 20,
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+    borderColor: 'white',
+    borderWidth: 2,
   },
   inputs: {
     height: 50,
     borderBottomWidth: 2,
     borderBottomColor: '#FF8200',
     margin: 10
+  },
+  btnSurvey: {
+    alignItems: 'center',
+    backgroundColor: '#58595B',
+    width: '50%',
+    borderRadius: 20,
+    padding: 10,
+  },
+  btnText: {
+    textAlign: 'center',
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+  btnContainer: {
+    alignItems: 'center',
+    marginBottom: 200,
+  },
+  welcomeText: {
+    color: '#58595B',
+    fontWeight: 'bold',
+    fontSize: 24,
+    textAlign: 'center'
+  },
+  nameText: {
+    color: '#FF8200',
+    fontWeight: 'bold',
+    fontSize: 24,
+    textAlign: 'center'
+  },
+  formText: {
+    textAlign: 'center',
+    padding: 20,
+    marginTop: 100,
   }
 });
