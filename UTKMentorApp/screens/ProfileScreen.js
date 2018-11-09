@@ -13,7 +13,7 @@ import {
   Keyboard
 } from 'react-native';
 
-import * as Progress from 'react-native-progress';
+import { SearchableFlatList } from "react-native-searchable-list";
 import Amplify, { Auth, API } from 'aws-amplify';
 
 export default class Profile extends Component {
@@ -24,8 +24,7 @@ export default class Profile extends Component {
     form_data: {},
     goals: {},
     mentor: '',
-    parings: [],
-
+    parings: []
   }
 
   async getData() {
@@ -71,20 +70,28 @@ export default class Profile extends Component {
       <ScrollView style={styles.container}>
         <View style={styles.imageBlock}>
           <View style={styles.imageContainer}>
-            <Image
-              style={styles.image}
-              source={require('../assets/face.png')}
-              />
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('Individual')}>
+              <Image
+                style={styles.image}
+                source={require('../assets/face.png')}
+                />
+            </TouchableHighlight>
             <Text>{this.state.name}</Text>
           </View>
           <View style={styles.imageContainer}>
-            <Image
-              style={styles.image}
-              source={require('../assets/mentor.png')}
-              />
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('Individual')}>
+              <Image
+                style={styles.image}
+                source={require('../assets/mentor.png')}
+                />
+            </TouchableHighlight>
             <Text>?</Text>
           </View>
         </View>
+        <Button
+          onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}
+          title="Search People"
+          />
         <View style={styles.bio}>
           <Text style={styles.baseText}>
             <Text style={styles.aboutTitle}>About You{"\n"}</Text>

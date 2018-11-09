@@ -27,7 +27,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "entorpp-20181005182310-deployment",
-					"S3Key": "amplify-builds/dynamoLambda-1540861416-latest-build.zip"
+					"S3Key": "amplify-builds/dynamoLambda-1541709897-latest-build.zip"
 				}
 			}
 		},
