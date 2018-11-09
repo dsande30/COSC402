@@ -37,6 +37,10 @@ export default class Profile extends Component {
     this.pairings = []
   }
 
+  handleOnNavigateBack = () => {
+    this.componentDidMount();
+  }
+
   //Get user's dynamo data
   async getData() {
     const get_response = await API.get('dynamoAPI', '/items/' + this.user_id);
@@ -113,7 +117,7 @@ export default class Profile extends Component {
     })
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setUserAttributes();
   }
   render () {
@@ -176,7 +180,7 @@ export default class Profile extends Component {
                </Text>
        appButton = <TouchableOpacity
                       style={styles.btnSurvey}
-                      onPress={() => this.props.navigation.navigate('MentorForm', { user_id: this.state.user_id })}>
+                      onPress={() => this.props.navigation.navigate('MentorForm', { user_id: this.state.user_id, onNavigateBack: this.handleOnNavigateBack })}>
                       <Text style={styles.btnText}>Begin Survey</Text>
                    </TouchableOpacity>
       }
