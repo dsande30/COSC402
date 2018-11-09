@@ -117,12 +117,17 @@ export default class Profile extends Component {
     this.setUserAttributes();
   }
   render () {
-    let body;
-    let appButton;
+    let body, appButton, yourImage, viewYou, viewMentor;
 
     {/* HomeScreen either shows "start survey" or goals and stuff*/}
     if (this.state.role == 'Mentee') {
       if (Object.keys(this.state.form_data).length == 0) {
+        yourImage = <TouchableHighlight>
+                      <Image
+                        style={styles.image}
+                        source={require('../assets/andrey.jpeg')}
+                        />
+                    </TouchableHighlight>
         body = <Text style={styles.formText}>You have signed up as a
                <Text style={{fontWeight: 'bold'}}> Mentee</Text>.
                  To help us learn more about your interests and find your mentor,
@@ -135,6 +140,14 @@ export default class Profile extends Component {
                    </TouchableOpacity>
       }
       else {
+        yourImage = <TouchableHighlight
+                      onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
+                      <Image
+                        style={styles.image}
+                        source={require('../assets/andrey.jpeg')}
+                        />
+                    </TouchableHighlight>
+        viewYou = <Text>View</Text>
         body = <View style={styles.goals}>
                 <TouchableHighlight
                   onPress={() => this.props.navigation.navigate('Goals')}>
@@ -150,6 +163,12 @@ export default class Profile extends Component {
     }
     else if (this.state.role == 'Mentor') {
       if (Object.keys(this.state.form_data).length == 0) {
+        yourImage = <TouchableHighlight>
+                      <Image
+                        style={styles.image}
+                        source={require('../assets/andrey.jpeg')}
+                        />
+                    </TouchableHighlight>
         body = <Text style={styles.formText}>You have signed up as a
                <Text style={{fontWeight: 'bold'}}> Mentor</Text>.
                  To help us learn more about your interests and match you with mentees,
@@ -157,11 +176,19 @@ export default class Profile extends Component {
                </Text>
        appButton = <TouchableOpacity
                       style={styles.btnSurvey}
-                      onPress={() => this.props.navigation.navigate('MenteeForm', { user_id: this.state.user_id })}>
+                      onPress={() => this.props.navigation.navigate('MentorForm', { user_id: this.state.user_id })}>
                       <Text style={styles.btnText}>Begin Survey</Text>
                    </TouchableOpacity>
       }
       else {
+        yourImage = <TouchableHighlight
+                      onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
+                      <Image
+                        style={styles.image}
+                        source={require('../assets/andrey.jpeg')}
+                        />
+                    </TouchableHighlight>
+        viewYou = <Text>View</Text>
         body = <View style={styles.goals}>
                 <TouchableHighlight
                   onPress={() => this.props.navigation.navigate('Goals')}>
@@ -180,20 +207,23 @@ export default class Profile extends Component {
         <View style={styles.header}>
           <View style={styles.imageBlock}>
             <View style={styles.imageContainer}>
-              <TouchableHighlight onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
-                <Image
-                  style={styles.image}
-                  source={require('../assets/andrey.jpeg')}
-                  />
-              </TouchableHighlight>
+              {yourImage}
             </View>
             <View style={styles.imageContainer}>
-              <TouchableHighlight onPress={() => this.props.navigation.navigate('Individual')}>
+              <TouchableHighlight>
                 <Image
                   style={styles.image}
                   source={require('../assets/question-mark.png')}
                   />
               </TouchableHighlight>
+            </View>
+          </View>
+          <View style={styles.flexBlock}>
+            <View style={styles.flexContainer}>
+              {viewYou}
+            </View>
+            <View style={styles.flexContainer}>
+              {viewMentor}
             </View>
           </View>
           <Text style={styles.nameText}>{this.state.name}</Text>
@@ -228,7 +258,6 @@ const styles = StyleSheet.create({
     height: 100,
     width: 100,
     borderRadius: 50,
-    marginBottom: 20,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center'
@@ -246,6 +275,15 @@ const styles = StyleSheet.create({
     width: '50%',
     borderRadius: 20,
     padding: 10,
+  },
+  flexBlock: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  flexContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   btnText: {
     textAlign: 'center',
