@@ -45,7 +45,7 @@ export default class SignIn extends React.Component {
   fastSignIn() {
     let form_data = {};
     const email = 'akarnauc@vols.utk.edu'
-    const password = 'testy123'
+    const password = 'Testy123'
     Auth.signIn(email, password)
     .then(user => {
       this.setState({ user })
@@ -62,7 +62,7 @@ export default class SignIn extends React.Component {
           this.props.navigation.navigate('Home', {data: user});
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.response));
     })
     .catch(err => console.log('error signing in: ', err))
   }

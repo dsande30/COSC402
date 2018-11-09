@@ -49,6 +49,26 @@ const convertUrlType = (param, type) => {
 }
 
 /********************************
+ * HTTP Get ALL *
+ ********************************/
+app.get(path, function (req, res) {
+  var params = {
+    TableName: tableName,
+    Select: 'ALL_ATTRIBUTES',
+  };
+  dynamodb.scan(params, (err, data) => {
+    if (err) {
+      res.json({ error: 'Could not load items: ' + err.message });
+    }
+    res.json({
+      data: data.Items.map(item => {
+        return item;
+      })
+    });
+  });
+});
+
+/********************************
  * HTTP Get method for list objects *
  ********************************/
 
@@ -57,7 +77,7 @@ app.get(path + hashKeyPath, function(req, res) {
   condition[partitionKeyName] = {
     ComparisonOperator: 'EQ'
   }
-  
+
   if (userIdPresent && req.apiGateway) {
     condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
   } else {
@@ -71,7 +91,7 @@ app.get(path + hashKeyPath, function(req, res) {
   let queryParams = {
     TableName: tableName,
     KeyConditions: condition
-  } 
+  }
 
   dynamodb.query(queryParams, (err, data) => {
     if (err) {
@@ -130,7 +150,7 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 *************************************/
 
 app.put(path, function(req, res) {
-  
+
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
@@ -153,7 +173,7 @@ app.put(path, function(req, res) {
 *************************************/
 
 app.post(path, function(req, res) {
-  
+
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
