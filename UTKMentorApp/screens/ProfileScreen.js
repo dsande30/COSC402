@@ -24,7 +24,7 @@ export default class Profile extends Component {
     form_data: {},
     goals: {},
     mentor: '',
-    parings: []
+    pairings: []
   }
 
   async getData() {
@@ -111,7 +111,7 @@ export default class Profile extends Component {
       <ScrollView style={styles.container}>
         <View style={styles.imageBlock}>
           <View style={styles.imageContainer}>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('Individual')}>
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
               <Image
                 style={styles.image}
                 source={require('../assets/andrey.jpeg')}
