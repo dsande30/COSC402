@@ -129,7 +129,7 @@ export default class SignIn extends React.Component {
 
   render() {
     return (
-        <KeyboardAwareScrollView enableOnAndroid={true}
+        <KeyboardAwareScrollView style={styles.container} enableOnAndroid={true}
          enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
             <View style={styles.logoContainer}>
               <Image
@@ -203,20 +203,20 @@ export default class SignIn extends React.Component {
               </TouchableOpacity>
             </View>
         </KeyboardAwareScrollView>
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
   },
   logoContainer: {
     alignItems: 'center',
     flexGrow: 1,
-    marginTop: 50,
+    marginTop: 150,
   },
   logo: {
     width: 100,
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     width: '50%',
     borderRadius: 20,
     padding: 10,
-    marginTop: 10,
+    marginTop: 20,
   },
   btnSignUp: {
     alignItems: 'center',
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   signUpText: {
-    marginTop: 80,
+    marginTop: 50,
   },
   input: {
     height: 50,

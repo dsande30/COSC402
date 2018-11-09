@@ -24,7 +24,7 @@ export default class Profile extends Component {
     form_data: {},
     goals: {},
     mentor: '',
-    parings: []
+    pairings: []
   }
 
   async getData() {
@@ -70,7 +70,7 @@ export default class Profile extends Component {
       <ScrollView style={styles.container}>
         <View style={styles.imageBlock}>
           <View style={styles.imageContainer}>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('Individual')}>
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
               <Image
                 style={styles.image}
                 source={require('../assets/face.png')}
@@ -92,15 +92,6 @@ export default class Profile extends Component {
           onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}
           title="Search People"
           />
-        <View style={styles.bio}>
-          <Text style={styles.baseText}>
-            <Text style={styles.aboutTitle}>About You{"\n"}</Text>
-            <Text>Name: {this.state.name}{"\n"}</Text>
-            <Text>Gender: {this.state.form_data.gender}{"\n"}</Text>
-            <Text>Class: {this.state.form_data.class_year}{"\n"}</Text>
-            <Text>Major: {this.state.form_data.major}{"\n"}</Text>
-          </Text>
-        </View>
         <View style={styles.goals}>
           <TouchableHighlight onPress={() => this.props.navigation.navigate('Goals')}>
             <Text>Hi</Text>

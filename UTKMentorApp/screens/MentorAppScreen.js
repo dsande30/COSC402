@@ -258,7 +258,7 @@ export default class MentorApplication extends Component {
             'Travel',
             'Video Games'
           ]}
-          onSelection={(option) => this.setStateInterest(option.split(' ', 1)[0])
+          onSelection={(option) => this.setStateInterest(option)
           }
         />
 
