@@ -17,42 +17,96 @@ import { SearchableFlatList } from "react-native-searchable-list";
 import Amplify, { Auth, API } from 'aws-amplify';
 
 export default class Profile extends Component {
-  state = {
-    user_id: '',
-    name: '',
-    role: '',
-    form_data: {},
-    goals: {},
-    mentor: '',
-    parings: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      user_id: '',
+      name: '',
+      role: '',
+      form_data: {},
+      goals: {},
+      mentor: '',
+      pairings: []
+    }
+    this.user_id = ''
+    this.name = ''
+    this.role = ''
+    this.form_data = {}
+    this.goals = {}
+    this.mentor = ''
+    this.pairings = []
   }
 
+  handleOnNavigateBack = () => {
+    this.componentDidMount();
+  }
+
+  //Get user's dynamo data
   async getData() {
-    const get_response = await API.get('dynamoAPI', '/items/' + this.state.user_id);
+    const get_response = await API.get('dynamoAPI', '/items/' + this.user_id);
     return get_response;
   }
 
   async getUser() {
-    const info = await Auth.currentAuthenticatedUser()
-    return info
+    const info = await Auth.currentAuthenticatedUser();
+    return info;
   }
 
   setData() {
     this.getData()
-    .then((rv) => this.setState({
-      form_data: rv[0].form_data,
-      goals: rv[0].goals,
-      mentor: rv[0].mentor,
-      pairings: rv[0].pairings
-    }))
+    .then((rv) =>
+      {
+        console.log('setting dynamo data')
+        this.form_data = rv[0].form_data
+        this.goals = rv[0].goals
+        this.mentor = rv[0].mentor
+        this.pairings = rv[0].pairings
+      }
+    )
   }
 
   setUserAttributes() {
-    this.getUser().then((data) => this.setState({
-      user_id: data.attributes.email,
-      name: data.attributes.name,
-      role: data.attributes['custom:role']
-    }))
+    this.getUser()
+    .then((data) =>
+    {
+      console.log('setting user data')
+      this.user_id = data.attributes.email
+      this.name = data.attributes.name
+      this.role = data.attributes['custom:role']
+      this.getData()
+      .then((rv) => {
+        console.log('setting dynamo data')
+        console.log(rv)
+        this.setState({
+          user_id: this.user_id,
+          name: this.name,
+          role: this.role,
+          form_data: rv[0].form_data,
+          goals: rv[0].goals,
+          mentor: rv[0].mentor,
+          pairings: rv[0].pairings
+        }, function () { console.log('set that state')})
+      })
+    })
+  }
+
+  signOut() {
+    Auth.signOut()
+      .then(data => {
+        console.log('succesful sign out: ', data)
+        this.props.navigation.navigate('SignIn')
+      })
+      .catch(err => console.log(err));
+  }
+
+  onChangeText(key, value) {
+    this.setState({
+      [key]: value
+    })
+  }
+
+  getApplication(screenName) {
+    this.props.navigation.navigate(screenName)
   }
 
   setStateHelper(key, value) {
@@ -63,49 +117,126 @@ export default class Profile extends Component {
     })
   }
 
-  render () {
+  componentDidMount() {
     this.setUserAttributes();
-    this.setData();
+  }
+  render () {
+    let body, appButton, yourImage, viewYou, viewMentor;
+
+    {/* HomeScreen either shows "start survey" or goals and stuff*/}
+    if (this.state.role == 'Mentee') {
+      if (Object.keys(this.state.form_data).length == 0) {
+        yourImage = <TouchableHighlight>
+                      <Image
+                        style={styles.image}
+                        source={require('../assets/andrey.jpeg')}
+                        />
+                    </TouchableHighlight>
+        body = <Text style={styles.formText}>You have signed up as a
+               <Text style={{fontWeight: 'bold'}}> Mentee</Text>.
+                 To help us learn more about your interests and find your mentor,
+                 please fill out the survey below.
+               </Text>
+       appButton = <TouchableOpacity
+                      style={styles.btnSurvey}
+                      onPress={() => this.props.navigation.navigate('MenteeForm', { user_id: this.state.user_id, onNavigateBack: this.handleOnNavigateBack })}>
+                      <Text style={styles.btnText}>Begin Survey</Text>
+                   </TouchableOpacity>
+      }
+      else {
+        yourImage = <TouchableHighlight
+                      onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
+                      <Image
+                        style={styles.image}
+                        source={require('../assets/andrey.jpeg')}
+                        />
+                    </TouchableHighlight>
+        viewYou = <Text>View</Text>
+        body = <View style={styles.goals}>
+                <TouchableHighlight
+                  onPress={() => this.props.navigation.navigate('Goals')}>
+                  <Text>Hi</Text>
+                </TouchableHighlight>
+               </View>
+        appButton = <TouchableOpacity
+                      style={styles.btnSurvey}
+                      onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
+                      <Text style={styles.btnText}>Search Mentors</Text>
+                    </TouchableOpacity>
+      }
+    }
+    else if (this.state.role == 'Mentor') {
+      if (Object.keys(this.state.form_data).length == 0) {
+        yourImage = <TouchableHighlight>
+                      <Image
+                        style={styles.image}
+                        source={require('../assets/andrey.jpeg')}
+                        />
+                    </TouchableHighlight>
+        body = <Text style={styles.formText}>You have signed up as a
+               <Text style={{fontWeight: 'bold'}}> Mentor</Text>.
+                 To help us learn more about your interests and match you with mentees,
+                 please fill out the survey below.
+               </Text>
+       appButton = <TouchableOpacity
+                      style={styles.btnSurvey}
+                      onPress={() => this.props.navigation.navigate('MentorForm', { user_id: this.state.user_id, onNavigateBack: this.handleOnNavigateBack })}>
+                      <Text style={styles.btnText}>Begin Survey</Text>
+                   </TouchableOpacity>
+      }
+      else {
+        yourImage = <TouchableHighlight
+                      onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
+                      <Image
+                        style={styles.image}
+                        source={require('../assets/andrey.jpeg')}
+                        />
+                    </TouchableHighlight>
+        viewYou = <Text>View</Text>
+        body = <View style={styles.goals}>
+                <TouchableHighlight
+                  onPress={() => this.props.navigation.navigate('Goals')}>
+                  <Text>Hi</Text>
+                </TouchableHighlight>
+               </View>
+        appButton = <TouchableOpacity
+                      style={styles.btnSurvey}
+                      onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
+                      <Text style={styles.btnText}>Search Mentees</Text>
+                    </TouchableOpacity>
+      }
+    }
     return (
       <ScrollView style={styles.container}>
-        <View style={styles.imageBlock}>
-          <View style={styles.imageContainer}>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('Individual')}>
-              <Image
-                style={styles.image}
-                source={require('../assets/face.png')}
-                />
-            </TouchableHighlight>
-            <Text>{this.state.name}</Text>
+        <View style={styles.header}>
+          <View style={styles.imageBlock}>
+            <View style={styles.imageContainer}>
+              {yourImage}
+            </View>
+            <View style={styles.imageContainer}>
+              <TouchableHighlight>
+                <Image
+                  style={styles.image}
+                  source={require('../assets/question-mark.png')}
+                  />
+              </TouchableHighlight>
+            </View>
           </View>
-          <View style={styles.imageContainer}>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('Individual')}>
-              <Image
-                style={styles.image}
-                source={require('../assets/mentor.png')}
-                />
-            </TouchableHighlight>
-            <Text>?</Text>
+          <View style={styles.flexBlock}>
+            <View style={styles.flexContainer}>
+              {viewYou}
+            </View>
+            <View style={styles.flexContainer}>
+              {viewMentor}
+            </View>
           </View>
+          <Text style={styles.nameText}>{this.state.name}</Text>
         </View>
-        <Button
-          onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}
-          title="Search People"
-          />
-        <View style={styles.bio}>
-          <Text style={styles.baseText}>
-            <Text style={styles.aboutTitle}>About You{"\n"}</Text>
-            <Text>Name: {this.state.name}{"\n"}</Text>
-            <Text>Gender: {this.state.form_data.gender}{"\n"}</Text>
-            <Text>Class: {this.state.form_data.class_year}{"\n"}</Text>
-            <Text>Major: {this.state.form_data.major}{"\n"}</Text>
-          </Text>
+        <View style={styles.btnContainer}>
+          {appButton}
+          {body}
         </View>
-        <View style={styles.goals}>
-          <TouchableHighlight onPress={() => this.props.navigation.navigate('Goals')}>
-            <Text>Hi</Text>
-          </TouchableHighlight>
-        </View>
+        <Button style={styles.btnSignOut} title="Sign Out" onPress={this.signOut.bind(this)} />
       </ScrollView>
     );
   }
@@ -115,40 +246,64 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    marginBottom: 50
-  },
-  bio: {
-    marginTop: 25,
-  },
-  aboutTitle: {
-    textAlign: 'center'
-  },
-  baseText: {
-    textAlign: 'center'
   },
   imageBlock: {
     flexDirection: 'row',
     alignItems: 'center'
   },
+  header: {
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    padding: 10
+  },
   imageContainer: {
     flex: 1,
-    marginTop: 25,
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center'
   },
-  terms: {
-    marginTop: 22,
-    marginBottom: 22
-  },
   image: {
-    width: 100,
     height: 100,
-    marginBottom: 20,
+    width: 100,
+    borderRadius: 50,
+    borderColor: 'white',
+    borderWidth: 2,
   },
-  inputs: {
-    height: 50,
-    borderBottomWidth: 2,
-    borderBottomColor: '#FF8200',
-    margin: 10
+  btnSurvey: {
+    alignItems: 'center',
+    backgroundColor: '#58595B',
+    width: '50%',
+    borderRadius: 20,
+    padding: 10,
+  },
+  flexBlock: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  flexContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  btnText: {
+    textAlign: 'center',
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+  btnContainer: {
+    alignItems: 'center',
+  },
+  nameText: {
+    color: '#FF8200',
+    fontWeight: 'bold',
+    fontSize: 24,
+    textAlign: 'center'
+  },
+  formText: {
+    textAlign: 'center',
   }
 });

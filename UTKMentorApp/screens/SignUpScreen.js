@@ -38,18 +38,21 @@ export default class SignUp extends React.Component {
     confirm_error: '',
     phone_number: '',
     phone_error: '',
-    name: '',
-    name_error: '',
+    firstname: '',
+    firstname_error: '',
+    lastname: '',
+    lastname_error: '',
     role: 'Mentee',
     disabled: false
-  };
+  }
 
   valid_email = [ 'utk.edu', 'tennessee.edu', 'vols.utk.edu', 'live.utk.edu',
                   'mail.tennessee.edu', 'volmail.utk.edu']
 
   onChangeText(key, value) {
     this.setState({
-      [key]: value
+      [key]: value,
+      [key+'_error']: ''
     }, this.checkErrors())
   }
 
@@ -150,7 +153,8 @@ export default class SignUp extends React.Component {
     if (this.state.email_error == '' &&
         this.state.password_error == '' &&
         this.state.confirm_error == '' &&
-        this.state.name_error == '' &&
+        this.state.firstname_error == '' &&
+        this.state.lastname_error == '' &&
         this.state.phone_error == '')
     {
       console.log('enable button')
@@ -171,7 +175,7 @@ export default class SignUp extends React.Component {
       password: this.state.password,
       attributes: {
         email: this.state.email,
-        name: this.state.name,
+        name: this.state.firstname + ' ' + this.state.lastname,
         phone_number: '+1' + this.state.phone_number,
         'custom:role': this.state.role
       }
@@ -181,13 +185,20 @@ export default class SignUp extends React.Component {
       this.props.navigation.navigate('Verify', {
         username: this.state.email,
         password: this.state.password,
-        name: this.state.name,
-        phone_number: this.state.phone_number,
+        name: this.state.firstname + ' ' + this.state.lastname,
+        phone_number: '+1' + this.state.phone_number,
         role: this.state.role,
-        name: this.state.name
       })
     })
-    .catch(err => console.log("error signingup pt1" + err))
+    .catch(err => {
+      console.log('error signing in: ', err)
+      if (err.code == 'UsernameExistsException') {
+        console.log('User already exists');
+        this.setState({
+          ['email_error']: 'A user with this email already exists'
+        });
+      }
+    })
   }
 
   render() {
@@ -224,6 +235,10 @@ export default class SignUp extends React.Component {
                 keyboardType='email-address'
                 /*placeholder='password'*/
                 returnKeyType='next'
+                onBlur={() => {
+                  this.checkFull('email')
+                  this.checkErrors()
+                }}
                 onSubmitEditing={() => {
                   this.passwordInput.focus()
                   this.checkFull('email')
@@ -245,6 +260,10 @@ export default class SignUp extends React.Component {
                 keyboardAppearance='dark'
                 /*placeholder='password'*/
                 returnKeyType='next'
+                onBlur={() => {
+                  this.checkFull('password')
+                  this.checkErrors()
+                }}
                 onSubmitEditing={() => {
                   this.confirmInput.focus()
                   this.checkFull('password')
@@ -266,8 +285,12 @@ export default class SignUp extends React.Component {
                 keyboardAppearance='dark'
                 /*placeholder='password'*/
                 returnKeyType='next'
+                onBlur={() => {
+                  this.checkFull('confirm')
+                  this.checkErrors()
+                }}
                 onSubmitEditing={() => {
-                  this.nameInput.focus()
+                  this.firstnameInput.focus()
                   this.checkFull('confirm')
                   this.checkErrors()
                 }}
@@ -275,10 +298,10 @@ export default class SignUp extends React.Component {
               />
 
               <TextField
-                onChangeText={value => this.onChangeText('name', value)}
-                label='Name'
-                value={this.state.name}
-                error={this.state.name_error}
+                onChangeText={value => this.onChangeText('firstname', value)}
+                label='First Name'
+                value={this.state.firstname}
+                error={this.state.firstname_error}
                 /*style={styles.input}*/
                 secureTextEntry={false}
                 blurOnSubmit={false}
@@ -287,12 +310,41 @@ export default class SignUp extends React.Component {
                 keyboardAppearance='dark'
                 /*placeholder='password'*/
                 returnKeyType='next'
-                onSubmitEditing={() => {
-                  this.phoneInput.focus()
-                  this.checkFull('name')
+                onBlur={() => {
+                  this.checkFull('firstname')
                   this.checkErrors()
                 }}
-                ref={(input) => this.nameInput = input}
+                onSubmitEditing={() => {
+                  this.lastnameInput.focus()
+                  this.checkFull('firstname')
+                  this.checkErrors()
+                }}
+                ref={(input) => this.firstnameInput = input}
+              />
+
+              <TextField
+                onChangeText={value => this.onChangeText('lastname', value)}
+                label='Last Name'
+                value={this.state.lastname}
+                error={this.state.lastname_error}
+                /*style={styles.input}*/
+                secureTextEntry={false}
+                blurOnSubmit={false}
+                tintColor='#FF8200'
+                underlineColorAndroid='transparent'
+                keyboardAppearance='dark'
+                /*placeholder='password'*/
+                returnKeyType='next'
+                onBlur={() => {
+                  this.checkFull('lastname')
+                  this.checkErrors()
+                }}
+                onSubmitEditing={() => {
+                  this.phoneInput.focus()
+                  this.checkFull('lastname')
+                  this.checkErrors()
+                }}
+                ref={(input) => this.lastnameInput = input}
               />
 
               <TextField
@@ -310,6 +362,10 @@ export default class SignUp extends React.Component {
                 keyboardType='number-pad'
                 /*placeholder='password'*/
                 returnKeyType='done'
+                onBlur={() => {
+                  this.checkFull('phone')
+                  this.checkErrors()
+                }}
                 onSubmitEditing={() => {
                   Keyboard.dismiss()
                   this.checkFull('phone')

@@ -56,7 +56,12 @@ export default class SignIn extends React.Component {
     return get_response;
   }
 
-  fastSignIn() {
+  async getJames() {
+    const get_response = await API.get('dynamoAPI', '/items/jcate6@vols.utk.edu');
+    return get_response;
+  }
+
+  fastMenteeSignIn() {
     let form_data = {};
     const email = 'akarnauc@vols.utk.edu'
     const password = 'Testy123'
@@ -73,7 +78,32 @@ export default class SignIn extends React.Component {
         }
         else {
           console.log('successful HOME sign in!');
-          this.props.navigation.navigate('Home', {data: user});
+          this.props.navigation.navigate('Profile', {data: user});
+        }
+      })
+      .catch((err) => console.log(err.response));
+    })
+    .catch(err => console.log('error signing in: ', err))
+  }
+
+  fastMentorSignIn() {
+    let form_data = {};
+    const email = 'jcate6@vols.utk.edu'
+    const password = 'Qq123456'
+    Auth.signIn(email, password)
+    .then(user => {
+      this.setState({ user })
+      this.getJames()
+      .then((rv) => {
+        result = rv[0];
+        form_data = result.form_data;
+        if (Object.keys(form_data).length !== 0) {
+          console.log('successful PROF sign in!');
+          this.props.navigation.navigate('Profile', { data: user });
+        }
+        else {
+          console.log('successful HOME sign in!');
+          this.props.navigation.navigate('Profile', {data: user});
         }
       })
       .catch((err) => console.log(err.response));
@@ -101,7 +131,7 @@ export default class SignIn extends React.Component {
         }
         else {
           console.log('successful HOME sign in!');
-          this.props.navigation.navigate('Home', {data: user});
+          this.props.navigation.navigate('Profile', {data: user});
         }
       })
       .catch((err) => console.log('err'));
@@ -194,8 +224,13 @@ export default class SignIn extends React.Component {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.btnSignUp}
-                onPress={this.fastSignIn.bind(this)}>
-                <Text style={styles.btnText}>Fast Sign In</Text>
+                onPress={this.fastMenteeSignIn.bind(this)}>
+                <Text style={styles.btnText}>Fast Mentee Sign In</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.btnSignUp}
+                onPress={this.fastMentorSignIn.bind(this)}>
+                <Text style={styles.btnText}>Fast Mentor Sign In</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.btnSignUp}
@@ -204,7 +239,7 @@ export default class SignIn extends React.Component {
               </TouchableOpacity>
             </View>
         </KeyboardAwareScrollView>
-    );
+    )
   }
 }
 
@@ -216,7 +251,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: 'center',
     flexGrow: 1,
-    marginTop: 50,
+    marginTop: 150,
   },
   logo: {
     width: 100,
@@ -240,7 +275,7 @@ const styles = StyleSheet.create({
     width: '50%',
     borderRadius: 20,
     padding: 10,
-    marginTop: 10,
+    marginTop: 20,
   },
   btnSignUp: {
     alignItems: 'center',
@@ -260,7 +295,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   signUpText: {
-    marginTop: 80,
+    marginTop: 50,
   },
   input: {
     height: 50,

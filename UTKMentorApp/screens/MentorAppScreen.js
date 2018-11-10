@@ -78,6 +78,7 @@ export default class MentorApplication extends Component {
       }
       getData()
       .then((rv) => {
+        console.log(rv);
         result = rv[0]
         user_data = result.user_data
         goals = result.goals
@@ -86,10 +87,11 @@ export default class MentorApplication extends Component {
         console.log("Done GETTING!");
         putData()
         .then((data) => {
-          this.props.navigation.navigate('Profile');
+          this.props.navigation.state.params.onNavigateBack()
+          this.props.navigation.goBack();
         });
       })
-      .catch(() => { console.log('2')});
+      .catch((err) => { console.log(err)});
     })
   }
 
@@ -172,6 +174,7 @@ export default class MentorApplication extends Component {
     let interests = [];
     let { navigation } = this.props;
     let user_id = navigation.getParam('user_id', 'NO-ID');
+    console.log(user_id)
     if (this.state.user_id == '') {
       this.setState({
         user_id: user_id
@@ -258,7 +261,7 @@ export default class MentorApplication extends Component {
             'Travel',
             'Video Games'
           ]}
-          onSelection={(option) => this.setStateInterest(option.split(' ', 1)[0])
+          onSelection={(option) => this.setStateInterest(option)
           }
         />
 
@@ -590,7 +593,6 @@ export default class MentorApplication extends Component {
             <Button
               onPress={() => {
                 this.setStateFinal('agree', true);
-                this.props.navigation.navigate('Home')
               }}
               title="Agree"
             />
