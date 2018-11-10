@@ -248,7 +248,7 @@ export default class MentorApplication extends Component {
             'Cooking / Baking',
             'Coops / Internships',
             'Crafting / DIY / Making',
-            'Entrepreneurship / Business',
+            'Entrepreneurship',
             'Fitness',
             'Hiking / Backpacking',
             'Movies / TV',

@@ -30,6 +30,10 @@ export default class SignIn extends React.Component {
     user: {}
   };
 
+  static navigationOptions = {
+    header: null
+  }
+
   onChangeText(key, value) {
     console.log(key);
     this.setState({
@@ -246,12 +250,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
   },
   logoContainer: {
     alignItems: 'center',
     flexGrow: 1,
-    marginTop: 150,
+    marginTop: 50
   },
   logo: {
     width: 100,
