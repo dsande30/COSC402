@@ -90,7 +90,8 @@ export default class MenteeApplication extends Component {
         console.log("Done GETTING!");
         putData()
         .then((data) => {
-          this.props.navigation.navigate('Profile');
+          this.props.navigation.state.params.onNavigateBack()
+          this.props.navigation.goBack();
         });
       })
       .catch(() => { console.log('2')});
@@ -311,7 +312,6 @@ export default class MenteeApplication extends Component {
                   <Button
                     onPress={() => {
                       this.setStateFinal('agree', true);
-                      this.props.navigation.navigate('Home')
                     }}
                     title="Agree"
                   />

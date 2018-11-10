@@ -139,7 +139,7 @@ export default class Profile extends Component {
                </Text>
        appButton = <TouchableOpacity
                       style={styles.btnSurvey}
-                      onPress={() => this.props.navigation.navigate('MenteeForm', { user_id: this.state.user_id })}>
+                      onPress={() => this.props.navigation.navigate('MenteeForm', { user_id: this.state.user_id, onNavigateBack: this.handleOnNavigateBack })}>
                       <Text style={styles.btnText}>Begin Survey</Text>
                    </TouchableOpacity>
       }
