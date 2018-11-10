@@ -3,8 +3,11 @@ import {
   View,
   Text,
   TextInput,
+  Picker,
   StyleSheet,
   TouchableOpacity,
+  Dimensions,
+  Platform,
   Button,
   ScrollView,
   Modal,
@@ -45,6 +48,17 @@ export default class MenteeApplication extends Component {
     }, function(newState) {
       console.log(this.state)
     })
+  }
+
+
+  onPressAgree = () => {
+    this.setStateFinal('agree', true);
+    console.log("Pressed Agree")
+  }
+
+  onPressCancel = () => {
+    this.setModalVisible(!this.state.visible)
+    console.log("Pressed Cancel")
   }
 
   setStateFinal(key, value) {
@@ -180,31 +194,61 @@ export default class MenteeApplication extends Component {
 
     return (
         <KeyboardAwareScrollView enableOnAndroid={true}
-          enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
+          enableAutoAutomaticScroll={(Platform.OS === 'ios')}
+          style={styles.container}>
           <KeyboardAvoidingView style={styles.container}  behavior="padding" enabled>
-            <Text>Class for this academic year?</Text>
+
+            <Text style={styles.questionText}>
+                  Class for this academic year?
+            </Text>
             <ModalSelector
               data={class_years}
               initValue="Select"
-              onChange={(option) => this.setStateHelper('class_year', option.key)} />
+              onChange={(option) => this.setStateHelper('class_year', option.key)}
+              backdropPressToClose={true}
+              optionStyle={styles.modalOptionStyle}
+              optionContainerStyle={styles.modalOptionContainer}
+              optionTextStyle={styles.modalOptionText}
+              overlayStyle={styles.modalBackground}
+              cancelStyle={styles.modalCancel}
+              cancelContainerStyle={styles.modalCancelContainer}
+              selectStyle={styles.modalButtonSelector}/>
 
-            <Text>Gender</Text>
+            <Text style={styles.questionText}>Gender</Text>
             <ModalSelector
               data={genders}
               initValue="Select"
-              onChange={(option) => this.setStateHelper('gender', option.key)} />
+              onChange={(option) => this.setStateHelper('gender', option.key)}
+              backdropPressToClose={true}
+              optionStyle={styles.modalOptionStyle}
+              optionContainerStyle={styles.modalOptionContainer}
+              optionTextStyle={styles.modalOptionText}
+              overlayStyle={styles.modalBackground}
+              cancelStyle={styles.modalCancel}
+              cancelContainerStyle={styles.modalCancelContainer}
+              selectStyle={styles.modalButtonSelector}/>
 
-            <Text>Major</Text>
+            <Text style={styles.questionText}>Major</Text>
             <ModalSelector
               data={majors}
               initValue="Select"
-              onChange={(option) => this.setStateHelper('major', option.key)} />
+              onChange={(option) => this.setStateHelper('major', option.key)}
+              backdropPressToClose={true}
+              optionStyle={styles.modalOptionStyle}
+              optionContainerStyle={styles.modalOptionContainer}
+              optionTextStyle={styles.modalOptionText}
+              overlayStyle={styles.modalBackground}
+              cancelStyle={styles.modalCancel}
+              cancelContainerStyle={styles.modalCancelContainer}
+              selectStyle={styles.modalButtonSelector}/>
 
             <TextField
               onChangeText={value => this.onChangeText('minors', value)}
               label='Minor(s)'
+              labelFontSize={28}
+              labelTextStyle={styles.inputText}
               value={this.state.minors}
-              /*style={styles.input}*/
+              style={styles.input}
               secureTextEntry={false}
               blurOnSubmit={false}
               tintColor='#FF8200'
@@ -212,54 +256,98 @@ export default class MenteeApplication extends Component {
               keyboardAppearance='dark'
               /*placeholder='password'*/
               returnKeyType='next'
+              onSubmitEditing={() => Keyboard.dismiss()}
             />
 
-            <Text>Are you interested in graduate or professional education?</Text>
+            <Text style={styles.questionText}>
+                Are you interested in graduate or professional education?
+            </Text>
             <ModalSelector
               data={prof_options}
               initValue="Select"
-              onChange={(option) => this.setStateHelper('grad_interested', option.key)} />
+              onChange={(option) => this.setStateHelper('grad_interested', option.key)}
+              backdropPressToClose={true}
+              optionStyle={styles.modalOptionStyle}
+              optionContainerStyle={styles.modalOptionContainer}
+              optionTextStyle={styles.modalOptionText}
+              overlayStyle={styles.modalBackground}
+              cancelStyle={styles.modalCancel}
+              cancelContainerStyle={styles.modalCancelContainer}
+              selectStyle={styles.modalButtonSelector}/>
 
-            <Text>What type of postsecondary education?</Text>
+            <Text style={styles.questionText}>
+                What type of postsecondary education?
+            </Text>
             <ModalSelector
               data={grad_schools}
               initValue="Select"
-              onChange={(option) => this.setStateHelper('grad_school', option.key)} />
+              onChange={(option) => this.setStateHelper('grad_school', option.key)}
+              backdropPressToClose={true}
+              optionStyle={styles.modalOptionStyle}
+              optionContainerStyle={styles.modalOptionContainer}
+              optionTextStyle={styles.modalOptionText}
+              overlayStyle={styles.modalBackground}
+              cancelStyle={styles.modalCancel}
+              cancelContainerStyle={styles.modalCancelContainer}
+              selectStyle={styles.modalButtonSelector}/>
 
-            <Text>Are you interested in research at UT?</Text>
+            <Text style={styles.questionText}>
+                Are you interested in research at UT?
+            </Text>
             <ModalSelector
               data={research_involvement}
-              initValue="No"
-              onChange={(option) => this.setStateHelper('research', option.key)} />
+              initValue="Select"
+              onChange={(option) => this.setStateHelper('research', option.key)}
+              backdropPressToClose={true}
+              optionStyle={styles.modalOptionStyle}
+              optionContainerStyle={styles.modalOptionContainer}
+              optionTextStyle={styles.modalOptionText}
+              overlayStyle={styles.modalBackground}
+              cancelStyle={styles.modalCancel}
+              cancelContainerStyle={styles.modalCancelContainer}
+              selectStyle={styles.modalButtonSelector}/>
 
-            <Text>Are you in an honors program? (CHP, Engineering Honors, etc)</Text>
+            <Text style={styles.questionText}>
+                Are you in an honors program? (CHP, Engineering Honors, etc)
+            </Text>
             <ModalSelector
               data={in_honors}
-              initValue="No"
-              onChange={(option) => this.setStateHelper('honors', option.key)} />
+              initValue="Select"
+              onChange={(option) => this.setStateHelper('honors', option.key)}
+              backdropPressToClose={true}
+              optionStyle={styles.modalOptionStyle}
+              optionContainerStyle={styles.modalOptionContainer}
+              optionTextStyle={styles.modalOptionText}
+              overlayStyle={styles.modalBackground}
+              cancelStyle={styles.modalCancel}
+              cancelContainerStyle={styles.modalCancelContainer}
+              selectStyle={styles.modalButtonSelector}/>
 
-            <Text>What are your interest?</Text>
-            <MultipleChoice
-              options={[
-                'Cooking / Baking',
-                'Coops / Internships',
-                'Crafting / DIY / Making',
-                'Entrepreneurship',
-                'Fitness',
-                'Hiking / Backpacking',
-                'Movies / TV',
-                'Music',
-                'Politics',
-                'Research',
-                'Social Media',
-                'Sports',
-                'Sustainability',
-                'Travel',
-                'Video Games'
-              ]}
-              onSelection={(option) => this.setStateInterest(option)
-              }
-            />
+            <Text style={styles.questionText}>
+                Select some of your interests:
+            </Text>
+            <View style={styles.choiceContainer}>
+                <MultipleChoice
+                  options={[
+                    'Cooking / Baking',
+                    'Coops / Internships',
+                    'Crafting / DIY / Making',
+                    'Entrepreneurship',
+                    'Fitness',
+                    'Hiking / Backpacking',
+                    'Movies / TV',
+                    'Music',
+                    'Politics',
+                    'Research',
+                    'Social Media',
+                    'Sports',
+                    'Sustainability',
+                    'Travel',
+                    'Video Games'
+                  ]}
+                  onSelection={(option) => this.setStateInterest(option.split(' ', 1)[0])}
+                />
+            </View>
 
             <TextField
               onChangeText={value => this.setStateHelper('weekend', value)}
@@ -281,7 +369,7 @@ export default class MenteeApplication extends Component {
               label='What is your dream job?'
               value={this.state.weekend}
               multiline={true}
-              /*style={styles.input}*/
+              style={styles.input}
               secureTextEntry={false}
               blurOnSubmit={false}
               tintColor='#FF8200'
@@ -296,6 +384,7 @@ export default class MenteeApplication extends Component {
               onPress={() => {
                 this.setState({ visible: true });
               }}
+              color='#ff8200'
               />
             <Modal
               animationType="slide"
@@ -309,23 +398,20 @@ export default class MenteeApplication extends Component {
                   <Text style={styles.termsText}>
                       {text}
                   </Text>
-                  <Button
-                    onPress={() => {
-                      this.setStateFinal('agree', true);
-                    }}
-                    title="Agree"
-                  />
-                  <Button
-                    onPress={() => {
-                      this.setModalVisible(!this.state.visible)
-                    }}
-                    title="Cancel"
-                  />
+                  <TouchableOpacity
+                    style={styles.termsButton}
+                    onPress={this.onPressAgree}>
+                    <Text style={styles.btnText}>Agree</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.termsButton}
+                    onPress={this.onPressCancel}>
+                    <Text style={styles.btnText}>Cancel</Text>
+                  </TouchableOpacity>
               </ScrollView>
             </View>
           </Modal>
           <Text>I agree to the terms and conditions.</Text>
-
         </KeyboardAvoidingView>
       </KeyboardAwareScrollView>
     );
@@ -336,19 +422,89 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    marginBottom: 50
+    marginBottom: 50,
+    padding: 10
   },
   terms: {
     marginTop: 22,
     marginBottom: 22
   },
   inputs: {
+    alignSelf: 'center',
     height: 50,
     borderBottomWidth: 2,
     borderBottomColor: '#FF8200',
     margin: 10
   },
+  inputText: {
+    // why does this not work?
+    justifyContent: 'center',
+  },
   termsText: {
       padding: 10
+  },
+  questionText: {
+      fontWeight: 'bold',
+      fontSize: 24,
+      alignSelf: 'center',
+      padding: 10,
+  },
+  modalBackground: {
+      flex: 3,
+      alignSelf: 'flex-end',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+  },
+  modalOptionText: {
+    fontSize: 20,
+  },
+  modalOptionStyle: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderBottomColor: 'black',
+  },
+  modalOptionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignSelf: 'flex-end',
+  },
+  modalCancel: {
+    alignItems: 'center',
+  },
+  modalCancelContainer: {
+      //HACK I know this is bad
+      position: 'absolute',
+      top: Dimensions.get('window').height - 60,
+      paddingTop: 10,
+      height: 60,
+      width: 100,
+      alignSelf: 'center',
+  },
+  modalButtonSelector: {
+      justifyContent: 'flex-start',
+      alignSelf: 'center'
+  },
+  choiceContainer: {
+      width: Dimensions.get('window').width / 2,
+      borderWidth: 3,
+      borderColor: 'black',
+      padding: 5,
+      alignSelf: 'center',
+      marginTop: 10,
+      padding: 15,
+  },
+  termsButton: {
+      backgroundColor: '#58595B',
+      width: '50%',
+      borderRadius: 20,
+      padding: 10,
+      alignSelf: 'center',
+      marginBottom: 10,
+  },
+  btnText: {
+      textAlign: 'center',
+      color: '#FFF',
+      fontWeight: 'bold',
   }
 });

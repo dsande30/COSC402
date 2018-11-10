@@ -163,8 +163,9 @@ export default class SignIn extends React.Component {
 
   render() {
     return (
-        <KeyboardAwareScrollView style={styles.container} enableOnAndroid={true}
-         enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
+        <KeyboardAwareScrollView enableOnAndroid={true}
+         enableAutoAutomaticScroll={(Platform.OS === 'ios')}
+         style={styles.container}>
             <View style={styles.logoContainer}>
               <Image
                 style={styles.logo}
