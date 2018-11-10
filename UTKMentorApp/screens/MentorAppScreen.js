@@ -63,6 +63,34 @@ export default class MentorApplication extends Component {
         return get_response;
       }
       async function putData() {
+        let goals = {
+          "completeGoals":
+            [
+              {
+                "description": "Fill out an application",
+                "due": "NULL",
+                "status": 1
+              }
+            ],
+          "incompleteGoals":
+          [
+            {
+              "description": "Search mentee profiles",
+              "due": "NULL",
+              "status": 0
+            },
+            {
+              "description": "Get paired with a mentee",
+              "due": "08/31/2019",
+              "status": 0
+            },
+            {
+              "description": "Meet with your mentee",
+              "due": "NULL",
+              "status": 0
+            }
+          ]
+        }
         let put_body = {
           body: {
             userid: user,

@@ -66,7 +66,6 @@ export default class MenteeApplication extends Component {
       [key]: value
     }, function(newState) {
       let user_data = {}
-      let goals = {}
       let pairings = []
       let mentor = false
       let form_data = {}
@@ -81,6 +80,34 @@ export default class MenteeApplication extends Component {
         return get_response;
       }
       async function putData() {
+        let goals = {
+          "completeGoals":
+            [
+              {
+                "description": "Fill out an application",
+                "due": "NULL",
+                "status": 1
+              }
+            ],
+          "incompleteGoals":
+          [
+            {
+              "description": "Search mentor profiles",
+              "due": "NULL",
+              "status": 0
+            },
+            {
+              "description": "Get paired with a mentor",
+              "due": "08/31/2019",
+              "status": 0
+            },
+            {
+              "description": "Meet with your mentor",
+              "due": "NULL",
+              "status": 0
+            }
+          ]
+        }
         let put_body = {
           body: {
             userid: user,
@@ -411,7 +438,6 @@ export default class MenteeApplication extends Component {
               </ScrollView>
             </View>
           </Modal>
-          <Text>I agree to the terms and conditions.</Text>
         </KeyboardAvoidingView>
       </KeyboardAwareScrollView>
     );
