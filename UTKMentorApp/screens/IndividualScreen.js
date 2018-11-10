@@ -17,6 +17,8 @@ import {
   KeyboardAwareScrollView
 } from 'react-native-keyboard-aware-scroll-view';
 import { ListItem } from 'react-native-elements'
+import { TextField } from 'react-native-material-textfield';
+
 
 import Amplify, { Auth, API } from 'aws-amplify';
 
@@ -143,6 +145,34 @@ export default class Individual extends Component {
             }
           </View>
         </View>
+
+        <TextField
+          label='My dream job'
+          value={navi.form_data.job}
+          /*style={styles.input}*/
+          secureTextEntry={false}
+          blurOnSubmit={false}
+          editable={false}
+          tintColor='#FF8200'
+          underlineColorAndroid='transparent'
+          multiline={true}
+          lineWidth='0'
+          /*placeholder='password'*/
+        />
+        <TextField
+          label='My typical weekend'
+          value={navi.form_data.weekend}
+          /*style={styles.input}*/
+          secureTextEntry={false}
+          blurOnSubmit={false}
+          editable={false}
+          tintColor='#FF8200'
+          underlineColorAndroid='transparent'
+          multiline={true}
+          lineWidth='0'
+          /*placeholder='password'*/
+        />
+
       </KeyboardAwareScrollView>
     )
   }
@@ -193,6 +223,7 @@ const styles = StyleSheet.create({
   interestText: {
     fontSize: 18,
     textAlign: 'center',
+    marginBottom: 5
   },
   bio: {
 
