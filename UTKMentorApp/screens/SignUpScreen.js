@@ -51,7 +51,8 @@ export default class SignUp extends React.Component {
 
   onChangeText(key, value) {
     this.setState({
-      [key]: value
+      [key]: value,
+      [key+'_error']: ''
     }, this.checkErrors())
   }
 
@@ -234,6 +235,10 @@ export default class SignUp extends React.Component {
                 keyboardType='email-address'
                 /*placeholder='password'*/
                 returnKeyType='next'
+                onBlur={() => {
+                  this.checkFull('email')
+                  this.checkErrors()
+                }}
                 onSubmitEditing={() => {
                   this.passwordInput.focus()
                   this.checkFull('email')
@@ -255,6 +260,10 @@ export default class SignUp extends React.Component {
                 keyboardAppearance='dark'
                 /*placeholder='password'*/
                 returnKeyType='next'
+                onBlur={() => {
+                  this.checkFull('password')
+                  this.checkErrors()
+                }}
                 onSubmitEditing={() => {
                   this.confirmInput.focus()
                   this.checkFull('password')
@@ -276,6 +285,10 @@ export default class SignUp extends React.Component {
                 keyboardAppearance='dark'
                 /*placeholder='password'*/
                 returnKeyType='next'
+                onBlur={() => {
+                  this.checkFull('confirm')
+                  this.checkErrors()
+                }}
                 onSubmitEditing={() => {
                   this.firstnameInput.focus()
                   this.checkFull('confirm')
@@ -297,6 +310,10 @@ export default class SignUp extends React.Component {
                 keyboardAppearance='dark'
                 /*placeholder='password'*/
                 returnKeyType='next'
+                onBlur={() => {
+                  this.checkFull('firstname')
+                  this.checkErrors()
+                }}
                 onSubmitEditing={() => {
                   this.lastnameInput.focus()
                   this.checkFull('firstname')
@@ -318,6 +335,10 @@ export default class SignUp extends React.Component {
                 keyboardAppearance='dark'
                 /*placeholder='password'*/
                 returnKeyType='next'
+                onBlur={() => {
+                  this.checkFull('lastname')
+                  this.checkErrors()
+                }}
                 onSubmitEditing={() => {
                   this.phoneInput.focus()
                   this.checkFull('lastname')
@@ -341,6 +362,10 @@ export default class SignUp extends React.Component {
                 keyboardType='number-pad'
                 /*placeholder='password'*/
                 returnKeyType='done'
+                onBlur={() => {
+                  this.checkFull('phone')
+                  this.checkErrors()
+                }}
                 onSubmitEditing={() => {
                   Keyboard.dismiss()
                   this.checkFull('phone')
