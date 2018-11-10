@@ -50,6 +50,17 @@ export default class MenteeApplication extends Component {
     })
   }
 
+
+  onPressAgree = () => {
+    this.setStateFinal('agree', true);
+    console.log("Pressed Agree")
+  }
+
+  onPressCancel = () => {
+    this.setModalVisible(!this.state.visible)
+    console.log("Pressed Cancel")
+  }
+
   setStateFinal(key, value) {
     this.setState({
       [key]: value
@@ -373,6 +384,7 @@ export default class MenteeApplication extends Component {
               onPress={() => {
                 this.setState({ visible: true });
               }}
+              color='#ff8200'
               />
             <Modal
               animationType="slide"
@@ -386,23 +398,20 @@ export default class MenteeApplication extends Component {
                   <Text style={styles.termsText}>
                       {text}
                   </Text>
-                  <Button
-                    onPress={() => {
-                      this.setStateFinal('agree', true);
-                    }}
-                    title="Agree"
-                  />
-                  <Button
-                    onPress={() => {
-                      this.setModalVisible(!this.state.visible)
-                    }}
-                    title="Cancel"
-                  />
+                  <TouchableOpacity
+                    style={styles.termsButton}
+                    onPress={this.onPressAgree}>
+                    <Text style={styles.btnText}>Agree</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.termsButton}
+                    onPress={this.onPressCancel}>
+                    <Text style={styles.btnText}>Cancel</Text>
+                  </TouchableOpacity>
               </ScrollView>
             </View>
           </Modal>
           <Text>I agree to the terms and conditions.</Text>
-
         </KeyboardAvoidingView>
       </KeyboardAwareScrollView>
     );
@@ -482,5 +491,20 @@ const styles = StyleSheet.create({
       borderColor: 'black',
       padding: 5,
       alignSelf: 'center'
+      marginTop: 10,
+      padding: 15,
+  },
+  termsButton: {
+      backgroundColor: '#58595B',
+      width: '50%',
+      borderRadius: 20,
+      padding: 10,
+      alignSelf: 'center',
+      marginBottom: 10,
+  },
+  btnText: {
+      textAlign: 'center',
+      color: '#FFF',
+      fontWeight: 'bold',
   }
 });
