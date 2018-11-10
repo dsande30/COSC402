@@ -30,6 +30,7 @@ export default class Individual extends Component {
   render () {
     const { navigation } = this.props
     navi = navigation.getParam('data')
+    console.log('=========================== navi =======================')
     console.log(navi)
 
     const headList = []
