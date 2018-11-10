@@ -332,7 +332,7 @@ export default class MenteeApplication extends Component {
                     'Cooking / Baking',
                     'Coops / Internships',
                     'Crafting / DIY / Making',
-                    'Entrepreneurship / Business',
+                    'Entrepreneurship',
                     'Fitness',
                     'Hiking / Backpacking',
                     'Movies / TV',

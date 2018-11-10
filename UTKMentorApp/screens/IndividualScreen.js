@@ -30,7 +30,6 @@ export default class Individual extends Component {
   render () {
     const { navigation } = this.props
     navi = navigation.getParam('data')
-    console.log('=========================== navi =======================')
     console.log(navi)
 
     const headList = []
@@ -57,7 +56,7 @@ export default class Individual extends Component {
         })
       }
     }
-    if (navi.honors == 'Yes') {
+    if (navi.form_data.honors == 'Yes') {
       headList.push({
         title: 'In honors program',
         avatar: require('../assets/star.png')
@@ -66,9 +65,17 @@ export default class Individual extends Component {
     if (navi.form_data.grad_interested == 'Yes' &&
         navi.form_data.grad_school != 'None') {
       headList.push({
-        title: 'Pursuing '+ navi.form_data.grad_school,
+        title: 'Pursuing '+ navi.form_data.grad_school.toLowerCase(),
         avatar: require('../assets/cap.png')
       })
+    }
+
+    var year = ''
+    if (navi.form_data.class_year == 'Fifth Year+') {
+      year = 'Super Senior'
+    }
+    else {
+      year = navi.form_data.class_year
     }
 
     const interestList1 = []
@@ -101,10 +108,11 @@ export default class Individual extends Component {
           </View>
           <View style={styles.bio}>
             <Text style={styles.nameText}>{navi.name}</Text>
-            <Text style={styles.subText}>{navi.form_data.major}{', '}{navi.form_data.class_year}</Text>
+            <Text style={styles.subText}>{navi.form_data.major}{', '}{year}</Text>
             <Text style={styles.subText}>{navi.form_data.minors}</Text>
           </View>
         </View>
+        <View style={styles.headForm}>
         {
           headList.map((l, i) => (
             <ListItem
@@ -117,15 +125,19 @@ export default class Individual extends Component {
             />
           ))
         }
+        </View>
+        <View style={styles.line}></View>
         <Text style={styles.interestText}>Interested in</Text>
+        <View style={styles.line}></View>
         <View style={styles.flexBlock}>
           <View style={styles.flexContainer}>
            {
               interestList1.map((l, i) => (
                 <ListItem
-                  containerStyle={styles.listContainer}
+                  containerStyle={styles.intListContainer}
                   key={i}
                   title={l.title}
+                  titleStyle={styles.intListStyle}
                   avatarStyle={{backgroundColor:'#FFFFFF'}}
                   hideChevron
                 />
@@ -136,9 +148,10 @@ export default class Individual extends Component {
             {
               interestList2.map((l, i) => (
                 <ListItem
-                  containerStyle={styles.listContainer}
+                  containerStyle={styles.intListContainer}
                   key={i}
                   title={l.title}
+                  titleStyle={styles.intListStyle}
                   avatarStyle={{backgroundColor:'#FFFFFF'}}
                   hideChevron
                 />
@@ -146,34 +159,37 @@ export default class Individual extends Component {
             }
           </View>
         </View>
-
-        <TextField
-          label='My dream job'
-          value={navi.form_data.job}
-          /*style={styles.input}*/
-          secureTextEntry={false}
-          blurOnSubmit={false}
-          editable={false}
-          tintColor='#FF8200'
-          underlineColorAndroid='transparent'
-          multiline={true}
-          lineWidth='0'
-          /*placeholder='password'*/
-        />
-        <TextField
-          label='My typical weekend'
-          value={navi.form_data.weekend}
-          /*style={styles.input}*/
-          secureTextEntry={false}
-          blurOnSubmit={false}
-          editable={false}
-          tintColor='#FF8200'
-          underlineColorAndroid='transparent'
-          multiline={true}
-          lineWidth='0'
-          /*placeholder='password'*/
-        />
-
+        <View style={styles.line}></View>
+        <View style={styles.form}>
+          <TextField
+            label='My dream job'
+            labelFontSize='16'
+            value={navi.form_data.job}
+            /*style={styles.input}*/
+            secureTextEntry={false}
+            blurOnSubmit={false}
+            editable={false}
+            baseColor='#E65933'
+            underlineColorAndroid='transparent'
+            multiline={true}
+            lineWidth='0'
+            /*placeholder='password'*/
+          />
+          <TextField
+            label='My typical weekend'
+            labelFontSize='16'
+            value={navi.form_data.weekend}
+            /*style={styles.input}*/
+            secureTextEntry={false}
+            blurOnSubmit={false}
+            editable={false}
+            baseColor='#E65933'
+            underlineColorAndroid='transparent'
+            multiline={true}
+            lineWidth='0'
+            /*placeholder='password'*/
+          />
+        </View>
       </KeyboardAwareScrollView>
     )
   }
@@ -182,6 +198,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    color: '#58595B'
   },
   imageContainer: {
     height: 120,
@@ -220,11 +237,22 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     borderBottomColor: 'transparent',
+    height: 44
+  },
+  intListContainer: {
+    borderBottomColor: 'transparent',
+    height: 40
   },
   interestText: {
     fontSize: 18,
+    fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 5
+    marginBottom: 5,
+    color: '#E65933'
+
+  },
+  intListStyle: {
+    fontSize: 15,
   },
   bio: {
 
@@ -254,7 +282,17 @@ const styles = StyleSheet.create({
   line: {
     borderBottomColor: '#888888',
     borderBottomWidth: 1,
-    marginLeft: '10%',
-    marginRight: '10%',
+    marginTop: 5,
+    marginBottom: 10,
+    marginLeft: '5%',
+    marginRight: '5%',
+  },
+  form: {
+    paddingLeft: '5%',
+    paddingRight: '5%',
+  },
+  headForm: {
+    paddingLeft: '2.5%',
+    paddingRight: '2.5%',
   }
 });
