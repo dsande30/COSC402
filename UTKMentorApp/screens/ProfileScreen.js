@@ -7,14 +7,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   Button,
+  FlatList,
   ScrollView,
   Modal,
   TouchableHighlight,
   Keyboard
 } from 'react-native';
 
-import { SearchableFlatList } from "react-native-searchable-list";
 import Amplify, { Auth, API } from 'aws-amplify';
+import { List, Avatar, ListItem, SearchBar } from 'react-native-elements';
 
 export default class Profile extends Component {
   constructor(props) {
@@ -26,7 +27,8 @@ export default class Profile extends Component {
       form_data: {},
       goals: {},
       mentor: '',
-      pairings: []
+      pairings: [],
+      photo: ''
     }
     this.user_id = ''
     this.name = ''
@@ -73,10 +75,13 @@ export default class Profile extends Component {
     this.getUser()
     .then((data) =>
     {
+      let photo;
       console.log('setting user data')
       this.user_id = data.attributes.email
       this.name = data.attributes.name.split(' ')[0]
       this.role = data.attributes['custom:role']
+      if (this.user_id == 'jcate6@vols.utk.edu') photo = require('../assets/james.jpeg')
+      else photo = require('../assets/andrey.jpeg')
       this.getData()
       .then((rv) => {
         console.log('setting dynamo data')
@@ -85,6 +90,7 @@ export default class Profile extends Component {
           user_id: this.user_id,
           name: this.name,
           role: this.role,
+          photo: photo,
           form_data: rv[0].form_data,
           goals: rv[0].goals,
           mentor: rv[0].mentor,
@@ -93,6 +99,19 @@ export default class Profile extends Component {
       })
     })
   }
+
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: '86%',
+          backgroundColor: '#CED0CE',
+          marginLeft: '14%',
+        }}
+      />
+    );
+  };
 
   signOut() {
     Auth.signOut()
@@ -124,8 +143,42 @@ export default class Profile extends Component {
   componentDidMount() {
     this.setUserAttributes();
   }
+
+  getDiff(date) {
+    dt1 = new Date()
+    dt2 = new Date(date)
+    return Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate()) ) /(1000 * 60 * 60 * 24))
+  }
+
+  getDueDate(item) {
+    let body;
+
+    if (item.due != "NULL") {
+      const days = this.getDiff(item.due)
+      body =
+      <View style={styles.flexBlock}>
+        <View style={styles.textLeftContainer}>
+          <Text style={styles.subtitleText}>Due: {item.due} ({days} days)</Text>
+        </View>
+      </View>
+    }
+    return body;
+  }
+
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: '86%',
+          backgroundColor: '#CED0CE',
+          marginLeft: '14%',
+        }}
+      />
+    );
+  };
   render () {
-    let body, appButton, yourImage, viewYou, viewMentor;
+    let body, appButton, yourImage, mentorImage, viewYou, viewMentors, completeGoals, incompleteGoals;
 
     // HomeScreen either shows "start survey" or goals and stuff
     if (this.state.role == 'Mentee') {
@@ -133,9 +186,15 @@ export default class Profile extends Component {
         yourImage = <TouchableHighlight>
                       <Image
                         style={styles.image}
-                        source={require('../assets/andrey.jpeg')}
+                        source={this.state.photo}
                         />
                     </TouchableHighlight>
+        mentorImage = <TouchableHighlight>
+                        <Image
+                          style={styles.image}
+                          source={require('../assets/question-mark.png')}
+                          />
+                      </TouchableHighlight>
         body = <Text style={styles.formText}>Welcome! Thank you for creating an account as a
                <Text style={{fontWeight: 'bold'}}> Mentee</Text>.
                  To help us learn more about your interests and find your mentor,
@@ -149,24 +208,80 @@ export default class Profile extends Component {
       }
       else {
         yourImage = <TouchableHighlight
+                      underlayColor='transparent'
+                      activeOpacity={0.2}
                       onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
                       <Image
                         style={styles.image}
-                        source={require('../assets/andrey.jpeg')}
+                        source={this.state.photo}
                         />
                     </TouchableHighlight>
-        viewYou = <Text>View</Text>
-        body = <View style={styles.goals}>
-                <TouchableHighlight
-                  onPress={() => this.props.navigation.navigate('Goals')}>
-                  <Text>Hi</Text>
-                </TouchableHighlight>
-               </View>
-        // appButton = <TouchableOpacity
-        //               style={styles.btnSurvey}
-        //               onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
-        //               <Text style={styles.btnText}>Search Mentors</Text>
-        //             </TouchableOpacity>
+        mentorImage = <TouchableHighlight
+                        underlayColor='transparent'
+                        activeOpacity={0.2}
+                        onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
+                        <Image
+                          style={styles.image}
+                          source={require('../assets/question-mark.png')}
+                          />
+                      </TouchableHighlight>
+        viewYou = <TouchableOpacity
+                       style={styles.viewBtn}
+                       onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
+                       <Text style={styles.viewTxt}>View</Text>
+                    </TouchableOpacity>
+        viewMentors = <TouchableOpacity
+                       style={styles.viewMentorsBtn}
+                       onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
+                       <Text style={styles.viewTxt}>Browse Mentors</Text>
+                     </TouchableOpacity>
+        completeGoals = <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+                        <FlatList
+                          data={this.state.goals.completeGoals}
+                          renderItem={({ item }) => (
+                            <ListItem
+                            avatar={<Avatar
+                              size="small"
+                              rounded
+                              source={require('../assets/complete.png')}
+                              onPress={() => console.log("Works!")}
+                              activeOpacity={0.7}
+                              />}
+                            title={item.description}
+                            containerStyle={{ borderBottomWidth: 0 }}
+                            onPress={() => console.log('pressed goal')}
+                            hideChevron
+                            avatarStyle={{backgroundColor:'#FFFFFF'}}
+                            />
+                          )}
+                          keyExtractor={item => item.description}
+                          ItemSeparatorComponent={this.renderSeparator}
+                        />
+                      </List>
+        incompleteGoals = <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+                          <FlatList
+                            data={this.state.goals.incompleteGoals}
+                            renderItem={({ item }) => (
+                              <ListItem
+                              avatar={<Avatar
+                                size="small"
+                                rounded
+                                source={require('../assets/incomplete.png')}
+                                onPress={() => console.log("Works!")}
+                                activeOpacity={1}
+                                />}
+                              title={item.description}
+                              subtitle={this.getDueDate(item)}
+                              containerStyle={{ borderBottomWidth: 0 }}
+                              onPress={() => console.log('pressed goal')}
+                              hideChevron
+                              avatarStyle={{backgroundColor:'#FFFFFF'}}
+                              />
+                            )}
+                            keyExtractor={item => item.description}
+                            ItemSeparatorComponent={this.renderSeparator}
+                          />
+                        </List>
       }
     }
     else if (this.state.role == 'Mentor') {
@@ -174,14 +289,21 @@ export default class Profile extends Component {
         yourImage = <TouchableHighlight>
                       <Image
                         style={styles.image}
-                        source={require('../assets/andrey.jpeg')}
+                        source={this.state.photo}
                         />
                     </TouchableHighlight>
+        mentorImage = <TouchableHighlight>
+                        <Image
+                          style={styles.image}
+                          source={require('../assets/question-mark.png')}
+                          />
+                      </TouchableHighlight>
         body = <Text style={styles.formText}>You have signed up as a
                <Text style={{fontWeight: 'bold'}}> Mentor</Text>.
                  To help us learn more about your interests and match you with mentees,
                  please fill out the survey below.
                </Text>
+
        appButton = <TouchableOpacity
                       style={styles.btnSurvey}
                       onPress={() => this.props.navigation.navigate('MentorForm', { user_id: this.state.user_id, onNavigateBack: this.handleOnNavigateBack })}>
@@ -190,24 +312,80 @@ export default class Profile extends Component {
       }
       else {
         yourImage = <TouchableHighlight
+                      underlayColor='transparent'
+                      activeOpacity={0.2}
                       onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
                       <Image
                         style={styles.image}
-                        source={require('../assets/andrey.jpeg')}
+                        source={this.state.photo}
                         />
                     </TouchableHighlight>
-        viewYou = <Text>View</Text>
-        body = <View style={styles.goals}>
-                <TouchableHighlight
-                  onPress={() => this.props.navigation.navigate('Goals')}>
-                  <Text>Hi</Text>
-                </TouchableHighlight>
-               </View>
-        // appButton = <TouchableOpacity
-        //               style={styles.btnSurvey}
-        //               onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
-        //               <Text style={styles.btnText}>Search Mentees</Text>
-        //             </TouchableOpacity>
+        mentorImage = <TouchableHighlight
+                        underlayColor='transparent'
+                        activeOpacity={0.2}
+                        onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
+                        <Image
+                          style={styles.image}
+                          source={require('../assets/question-mark.png')}
+                          />
+                      </TouchableHighlight>
+        viewYou = <TouchableOpacity
+                       style={styles.viewBtn}
+                       onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
+                       <Text style={styles.viewTxt}>View</Text>
+                    </TouchableOpacity>
+        viewMentors = <TouchableOpacity
+                       style={styles.viewMentorsBtn}
+                       onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
+                       <Text style={styles.viewTxt}>Browse Mentees</Text>
+                     </TouchableOpacity>
+       completeGoals = <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+                       <FlatList
+                         data={this.state.goals.completeGoals}
+                         renderItem={({ item }) => (
+                           <ListItem
+                           avatar={<Avatar
+                             size="small"
+                             rounded
+                             source={require('../assets/complete.png')}
+                             onPress={() => console.log("Works!")}
+                             activeOpacity={0.7}
+                             />}
+                           title={item.description}
+                           containerStyle={{ borderBottomWidth: 0 }}
+                           onPress={() => console.log('pressed goal')}
+                           hideChevron
+                           avatarStyle={{backgroundColor:'#FFFFFF'}}
+                           />
+                         )}
+                         keyExtractor={item => item.description}
+                         ItemSeparatorComponent={this.renderSeparator}
+                       />
+                     </List>
+       incompleteGoals = <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+                         <FlatList
+                           data={this.state.goals.incompleteGoals}
+                           renderItem={({ item }) => (
+                             <ListItem
+                             avatar={<Avatar
+                               size="small"
+                               rounded
+                               source={require('../assets/incomplete.png')}
+                               onPress={() => console.log("Works!")}
+                               activeOpacity={1}
+                               />}
+                             title={item.description}
+                             subtitle={this.getDueDate(item)}
+                             containerStyle={{ borderBottomWidth: 0 }}
+                             onPress={() => console.log('pressed goal')}
+                             hideChevron
+                             avatarStyle={{backgroundColor:'#FFFFFF'}}
+                             />
+                           )}
+                           keyExtractor={item => item.description}
+                           ItemSeparatorComponent={this.renderSeparator}
+                         />
+                       </List>
       }
     }
     return (
@@ -218,12 +396,7 @@ export default class Profile extends Component {
               {yourImage}
             </View>
             <View style={styles.imageContainer}>
-              <TouchableHighlight>
-                <Image
-                  style={styles.image}
-                  source={require('../assets/question-mark.png')}
-                  />
-              </TouchableHighlight>
+              {mentorImage}
             </View>
           </View>
           <View style={styles.flexBlock}>
@@ -231,11 +404,13 @@ export default class Profile extends Component {
               {viewYou}
             </View>
             <View style={styles.flexContainer}>
-              {viewMentor}
+              {viewMentors}
             </View>
           </View>
-          <Text style={styles.nameText}>{this.state.name}</Text>
+          <Text style={styles.nameText}>{this.state.name + `'s`} Dashboard</Text>
         </View>
+        {completeGoals}
+        {incompleteGoals}
         <View style={styles.btnContainer}>
           {body}
           {appButton}
@@ -260,11 +435,10 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    backgroundColor: '#579584',
+    backgroundColor: '#00746F',
     justifyContent: 'center',
-    paddingTop: 20,
+    paddingTop: 50,
     paddingBottom: 10,
-    marginTop: 50
   },
   imageContainer: {
     flex: 1,
@@ -290,6 +464,25 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 50,
   },
+  viewBtn: {
+    alignItems: 'center',
+    textAlign: 'center',
+    borderRadius: 20,
+    marginTop: 5,
+    backgroundColor: 'rgba(240,237,227,0.6)',
+    width: '25%',
+  },
+  viewMentorsBtn: {
+    alignItems: 'center',
+    textAlign: 'center',
+    borderRadius: 20,
+    marginTop: 5,
+    backgroundColor: 'rgba(240,237,227,0.6)',
+    width: '65%',
+  },
+  viewTxt: {
+    color: 'black'
+  },
   btnSignOutContainer: {
     marginTop: 150,
   },
@@ -301,6 +494,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  textLeftContainer: {
+    flex: 1,
+    alignItems: 'left',
+    justifyContent: 'center',
+    paddingLeft: 11,
+  },
+  subtitleText: {
+    color: 'grey',
+    fontWeight: 'bold'
   },
   btnText: {
     textAlign: 'center',
@@ -318,7 +521,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 24,
     textAlign: 'center',
-    marginTop: 0,
+    marginTop: 10,
   },
   formText: {
     textAlign: 'center',
