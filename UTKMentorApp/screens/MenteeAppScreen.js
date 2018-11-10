@@ -9,15 +9,13 @@ import {
   ScrollView,
   Modal,
   TouchableHighlight,
-  Keyboard,
-  KeyboardAvoidingView,
+  Keyboard
 } from 'react-native';
 import ModalSelector from 'react-native-modal-selector';
 import MultipleChoice from 'rn-multiple-choice';
 import Amplify, { Auth, API } from 'aws-amplify';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { TextField } from 'react-native-material-textfield';
 import file from '../assets/TermsandConditions.json'
+console.log(file.text[0]);
 text = file.text.join('\n');
 
 export default class MenteeApplication extends Component {
@@ -118,6 +116,17 @@ export default class MenteeApplication extends Component {
     }
   }
 
+    onPressAgree = () => {
+      this.setStateFinal('agree', true);
+      this.props.navigation.navigate('Home')
+      console.log("Pressed Agree")
+    }
+
+    onPressCancel = () => {
+        this.setModalVisible(!this.state.visible)
+        console.log("Pressed Cancel")
+    }
+
   render () {
     let class_years = [
       {key: 'Freshman', label: 'Freshman Engineering Student'},
@@ -178,156 +187,138 @@ export default class MenteeApplication extends Component {
     }
 
     return (
-        <KeyboardAwareScrollView enableOnAndroid={true}
-          enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
-          <KeyboardAvoidingView style={styles.container}  behavior="padding" enabled>
-            <Text>Class for this academic year?</Text>
-            <ModalSelector
-              data={class_years}
-              initValue="Select"
-              onChange={(option) => this.setStateHelper('class_year', option.key)} />
+      <ScrollView style={styles.container}
+      keyboardShouldPersistTaps='always'>
+        <Text>Class for this academic year?</Text>
+        <ModalSelector
+          data={class_years}
+          initValue="Select"
+          onChange={(option) => this.setStateHelper('class_year', option.key)} />
 
-            <Text>Gender</Text>
-            <ModalSelector
-              data={genders}
-              initValue="Select"
-              onChange={(option) => this.setStateHelper('gender', option.key)} />
+        <Text>Gender</Text>
+        <ModalSelector
+          data={genders}
+          initValue="Select"
+          onChange={(option) => this.setStateHelper('gender', option.key)} />
 
-            <Text>Major</Text>
-            <ModalSelector
-              data={majors}
-              initValue="Select"
-              onChange={(option) => this.setStateHelper('major', option.key)} />
+        <Text>Major</Text>
+        <ModalSelector
+          data={majors}
+          initValue="Select"
+          onChange={(option) => this.setStateHelper('major', option.key)} />
 
-            <TextField
-              onChangeText={value => this.onChangeText('minors', value)}
-              label='Minor(s)'
-              value={this.state.minors}
-              /*style={styles.input}*/
-              secureTextEntry={false}
-              blurOnSubmit={false}
-              tintColor='#FF8200'
-              underlineColorAndroid='transparent'
-              keyboardAppearance='dark'
-              /*placeholder='password'*/
-              returnKeyType='next'
-            />
+        <Text>Minors</Text>
+        <TextInput
+          style={styles.inputs}
+          onChangeText={value => this.setStateHelper('minors', value)}
+          blurOnSubmit={true}
+          keyboardAppearance='dark'
+          returnKeyType='done'
+          underlineColorAndroid='transparent'
+          placeholder='Minors'
+        />
 
-            <Text>Are you interested in graduate or professional education?</Text>
-            <ModalSelector
-              data={prof_options}
-              initValue="Select"
-              onChange={(option) => this.setStateHelper('grad_interested', option.key)} />
+        <Text>Are you interested in graduate or professional education?</Text>
+        <ModalSelector
+          data={prof_options}
+          initValue="Select"
+          onChange={(option) => this.setStateHelper('grad_interested', option.key)} />
 
-            <Text>What type of postsecondary education?</Text>
-            <ModalSelector
-              data={grad_schools}
-              initValue="Select"
-              onChange={(option) => this.setStateHelper('grad_school', option.key)} />
+        <Text>What type of postsecondary education?</Text>
+        <ModalSelector
+          data={grad_schools}
+          initValue="Select"
+          onChange={(option) => this.setStateHelper('grad_school', option.key)} />
 
-            <Text>Are you interested in research at UT?</Text>
-            <ModalSelector
-              data={research_involvement}
-              initValue="No"
-              onChange={(option) => this.setStateHelper('research', option.key)} />
+        <Text>Are you interested in research at UT?</Text>
+        <ModalSelector
+          data={research_involvement}
+          initValue="No"
+          onChange={(option) => this.setStateHelper('research', option.key)} />
 
-            <Text>Are you in an honors program? (CHP, Engineering Honors, etc)</Text>
-            <ModalSelector
-              data={in_honors}
-              initValue="No"
-              onChange={(option) => this.setStateHelper('honors', option.key)} />
+        <Text>Are you in an honors program? (CHP, Engineering Honors, etc)</Text>
+        <ModalSelector
+          data={in_honors}
+          initValue="No"
+          onChange={(option) => this.setStateHelper('honors', option.key)} />
 
-            <Text>What are your interest?</Text>
-            <MultipleChoice
-              options={[
-                'Cooking / Baking',
-                'Coops / Internships',
-                'Crafting / DIY / Making',
-                'Entrepreneurship / Business',
-                'Fitness',
-                'Hiking / Backpacking',
-                'Movies / TV',
-                'Music',
-                'Politics',
-                'Research',
-                'Social Media',
-                'Sports',
-                'Sustainability',
-                'Travel',
-                'Video Games'
-              ]}
-              onSelection={(option) => this.setStateInterest(option.split(' ', 1)[0])
-              }
-            />
+        <Text>What are your interest?</Text>
+        <MultipleChoice
+          options={[
+            'Cooking / Baking',
+            'Coops / Internships',
+            'Crafting / DIY / Making',
+            'Entrepreneurship / Business',
+            'Fitness',
+            'Hiking / Backpacking',
+            'Movies / TV',
+            'Music',
+            'Politics',
+            'Research',
+            'Social Media',
+            'Sports',
+            'Sustainability',
+            'Travel',
+            'Video Games'
+          ]}
+          onSelection={(option) => this.setStateInterest(option.split(' ', 1)[0])
+          }
+        />
 
-            <TextField
-              onChangeText={value => this.setStateHelper('weekend', value)}
-              label='What is a typical weekend like?'
-              value={this.state.weekend}
-              multiline={true}
-              /*style={styles.input}*/
-              secureTextEntry={false}
-              blurOnSubmit={false}
-              tintColor='#FF8200'
-              underlineColorAndroid='transparent'
-              keyboardAppearance='dark'
-              /*placeholder='password'*/
-              returnKeyType='next'
-            />
+        <Text>What is a typical weekend like?</Text>
+        <TextInput
+          style={styles.inputs}
+          onChangeText={value => this.setStateHelper('weekend', value)}
+          blurOnSubmit={true}
+          keyboardAppearance='dark'
+          returnKeyType='done'
+          underlineColorAndroid='transparent'
+          placeholder='Weekend'
+        />
 
-            <TextField
-              onChangeText={value => this.setStateHelper('job', value)}
-              label='What is your dream job?'
-              value={this.state.weekend}
-              multiline={true}
-              /*style={styles.input}*/
-              secureTextEntry={false}
-              blurOnSubmit={false}
-              tintColor='#FF8200'
-              underlineColorAndroid='transparent'
-              keyboardAppearance='dark'
-              /*placeholder='password'*/
-              returnKeyType='next'
-            />
-
-            <Button
-              title="Terms and Conditions"
-              onPress={() => {
-                this.setState({ visible: true });
-              }}
-              />
-            <Modal
-              animationType="slide"
-              transparent={false}
-              visible={this.state.visible}
-              onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
-              }}>
-              <View style={styles.terms}>
-                <ScrollView>
-                  <Text style={styles.termsText}>
-                      {text}
-                  </Text>
-                  <Button
-                    onPress={() => {
-                      this.setStateFinal('agree', true);
-                      this.props.navigation.navigate('Home')
-                    }}
-                    title="Agree"
-                  />
-                  <Button
-                    onPress={() => {
-                      this.setModalVisible(!this.state.visible)
-                    }}
-                    title="Cancel"
-                  />
-              </ScrollView>
-            </View>
-          </Modal>
-          <Text>I agree to the terms and conditions.</Text>
-
-        </KeyboardAvoidingView>
-      </KeyboardAwareScrollView>
+        <Text>What is your dream job?</Text>
+        <TextInput
+          style={styles.inputs}
+          onChangeText={value => this.setStateHelper('job', value)}
+          blurOnSubmit={true}
+          keyboardAppearance='dark'
+          returnKeyType='done'
+          underlineColorAndroid='transparent'
+          placeholder='Dream Job'
+        />
+        <Button
+          title="Terms and Conditions"
+          onPress={() => {
+            this.setState({ visible: true });
+          }}
+          color='#ff8200'
+          />
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.visible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+          <View style={styles.terms}>
+            <ScrollView>
+              <Text style={styles.termsText}>
+                  {text}
+              </Text>
+              <TouchableOpacity
+                style={styles.termsButton}
+                onPress={this.onPressAgree}>
+                <Text style={styles.btnText}>Agree</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.termsButton}
+                onPress={this.onPressCancel}>
+                <Text style={styles.btnText}>Cancel</Text>
+              </TouchableOpacity>
+          </ScrollView>
+        </View>
+      </Modal>
+    </ScrollView>
     );
   }
 }
@@ -336,11 +327,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    marginBottom: 50
+    marginBottom: 50,
+    padding: 10,
   },
   terms: {
     marginTop: 22,
-    marginBottom: 22
+    marginBottom: 22,
   },
   inputs: {
     height: 50,
@@ -349,6 +341,20 @@ const styles = StyleSheet.create({
     margin: 10
   },
   termsText: {
-      padding: 10
+      marginTop: 10,
+      padding: 15,
+  },
+  termsButton: {
+      backgroundColor: '#58595B',
+      width: '50%',
+      borderRadius: 20,
+      padding: 10,
+      alignSelf: 'center',
+      marginBottom: 10,
+  },
+  btnText: {
+      textAlign: 'center',
+      color: '#FFF',
+      fontWeight: 'bold',
   }
 });
