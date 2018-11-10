@@ -130,7 +130,8 @@ export default class SignIn extends React.Component {
   render() {
     return (
         <KeyboardAwareScrollView enableOnAndroid={true}
-         enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
+         enableAutoAutomaticScroll={(Platform.OS === 'ios')}
+         style={styles.container}>
             <View style={styles.logoContainer}>
               <Image
                 style={styles.logo}
@@ -210,8 +211,7 @@ export default class SignIn extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
-    justifyContent: 'center',
+    backgroundColor: 'white',
   },
   logoContainer: {
     alignItems: 'center',
