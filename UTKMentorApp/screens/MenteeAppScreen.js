@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
       borderWidth: 3,
       borderColor: 'black',
       padding: 5,
-      alignSelf: 'center'
+      alignSelf: 'center',
       marginTop: 10,
       padding: 15,
   },
