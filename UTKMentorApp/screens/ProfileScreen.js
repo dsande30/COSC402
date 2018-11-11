@@ -426,11 +426,11 @@ export default class Profile extends Component {
         {completeGoals}
         {incompleteGoals}
         <View style={styles.btnContainer}>
-          {body}
-          {appButton}
-          <View style={styles.btnSignOutContainer}>
-            <Button color='#8D2048' style={styles.btnSignOut} title="Sign Out" onPress={this.signOut.bind(this)} />
-          </View>
+          <TouchableOpacity
+            style={styles.btnSignOut}
+            onPress={this.signOut.bind(this)}>
+            <Text style={styles.btnText}>Sign Out</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -521,14 +521,24 @@ const styles = StyleSheet.create({
   },
   btnText: {
     textAlign: 'center',
-    color: '#FFF',
-    fontSize: 18,
+    color: '#d50000',
     fontWeight: 'bold',
   },
   btnContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  btnSignOut: {
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#d50000',
+    borderWidth: 1,
+    height: 36,
+    width: '50%',
+    borderRadius: 20,
+    marginTop: 20,
+    marginBottom: 25
   },
   nameText: {
     color: 'white',

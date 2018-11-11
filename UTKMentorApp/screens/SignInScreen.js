@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     width: '50%',
     borderRadius: 20,
     padding: 10,
-    marginTop: 20
+    marginTop: 20,
   },
   btnText: {
     textAlign: 'center',
