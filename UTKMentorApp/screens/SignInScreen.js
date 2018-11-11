@@ -116,7 +116,15 @@ export default class SignIn extends React.Component {
   }
 
   fastMenteeForm() {
-    this.props.navigation.navigate('MenteeApp');
+    console.log('here')
+    this.props.navigation.navigate('MenteeForm');
+    console.log('there')
+  }
+
+  fastMentorForm() {
+    console.log('here')
+    this.props.navigation.navigate('MentorForm');
+    console.log('there')
   }
 
   signIn() {
@@ -175,6 +183,11 @@ export default class SignIn extends React.Component {
             </View>
             <KeyboardAvoidingView style={styles.form} behavior="padding" enabled>
               <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
                 onChangeText={value => this.onChangeText('email', value)}
                 label='Email'
                 value={this.state.email}
@@ -194,6 +207,10 @@ export default class SignIn extends React.Component {
                 }}
               />
               <TextField
+                inputContainerStyle={styles.inputContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
                 onChangeText={value => this.onChangeText('password', value)}
                 label='Password'
                 value={this.state.password}
@@ -240,6 +257,11 @@ export default class SignIn extends React.Component {
                 style={styles.btnSignUp}
                 onPress={this.fastMenteeForm.bind(this)}>
                 <Text style={styles.btnText}>Fast Mentee Form</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.btnSignUp}
+                onPress={this.fastMentorForm.bind(this)}>
+                <Text style={styles.btnText}>Fast Mentor Form</Text>
               </TouchableOpacity>
             </View>
         </KeyboardAwareScrollView>
@@ -306,5 +328,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#FF8200',
     margin: 10
+  },
+  inputText: {
+    paddingLeft: 12,
+  },
+  inputContainer: {
+    paddingLeft: 12,
+    backgroundColor: '#F6F6F6',
+  },
+  fieldContainer: {
+    marginBottom: 20
   }
 });
