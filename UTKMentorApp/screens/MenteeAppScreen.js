@@ -75,9 +75,12 @@ export default class MenteeApplication extends Component {
       let user = this.state['user_id']
       for (var data in this.state) {
         if (!(data in not_wanted)) {
-          const input = String.prototype.trim.call(this.state[data]);
-          if (input == '') {
-            input = "NULL";
+          const input = this.state[data];
+          if (data != 'interests') {
+            input = String.prototype.trim.call(input);
+            if (input == '') {
+              input = "NULL";
+            }
           }
           form_data[data] = input;
         }
