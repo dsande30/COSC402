@@ -16,7 +16,7 @@ import {
 
 import DatePicker from 'react-native-datepicker';
 import { TextField } from 'react-native-material-textfield';
-import { List, Avatar, ListItem, SearchBar } from 'react-native-elements';
+import { List, Icon, Avatar, ListItem, SearchBar } from 'react-native-elements';
 import Amplify, { Auth, API } from 'aws-amplify';
 
 export default class Goals extends Component {
@@ -59,6 +59,26 @@ export default class Goals extends Component {
     if (this.state.user_id == '') {
       this.setState(old_state);
     }
+  }
+
+  removeGoal() {
+    let goals = this.state.goals
+    let compGoals = goals.completeGoals;
+    let incompGoals = goals.incompleteGoals;
+    let target = this.state.curr_goal
+    let index, index2;
+
+    index = compGoals.indexOf(target);
+    index2 = incompGoals.indexOf(target);
+
+    if (index !== -1) compGoals.splice(index, 1);
+    else if (index2 !== -1) incompGoals.splice(index2, 1);
+
+    goals.completeGoals = compGoals;
+    goals.incompleteGoals = incompGoals;
+
+    this.setStateHelper('goals', goals);
+    this.setModalVisible('modal_edit_visible', !this.state.modal_edit_visible);
   }
 
   setStateHelper(key, value) {
@@ -158,13 +178,13 @@ export default class Goals extends Component {
       <View>
         <Modal
           animationType="slide"
-          transparent={false}
+          transparent={true}
           visible={this.state.modal_add_visible}
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
           }}>
-          <View style={{marginTop: 22}}>
-            <View>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
               <TextField
                 inputContainerStyle={styles.inputContainer}
                 containerStyle={styles.fieldContainer}
@@ -234,8 +254,8 @@ export default class Goals extends Component {
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
           }}>
-          <View style={{marginTop: 22}}>
-            <View>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
               <TextField
                 inputContainerStyle={styles.inputContainer}
                 containerStyle={styles.fieldContainer}
@@ -296,6 +316,10 @@ export default class Goals extends Component {
                 }}>
                 <Text>Cancel</Text>
               </TouchableHighlight>
+              <TouchableHighlight
+                onPress={this.removeGoal.bind(this)}>
+                <Text>Remove Goal</Text>
+              </TouchableHighlight>
             </View>
           </View>
         </Modal>
@@ -305,17 +329,17 @@ export default class Goals extends Component {
             data={this.state.goals.completeGoals}
             renderItem={({ item }) => (
               <ListItem
-                avatar={<Avatar
-                  size="small"
-                  rounded
-                  source={require('../assets/complete.png')}
-                  onPress={() => console.log("Works!")}
-                  activeOpacity={0.5}
-                  />}
+                  leftIcon={<Icon
+                            name={'checksquare'}
+                            size={30}
+                            onPress={() => this.removeGoal(item)}/>}
+                  rightIcon={<Icon
+                              name={'delete-forever'}
+                              size={30}
+                              onPress={() => this.removeGoal(item)}/>}
                   title={item.description}
                   containerStyle={{ borderBottomWidth: 0 }}
                   onPress={() => console.log('pressed goal')}
-                  hideChevron
                   avatarStyle={{backgroundColor:'#FFFFFF'}}
                   />
               )}
@@ -340,7 +364,6 @@ export default class Goals extends Component {
                     subtitle={this.getDueDate(item)}
                     containerStyle={{ borderBottomWidth: 0 }}
                     onPress={() => this.editGoal(item)}
-                    hideChevron
                     avatarStyle={{backgroundColor:'#FFFFFF'}}
                     />
                 )}
@@ -369,6 +392,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 0,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#00000080'
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20
   },
   header: {
     alignItems: 'center',

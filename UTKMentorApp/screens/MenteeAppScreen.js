@@ -98,7 +98,9 @@ export default class MenteeApplication extends Component {
               {
                 "description": "Fill out an application",
                 "due": "NULL",
-                "status": 1
+                "status": 1,
+                "creator": "EMP",
+                "reminder": "NULL"
               }
             ],
           "incompleteGoals":
@@ -106,17 +108,23 @@ export default class MenteeApplication extends Component {
             {
               "description": "Search mentor profiles",
               "due": "NULL",
-              "status": 0
+              "status": 0,
+              "creator": "EMP",
+              "reminder": "NULL"
             },
             {
               "description": "Get paired with a mentor",
               "due": "08/31/2019",
-              "status": 0
+              "status": 0,
+              "creator": "EMP",
+              "reminder": "NULL"
             },
             {
               "description": "Meet with your mentor",
               "due": "NULL",
-              "status": 0
+              "status": 0,
+              "creator": "EMP",
+              "reminder": "NULL"
             }
           ]
         }
