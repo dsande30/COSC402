@@ -466,7 +466,6 @@ const styles = StyleSheet.create({
   },
   textLeftContainer: {
     flex: 1,
-    alignItems: 'left',
     justifyContent: 'center',
     paddingLeft: 11,
   },
