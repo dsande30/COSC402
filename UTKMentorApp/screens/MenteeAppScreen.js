@@ -272,6 +272,13 @@ export default class MenteeApplication extends Component {
             <ModalSelector style={styles.selector}
               selectStyle={styles.modalSelectBtn}
               selectTextStyle={styles.modalSelectText}
+              selectedItemTextStyle={styles.selectedItemText}
+              optionTextStyle={styles.optionText}
+              optionContainerStyle={styles.optionContainer}
+              cancelContainerStyle={styles.cancelContainer}
+              animationType='fade'
+              cancelText='Cancel'
+              cancelTextStyle={styles.cancelTextStyle}
               data={class_years}
               initValue="Select"
               onChange={(option) => this.setStateHelper('class_year', option.key)} />
@@ -280,6 +287,13 @@ export default class MenteeApplication extends Component {
             <ModalSelector style={styles.selector}
               selectStyle={styles.modalSelectBtn}
               selectTextStyle={styles.modalSelectText}
+              selectedItemTextStyle={styles.selectedItemText}
+              optionTextStyle={styles.optionText}
+              optionContainerStyle={styles.optionContainer}
+              cancelContainerStyle={styles.cancelContainer}
+              animationType='fade'
+              cancelText='Cancel'
+              cancelTextStyle={styles.cancelTextStyle}
               data={genders}
               initValue="Select"
               onChange={(option) => this.setStateHelper('gender', option.key)} />
@@ -288,6 +302,13 @@ export default class MenteeApplication extends Component {
             <ModalSelector style={styles.selector}
               selectStyle={styles.modalSelectBtn}
               selectTextStyle={styles.modalSelectText}
+              selectedItemTextStyle={styles.selectedItemText}
+              optionTextStyle={styles.optionText}
+              optionContainerStyle={styles.optionContainer}
+              cancelContainerStyle={styles.cancelContainer}
+              animationType='fade'
+              cancelText='Cancel'
+              cancelTextStyle={styles.cancelTextStyle}
               data={majors}
               initValue="Select"
               onChange={(option) => this.setStateHelper('major', option.key)} />
@@ -301,7 +322,7 @@ export default class MenteeApplication extends Component {
               onChangeText={value => this.setStateHelper('minors', value)}
               label='Minor(s)?'
               value={this.state.minors}
-              title='Optional'
+              title='Optional (leave blank if none)'
               /*style={styles.input}*/
               secureTextEntry={false}
               blurOnSubmit={false}
@@ -324,6 +345,7 @@ export default class MenteeApplication extends Component {
           <ModalSelector style={styles.selector}
             selectStyle={styles.modalSelectBtn}
             selectTextStyle={styles.modalSelectText}
+            animationType='fade'
             data={prof_options}
             initValue="Select"
             onChange={(option) => this.setStateHelper('grad_interested', option.key)} />
@@ -332,6 +354,13 @@ export default class MenteeApplication extends Component {
           <ModalSelector style={styles.selector}
             selectStyle={styles.modalSelectBtn}
             selectTextStyle={styles.modalSelectText}
+            selectedItemTextStyle={styles.selectedItemText}
+            optionTextStyle={styles.optionText}
+            optionContainerStyle={styles.optionContainer}
+            cancelContainerStyle={styles.cancelContainer}
+            animationType='fade'
+            cancelText='Cancel'
+            cancelTextStyle={styles.cancelTextStyle}
             data={grad_schools}
             initValue="Select"
             onChange={(option) => this.setStateHelper('grad_school', option.key)} />
@@ -340,6 +369,13 @@ export default class MenteeApplication extends Component {
           <ModalSelector style={styles.selector}
             selectStyle={styles.modalSelectBtn}
             selectTextStyle={styles.modalSelectText}
+            selectedItemTextStyle={styles.selectedItemText}
+            optionTextStyle={styles.optionText}
+            optionContainerStyle={styles.optionContainer}
+            cancelContainerStyle={styles.cancelContainer}
+            animationType='fade'
+            cancelText='Cancel'
+            cancelTextStyle={styles.cancelTextStyle}
             data={research_involvement}
             initValue="Select"
             onChange={(option) => this.setStateHelper('research', option.key)} />
@@ -348,11 +384,18 @@ export default class MenteeApplication extends Component {
           <ModalSelector style={styles.selector}
             selectStyle={styles.modalSelectBtn}
             selectTextStyle={styles.modalSelectText}
+            selectedItemTextStyle={styles.selectedItemText}
+            optionTextStyle={styles.optionText}
+            optionContainerStyle={styles.optionContainer}
+            cancelContainerStyle={styles.cancelContainer}
+            animationType='fade'
+            cancelText='Cancel'
+            cancelTextStyle={styles.cancelTextStyle}
             data={in_honors}
             initValue="Select"
             onChange={(option) => this.setStateHelper('honors', option.key)} />
 
-          <Text style={styles.interestText}>What are your interest?</Text>
+          <Text style={styles.interestText}>What are your interest? (Select at least three)</Text>
           <MultipleChoice style={styles.multChoice}
             options={[
               'Cooking / Baking',
@@ -553,5 +596,27 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       color: '#FFF',
       fontWeight: 'bold',
+  },
+  sectionStyle: {
+    color: '#FF8200'
+  },
+  cancelTextStyle: {
+    color: '#d50000'
+  },
+  selectedItemText: {
+    color: '#FF8200',
+  },
+  optionText: {
+    color: '#58595B'
+  },
+  optionContainer: {
+    backgroundColor: '#FFFFFF',
+  },
+  cancelContainer: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
   }
 });
