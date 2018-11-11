@@ -16,6 +16,7 @@ import {
 
 import Amplify, { Auth, API } from 'aws-amplify';
 import { List, Avatar, ListItem, SearchBar } from 'react-native-elements';
+import { LinearGradient } from 'expo';
 
 export default class Profile extends Component {
   constructor(props) {
@@ -390,7 +391,10 @@ export default class Profile extends Component {
     }
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
+        <LinearGradient
+          style={styles.header}
+          colors={['#00746F', '#E65933']}
+          >
           <View style={styles.imageBlock}>
             <View style={styles.imageContainer}>
               {yourImage}
@@ -408,7 +412,7 @@ export default class Profile extends Component {
             </View>
           </View>
           <Text style={styles.nameText}>{this.state.name + `'s`} Dashboard</Text>
-        </View>
+        </LinearGradient>
         {completeGoals}
         {incompleteGoals}
         <View style={styles.btnContainer}>
