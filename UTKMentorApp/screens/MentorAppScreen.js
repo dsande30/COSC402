@@ -546,7 +546,7 @@ export default class MentorApplication extends Component {
               <TouchableOpacity
                 style={styles.cancelTermsButton}
                 onPress={this.onPressCancel}>
-                <Text style={styles.btnText}>Cancel</Text>
+                <Text style={styles.cancelTermsText}>Cancel</Text>
               </TouchableOpacity>
           </ScrollView>
         </View>
@@ -615,12 +615,20 @@ const styles = StyleSheet.create({
       marginBottom: 10,
   },
   cancelTermsButton: {
-      backgroundColor: '#d50000',
+      backgroundColor: '#FFFFFF',
       width: '50%',
       borderRadius: 20,
-      padding: 10,
+      justifyContent: 'center',
+      borderWidth: 1,
+      height: 36,
+      borderColor: '#d50000',
       alignSelf: 'center',
       marginBottom: 10,
+  },
+  cancelTermsText: {
+    color: '#d50000',
+    fontWeight: 'bold',
+    textAlign: 'center'
   },
   openTermsButton: {
       backgroundColor: '#FF8200',
