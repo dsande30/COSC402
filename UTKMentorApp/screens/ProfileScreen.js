@@ -236,6 +236,11 @@ export default class Profile extends Component {
                        onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
                        <Text style={styles.viewTxt}>Browse Mentors</Text>
                      </TouchableOpacity>
+        appButton = <TouchableOpacity
+                       style={styles.btnSurvey}
+                       onPress={() => this.props.navigation.navigate('Goals', { data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
+                       <Text style={styles.btnText}>Edit Goals</Text>
+                    </TouchableOpacity>
         completeGoals = <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
                         <FlatList
                           data={this.state.goals.completeGoals}
@@ -334,6 +339,11 @@ export default class Profile extends Component {
                        style={styles.viewBtn}
                        onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
                        <Text style={styles.viewTxt}>View</Text>
+                    </TouchableOpacity>
+        appButton = <TouchableOpacity
+                       style={styles.btnSurvey}
+                       onPress={() => this.props.navigation.navigate('Goals', { data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
+                       <Text style={styles.btnText}>Edit Goals</Text>
                     </TouchableOpacity>
         viewMentors = <TouchableOpacity
                        style={styles.viewMentorsBtn}
