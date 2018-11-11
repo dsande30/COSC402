@@ -60,10 +60,16 @@ export default class MentorApplication extends Component {
       let pairings = []
       let mentor = false
       let form_data = {}
+      let not_wanted = ['user_id', 'visible', 'disabled', 'job_error', 'weekend_error']
       let user = this.state['user_id']
       for (var data in this.state) {
-        if (data != 'visible' && data != 'user_id')
-          form_data[data] = this.state[data]
+        if (!(data in not_wanted)) {
+          const input = String.prototype.trim.call(this.state[data]);
+          if (input == '') {
+            input = "NULL";
+          }
+          form_data[data] = input;
+        }
       }
 
       async function getData() {
@@ -123,9 +129,11 @@ export default class MentorApplication extends Component {
         console.log("Done GETTING!");
         putData()
         .then((data) => {
+          console.log(data)
           this.props.navigation.state.params.onNavigateBack()
           this.props.navigation.goBack();
-        });
+        })
+        .catch((err) => console.log(err.response));
       })
       .catch((err) => { console.log(err)});
     })

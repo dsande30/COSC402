@@ -26,20 +26,23 @@ text = file.text.join('\n');
 export default class MenteeApplication extends Component {
   state = {
     user_id: '',
-    class_year: '0',
-    gender: '0',
-    major: '0',
-    minors: '0',
-    high_GPA: '0',
-    grad_interested: '0',
-    grad_school: '0',
-    research: '0',
-    honors: '0',
+    class_year: '',
+    gender: '',
+    major: '',
+    minors: '',
+    high_GPA: '',
+    grad_interested: '',
+    grad_school: '',
+    research: '',
+    honors: '',
     interests: ['EMP'],
-    weekend: '0',
-    job: '0',
+    weekend: '',
+    weekend_error: '',
+    job: '',
+    job_error: '',
     agree: false,
     visible: false,
+    disabled: true
   }
 
   setStateHelper(key, value) {
@@ -49,7 +52,6 @@ export default class MenteeApplication extends Component {
       console.log(this.state)
     })
   }
-
 
   onPressAgree = () => {
     this.setStateFinal('agree', true);
@@ -69,10 +71,16 @@ export default class MenteeApplication extends Component {
       let pairings = []
       let mentor = false
       let form_data = {}
+      let not_wanted = ['user_id', 'visible', 'disabled', 'job_error', 'weekend_error']
       let user = this.state['user_id']
       for (var data in this.state) {
-        if (data != 'visible' && data != 'user_id')
-          form_data[data] = this.state[data]
+        if (!(data in not_wanted)) {
+          const input = String.prototype.trim.call(this.state[data]);
+          if (input == '') {
+            input = "NULL";
+          }
+          form_data[data] = input;
+        }
       }
 
       async function getData() {
@@ -131,9 +139,11 @@ export default class MenteeApplication extends Component {
         console.log("Done GETTING!");
         putData()
         .then((data) => {
+          console.log(data)
           this.props.navigation.state.params.onNavigateBack()
           this.props.navigation.goBack();
-        });
+        })
+        .catch((err) => console.log(err.response))
       })
       .catch(() => { console.log('2')});
     })
@@ -156,6 +166,30 @@ export default class MenteeApplication extends Component {
       console.log("inserting " + value)
       this.setState({
         interests: [...this.state.interests, value]
+      })
+    }
+  }
+
+  checkErrors() {
+    if (this.state.weekend_error == '' &&
+        this.state.job_error == '')
+    {
+      console.log('enable button')
+      this.setState({
+        ['disabled']: false
+      })
+    } else {
+      console.log('disable button')
+      this.setState({
+        ['disabled']: true
+      })
+    }
+  }
+
+  checkFull(key) {
+    if (this.state[key] == '') {
+      this.setState({
+        [key+'_error']: 'Oops! You forgot this one'
       })
     }
   }
@@ -220,226 +254,209 @@ export default class MenteeApplication extends Component {
     }
 
     return (
-        <KeyboardAwareScrollView enableOnAndroid={true}
-          enableAutoAutomaticScroll={(Platform.OS === 'ios')}
-          style={styles.container}>
-          <KeyboardAvoidingView style={styles.container}  behavior="padding" enabled>
-
-            <Text style={styles.questionText}>
-                  Class for this academic year?
-            </Text>
-            <ModalSelector
+        <KeyboardAwareScrollView style={styles.container}>
+          <View style={styles.formContainer}>
+            <Text style={styles.modalText}>Class for this academic year?</Text>
+            <ModalSelector style={styles.selector}
+              selectStyle={styles.modalSelectBtn}
+              selectTextStyle={styles.modalSelectText}
               data={class_years}
               initValue="Select"
-              onChange={(option) => this.setStateHelper('class_year', option.key)}
-              backdropPressToClose={true}
-              optionStyle={styles.modalOptionStyle}
-              optionContainerStyle={styles.modalOptionContainer}
-              optionTextStyle={styles.modalOptionText}
-              overlayStyle={styles.modalBackground}
-              cancelStyle={styles.modalCancel}
-              cancelContainerStyle={styles.modalCancelContainer}
-              selectStyle={styles.modalButtonSelector}/>
+              onChange={(option) => this.setStateHelper('class_year', option.key)} />
 
-            <Text style={styles.questionText}>Gender</Text>
-            <ModalSelector
+            <Text style={styles.modalText}>Gender?</Text>
+            <ModalSelector style={styles.selector}
+              selectStyle={styles.modalSelectBtn}
+              selectTextStyle={styles.modalSelectText}
               data={genders}
               initValue="Select"
-              onChange={(option) => this.setStateHelper('gender', option.key)}
-              backdropPressToClose={true}
-              optionStyle={styles.modalOptionStyle}
-              optionContainerStyle={styles.modalOptionContainer}
-              optionTextStyle={styles.modalOptionText}
-              overlayStyle={styles.modalBackground}
-              cancelStyle={styles.modalCancel}
-              cancelContainerStyle={styles.modalCancelContainer}
-              selectStyle={styles.modalButtonSelector}/>
+              onChange={(option) => this.setStateHelper('gender', option.key)} />
 
-            <Text style={styles.questionText}>Major</Text>
-            <ModalSelector
+            <Text style={styles.modalText}>Major?</Text>
+            <ModalSelector style={styles.selector}
+              selectStyle={styles.modalSelectBtn}
+              selectTextStyle={styles.modalSelectText}
               data={majors}
               initValue="Select"
-              onChange={(option) => this.setStateHelper('major', option.key)}
-              backdropPressToClose={true}
-              optionStyle={styles.modalOptionStyle}
-              optionContainerStyle={styles.modalOptionContainer}
-              optionTextStyle={styles.modalOptionText}
-              overlayStyle={styles.modalBackground}
-              cancelStyle={styles.modalCancel}
-              cancelContainerStyle={styles.modalCancelContainer}
-              selectStyle={styles.modalButtonSelector}/>
+              onChange={(option) => this.setStateHelper('major', option.key)} />
 
             <TextField
-              onChangeText={value => this.onChangeText('minors', value)}
-              label='Minor(s)'
-              labelFontSize={28}
+              inputContainerStyle={styles.inputContainer}
+              containerStyle={styles.fieldContainer}
               labelTextStyle={styles.inputText}
+              titleTextStyle={styles.inputText}
+              affixTextStyle={styles.inputText}
+              onChangeText={value => this.setStateHelper('minors', value)}
+              label='Minor(s)?'
               value={this.state.minors}
-              style={styles.input}
-              secureTextEntry={false}
-              blurOnSubmit={false}
-              tintColor='#FF8200'
-              underlineColorAndroid='transparent'
-              keyboardAppearance='dark'
-              /*placeholder='password'*/
-              returnKeyType='next'
-              onSubmitEditing={() => Keyboard.dismiss()}
-            />
-
-            <Text style={styles.questionText}>
-                Are you interested in graduate or professional education?
-            </Text>
-            <ModalSelector
-              data={prof_options}
-              initValue="Select"
-              onChange={(option) => this.setStateHelper('grad_interested', option.key)}
-              backdropPressToClose={true}
-              optionStyle={styles.modalOptionStyle}
-              optionContainerStyle={styles.modalOptionContainer}
-              optionTextStyle={styles.modalOptionText}
-              overlayStyle={styles.modalBackground}
-              cancelStyle={styles.modalCancel}
-              cancelContainerStyle={styles.modalCancelContainer}
-              selectStyle={styles.modalButtonSelector}/>
-
-            <Text style={styles.questionText}>
-                What type of postsecondary education?
-            </Text>
-            <ModalSelector
-              data={grad_schools}
-              initValue="Select"
-              onChange={(option) => this.setStateHelper('grad_school', option.key)}
-              backdropPressToClose={true}
-              optionStyle={styles.modalOptionStyle}
-              optionContainerStyle={styles.modalOptionContainer}
-              optionTextStyle={styles.modalOptionText}
-              overlayStyle={styles.modalBackground}
-              cancelStyle={styles.modalCancel}
-              cancelContainerStyle={styles.modalCancelContainer}
-              selectStyle={styles.modalButtonSelector}/>
-
-            <Text style={styles.questionText}>
-                Are you interested in research at UT?
-            </Text>
-            <ModalSelector
-              data={research_involvement}
-              initValue="Select"
-              onChange={(option) => this.setStateHelper('research', option.key)}
-              backdropPressToClose={true}
-              optionStyle={styles.modalOptionStyle}
-              optionContainerStyle={styles.modalOptionContainer}
-              optionTextStyle={styles.modalOptionText}
-              overlayStyle={styles.modalBackground}
-              cancelStyle={styles.modalCancel}
-              cancelContainerStyle={styles.modalCancelContainer}
-              selectStyle={styles.modalButtonSelector}/>
-
-            <Text style={styles.questionText}>
-                Are you in an honors program? (CHP, Engineering Honors, etc)
-            </Text>
-            <ModalSelector
-              data={in_honors}
-              initValue="Select"
-              onChange={(option) => this.setStateHelper('honors', option.key)}
-              backdropPressToClose={true}
-              optionStyle={styles.modalOptionStyle}
-              optionContainerStyle={styles.modalOptionContainer}
-              optionTextStyle={styles.modalOptionText}
-              overlayStyle={styles.modalBackground}
-              cancelStyle={styles.modalCancel}
-              cancelContainerStyle={styles.modalCancelContainer}
-              selectStyle={styles.modalButtonSelector}/>
-
-            <Text style={styles.questionText}>
-                Select some of your interests:
-            </Text>
-            <View style={styles.choiceContainer}>
-                <MultipleChoice
-                  options={[
-                    'Cooking / Baking',
-                    'Coops / Internships',
-                    'Crafting / DIY / Making',
-                    'Entrepreneurship',
-                    'Fitness',
-                    'Hiking / Backpacking',
-                    'Movies / TV',
-                    'Music',
-                    'Politics',
-                    'Research',
-                    'Social Media',
-                    'Sports',
-                    'Sustainability',
-                    'Travel',
-                    'Video Games'
-                  ]}
-                  onSelection={(option) => this.setStateInterest(option.split(' ', 1)[0])}
-                />
-            </View>
-
-            <TextField
-              onChangeText={value => this.setStateHelper('weekend', value)}
-              label='What is a typical weekend like?'
-              value={this.state.weekend}
-              multiline={true}
+              title='Optional'
               /*style={styles.input}*/
               secureTextEntry={false}
               blurOnSubmit={false}
               tintColor='#FF8200'
               underlineColorAndroid='transparent'
               keyboardAppearance='dark'
+              keyboardType='email-address'
               /*placeholder='password'*/
-              returnKeyType='next'
-            />
-
-            <TextField
-              onChangeText={value => this.setStateHelper('job', value)}
-              label='What is your dream job?'
-              value={this.state.weekend}
-              multiline={true}
-              style={styles.input}
-              secureTextEntry={false}
-              blurOnSubmit={false}
-              tintColor='#FF8200'
-              underlineColorAndroid='transparent'
-              keyboardAppearance='dark'
-              /*placeholder='password'*/
-              returnKeyType='next'
-            />
-
-            <Button
-              title="Terms and Conditions"
-              onPress={() => {
-                this.setState({ visible: true });
+              returnKeyType='done'
+              onBlur={() => {
+                this.checkErrors()
               }}
-              color='#ff8200'
-              />
-            <Modal
-              animationType="slide"
-              transparent={false}
-              visible={this.state.visible}
-              onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
-              }}>
-              <View style={styles.terms}>
-                <ScrollView>
-                  <Text style={styles.termsText}>
-                      {text}
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.termsButton}
-                    onPress={this.onPressAgree}>
-                    <Text style={styles.btnText}>Agree</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.termsButton}
-                    onPress={this.onPressCancel}>
-                    <Text style={styles.btnText}>Cancel</Text>
-                  </TouchableOpacity>
-              </ScrollView>
-            </View>
-          </Modal>
-        </KeyboardAvoidingView>
-      </KeyboardAwareScrollView>
+              onSubmitEditing={() => {
+                this.checkErrors()
+                Keyboard.dismiss()
+              }}
+            />
+
+          <Text style={styles.modalText}>Are you interested in graduate or professional education?</Text>
+          <ModalSelector style={styles.selector}
+            selectStyle={styles.modalSelectBtn}
+            selectTextStyle={styles.modalSelectText}
+            data={prof_options}
+            initValue="Select"
+            onChange={(option) => this.setStateHelper('grad_interested', option.key)} />
+
+          <Text style={styles.modalText}>What type of postsecondary education?</Text>
+          <ModalSelector style={styles.selector}
+            selectStyle={styles.modalSelectBtn}
+            selectTextStyle={styles.modalSelectText}
+            data={grad_schools}
+            initValue="Select"
+            onChange={(option) => this.setStateHelper('grad_school', option.key)} />
+
+          <Text style={styles.modalText}>Are you interested in research at UT?</Text>
+          <ModalSelector style={styles.selector}
+            selectStyle={styles.modalSelectBtn}
+            selectTextStyle={styles.modalSelectText}
+            data={research_involvement}
+            initValue="Select"
+            onChange={(option) => this.setStateHelper('research', option.key)} />
+
+          <Text style={styles.modalText}>Are you in an honors program? (CHP, Engineering Honors, etc)</Text>
+          <ModalSelector style={styles.selector}
+            selectStyle={styles.modalSelectBtn}
+            selectTextStyle={styles.modalSelectText}
+            data={in_honors}
+            initValue="Select"
+            onChange={(option) => this.setStateHelper('honors', option.key)} />
+
+          <Text style={styles.interestText}>What are your interest?</Text>
+          <MultipleChoice style={styles.multChoice}
+            options={[
+              'Cooking / Baking',
+              'Coops / Internships',
+              'Crafting / DIY / Making',
+              'Entrepreneurship',
+              'Fitness',
+              'Hiking / Backpacking',
+              'Movies / TV',
+              'Music',
+              'Politics',
+              'Research',
+              'Social Media',
+              'Sports',
+              'Sustainability',
+              'Travel',
+              'Video Games'
+            ]}
+            onSelection={(option) => this.setStateInterest(option)
+            }
+          />
+
+          <TextField
+            inputContainerStyle={styles.inputContainer}
+            containerStyle={styles.fieldContainer}
+            labelTextStyle={styles.inputText}
+            titleTextStyle={styles.inputText}
+            affixTextStyle={styles.inputText}
+            onChangeText={value => this.setStateHelper('weekend', value)}
+            label='What is a typical weekend like?'
+            value={this.state.weekend}
+            error={this.state.weekend_error}
+            title='Required'
+            /*style={styles.input}*/
+            secureTextEntry={false}
+            blurOnSubmit={false}
+            tintColor='#FF8200'
+            underlineColorAndroid='transparent'
+            keyboardAppearance='dark'
+            /*placeholder='password'*/
+            returnKeyType='next'
+            onBlur={() => {
+              this.checkErrors()
+              this.checkFull('weekend')
+            }}
+            onSubmitEditing={() => {
+              this.jobInput.focus()
+              this.checkFull('weekend')
+              this.checkErrors()
+            }}
+          />
+
+          <TextField
+            inputContainerStyle={styles.inputContainer}
+            containerStyle={styles.fieldContainer}
+            labelTextStyle={styles.inputText}
+            titleTextStyle={styles.inputText}
+            affixTextStyle={styles.inputText}
+            onChangeText={value => this.setStateHelper('job', value)}
+            label='What is your dream job?'
+            value={this.state.job}
+            error={this.state.job_error}
+            title='Required'
+            /*style={styles.input}*/
+            secureTextEntry={false}
+            blurOnSubmit={false}
+            tintColor='#FF8200'
+            underlineColorAndroid='transparent'
+            keyboardAppearance='dark'
+            /*placeholder='password'*/
+            returnKeyType='done'
+            onBlur={() => {
+              this.checkErrors()
+              this.checkFull('job')
+            }}
+            onSubmitEditing={() => {
+              Keyboard.dismiss()
+              this.checkFull('job')
+              this.checkErrors()
+            }}
+            ref={(input) => this.jobInput = input}
+
+          />
+        </View>
+
+        <TouchableOpacity
+          style={styles.openTermsButton}
+          onPress={() => {this.setState({ visible: true })}}>
+          <Text style={styles.btnText}>Terms and Conditions</Text>
+        </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.visible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+          <View style={styles.terms}>
+            <ScrollView>
+              <Text style={styles.termsText}>
+                  {text}
+              </Text>
+              <TouchableOpacity
+                style={styles.acceptTermsButton}
+                onPress={this.onPressAgree}>
+                <Text style={styles.btnText}>Agree</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelTermsButton}
+                onPress={this.onPressCancel}>
+                <Text style={styles.btnText}>Cancel</Text>
+              </TouchableOpacity>
+          </ScrollView>
+        </View>
+        </Modal>
+        </KeyboardAwareScrollView>
     );
   }
 }
@@ -448,85 +465,75 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    marginBottom: 50,
-    padding: 10
+  },
+  formContainer: {
+    marginRight: '5%',
+    marginLeft: '5%',
+    marginTop: 20
+  },
+  selector: {
+    marginTop: 10
+  },
+  modalText: {
+    fontSize: 16,
+    color: '#58595B',
+    marginTop: 15,
+    fontWeight: 'bold'
+  },
+  modalSelectBtn: {
+    borderColor: '#FF8200'
+  },
+  modalSelectText: {
+    color: '#FF8200'
+  },
+  multChoice: {
+
+  },
+  interestText: {
+    fontSize: 16,
+    color: '#58595B',
+    marginTop: 25,
+    marginBottom: 10,
+    fontWeight: 'bold'
   },
   terms: {
     marginTop: 22,
     marginBottom: 22
   },
-  inputs: {
-    alignSelf: 'center',
-    height: 50,
-    borderBottomWidth: 2,
-    borderBottomColor: '#FF8200',
-    margin: 10
-  },
   inputText: {
-    // why does this not work?
-    justifyContent: 'center',
+    paddingLeft: 12,
   },
-  termsText: {
-      padding: 10
+  inputContainer: {
+    paddingLeft: 12,
+    backgroundColor: '#F6F6F6',
   },
-  questionText: {
-      fontWeight: 'bold',
-      fontSize: 24,
-      alignSelf: 'center',
-      padding: 10,
+  fieldContainer: {
+    marginTop: 20
   },
-  modalBackground: {
-      flex: 3,
-      alignSelf: 'flex-end',
-      justifyContent: 'flex-end',
-      alignItems: 'center',
-  },
-  modalOptionText: {
-    fontSize: 20,
-  },
-  modalOptionStyle: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    borderBottomColor: 'black',
-  },
-  modalOptionContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignSelf: 'flex-end',
-  },
-  modalCancel: {
-    alignItems: 'center',
-  },
-  modalCancelContainer: {
-      //HACK I know this is bad
-      position: 'absolute',
-      top: Dimensions.get('window').height - 60,
-      paddingTop: 10,
-      height: 60,
-      width: 100,
-      alignSelf: 'center',
-  },
-  modalButtonSelector: {
-      justifyContent: 'flex-start',
-      alignSelf: 'center'
-  },
-  choiceContainer: {
-      width: Dimensions.get('window').width / 2,
-      borderWidth: 3,
-      borderColor: 'black',
-      padding: 5,
-      alignSelf: 'center',
-      marginTop: 10,
-      padding: 15,
-  },
-  termsButton: {
+  acceptTermsButton: {
       backgroundColor: '#58595B',
       width: '50%',
       borderRadius: 20,
       padding: 10,
       alignSelf: 'center',
       marginBottom: 10,
+  },
+  cancelTermsButton: {
+      backgroundColor: '#d50000',
+      width: '50%',
+      borderRadius: 20,
+      padding: 10,
+      alignSelf: 'center',
+      marginBottom: 10,
+  },
+  openTermsButton: {
+      backgroundColor: '#FF8200',
+      width: '50%',
+      borderRadius: 20,
+      padding: 10,
+      alignSelf: 'center',
+      marginBottom: 40,
+      marginTop: 30
   },
   btnText: {
       textAlign: 'center',
