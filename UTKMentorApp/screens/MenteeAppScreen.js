@@ -47,7 +47,8 @@ export default class MenteeApplication extends Component {
 
   setStateHelper(key, value) {
     this.setState({
-      [key]: value
+      [key]: value,
+      [key+'_error']: ''
     }, function(newState) {
       console.log(this.state)
     })
@@ -380,6 +381,7 @@ export default class MenteeApplication extends Component {
             tintColor='#FF8200'
             underlineColorAndroid='transparent'
             keyboardAppearance='dark'
+            characterRestriction='200'
             /*placeholder='password'*/
             returnKeyType='next'
             onBlur={() => {
@@ -410,6 +412,7 @@ export default class MenteeApplication extends Component {
             tintColor='#FF8200'
             underlineColorAndroid='transparent'
             keyboardAppearance='dark'
+            characterRestriction='200'
             /*placeholder='password'*/
             returnKeyType='done'
             onBlur={() => {

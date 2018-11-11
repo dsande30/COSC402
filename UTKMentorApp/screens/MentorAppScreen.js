@@ -45,7 +45,8 @@ export default class MentorApplication extends Component {
 
   setStateHelper(key, value) {
     this.setState({
-      [key]: value
+      [key]: value,
+      [key+'_error']: ''
     }, function(newState) {
       console.log(this.state)
     })
