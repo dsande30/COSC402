@@ -221,6 +221,11 @@ export default class SignUp extends React.Component {
               <Text style={styles.title}>New Account Registration</Text>
 
               <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
                 onChangeText={value => this.onChangeEmail(value)}
                 label='UTK Email Address'
                 value={this.state.email}
@@ -247,6 +252,11 @@ export default class SignUp extends React.Component {
               />
 
               <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
                 onChangeText={value => this.onChangePassword(value)}
                 label='Password'
                 value={this.state.password}
@@ -273,6 +283,11 @@ export default class SignUp extends React.Component {
               />
 
               <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
                 onChangeText={value => this.onChangeConfirm(value)}
                 label='Confirm Password'
                 value={this.state.confirm}
@@ -298,6 +313,11 @@ export default class SignUp extends React.Component {
               />
 
               <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
                 onChangeText={value => this.onChangeText('firstname', value)}
                 label='First Name'
                 value={this.state.firstname}
@@ -323,6 +343,11 @@ export default class SignUp extends React.Component {
               />
 
               <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
                 onChangeText={value => this.onChangeText('lastname', value)}
                 label='Last Name'
                 value={this.state.lastname}
@@ -348,6 +373,11 @@ export default class SignUp extends React.Component {
               />
 
               <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
                 onChangeText={value => this.onChangePhone(value)}
                 label='Phone Number'
                 value={this.state.phone_number}
@@ -464,4 +494,14 @@ const styles = StyleSheet.create({
   registeringAs: {
     margin: 10,
   },
+  inputText: {
+    paddingLeft: 12,
+  },
+  inputContainer: {
+    paddingLeft: 12,
+    backgroundColor: '#F6F6F6',
+  },
+  fieldContainer: {
+    marginBottom: 20
+  }
 });

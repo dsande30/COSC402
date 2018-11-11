@@ -411,7 +411,6 @@ export default class MenteeApplication extends Component {
               </ScrollView>
             </View>
           </Modal>
-          <Text>I agree to the terms and conditions.</Text>
         </KeyboardAvoidingView>
       </KeyboardAwareScrollView>
     );
