@@ -322,6 +322,7 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     marginTop: 50,
+    fontSize: 18,
   },
   input: {
     height: 50,

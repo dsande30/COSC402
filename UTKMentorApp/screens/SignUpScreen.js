@@ -198,6 +198,13 @@ export default class SignUp extends React.Component {
           ['email_error']: 'A user with this email already exists'
         });
       }
+      if (err.trim() == 'Password cannot be empty') {
+         console.log('Password field empty, from API')
+         this.setState({
+          ['password_error']: 'Oops! You forgot this one'
+         })
+      }
+    this.scrollRef.props.scrollToPosition(0, 0);
     })
   }
 
@@ -208,7 +215,8 @@ export default class SignUp extends React.Component {
     ];
     return (
       <KeyboardAwareScrollView enableOnAndroid={true}
-       enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
+       enableAutoAutomaticScroll={(Platform.OS === 'ios')}
+       innerRef={(ref) => {this.scrollRef = ref}}>
           <KeyboardAvoidingView style={styles.container}  behavior="padding" enabled>
             <View style={styles.logoContainer}>
               <Image
@@ -423,6 +431,7 @@ export default class SignUp extends React.Component {
             </View>
 
             <View style={styles.btnContainer}>
+              <Text style={styles.signUpText}>Please double-check your form</Text>
               <TouchableOpacity
                 style={styles.btnSignUp}
                 disabled = {this.state.disabled}
@@ -447,6 +456,10 @@ const styles = StyleSheet.create({
   },
   form: {
     padding: 20,
+  },
+  signUpText: {
+    textAlign: 'center',
+    fontSize: 18,
   },
   logo: {
     width: 100,
