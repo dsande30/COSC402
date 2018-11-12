@@ -281,7 +281,7 @@ export default class Goals extends Component {
           <View style={styles.line}></View>
         </View>
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={this.state.modal_add_visible}
           onRequestClose={() => {
@@ -289,6 +289,7 @@ export default class Goals extends Component {
           }}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
+              <Text style={styles.headerText}>Create New Goal</Text>
               <TextField
                 inputContainerStyle={styles.inputContainer}
                 containerStyle={styles.fieldContainer}
@@ -313,31 +314,40 @@ export default class Goals extends Component {
                 }}
                 // ref={(input) => this.jobInput = input}
               />
-
-            <DatePicker
-              style={{width: 200}}
-              date={this.state.date}
-              mode="date"
-              placeholder="select date"
-              format="MM/DD/YYYY"
-              minDate="11/11/2018"
-              maxDate="12/31/2018"
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
-                dateIcon: {
-                  position: 'absolute',
-                  left: 0,
-                  top: 4,
-                  marginLeft: 0
-                },
-                dateInput: {
-                  marginLeft: 36
-                }
-              }}
-              onDateChange={(date) => {this.setState({date: date})}}
+            <Text style={styles.modalText}>Goal due date (leave empty for none)</Text>
+            <View style={styles.calendarContainer}>
+              <DatePicker
+                style={{ width: '50%'}}
+                date={this.getDate(this.state.date)}
+                mode="date"
+                placeholder="select date"
+                format="MM/DD/YYYY"
+                minDate="11/11/2018"
+                maxDate="12/31/2018"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: 'absolute',
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0
+                  },
+                  dateInput: {
+                    marginLeft: 36,
+                    borderRadius: 20,
+                  },
+                  btnTextConfirm: {
+                    color: '#FF8200'
+                  },
+                  btnTextCancel: {
+                    color: '#d50000'
+                  }
+                }}
+                onDateChange={(date) => {this.setState({date: date})}}
               />
-
+            </View>
+            <Text style={styles.modalText}>Mark goal as:</Text>
             <RadioForm
               radio_props={states}
               initial={this.state.status}
@@ -345,33 +355,42 @@ export default class Goals extends Component {
               selectedButtonColor={'#FF8200'}
               formHorizontal={true}
               labelHorizontal={true}
-              radioStyle={{paddingRight: 20}}
+              radioStyle={{paddingRight: 20, marginTop: 5}}
               onPress={(value) => this.setStateHelper('status', value)}
               />
+            <View style={styles.flexBlock}>
+              <View style={styles.flexContainer}>
+                <TouchableHighlight
+                  style={styles.btnUpdate}
+                  onPress={this.addNewGoal.bind(this)}>
+                  <Text style={styles.btnUpdateText}>Create</Text>
+                </TouchableHighlight>
+              </View>
+              <View style={styles.flexContainer}>
+                <TouchableHighlight
+                  style={styles.btnCancel}
+                  onPress={() => {
+                    this.setModalVisible('modal_add_visible', !this.state.modal_add_visible);
+                  }}>
+                  <Text style={styles.btnCancelText}>Cancel</Text>
+                </TouchableHighlight>
+              </View>
+            </View>
 
-              <TouchableHighlight
-                onPress={this.addNewGoal.bind(this)}>
-                <Text>Add Goal</Text>
-              </TouchableHighlight>
-              <TouchableHighlight
-                onPress={() => {
-                  this.setModalVisible('modal_add_visible', !this.state.modal_add_visible);
-                }}>
-                <Text>Cancel</Text>
-              </TouchableHighlight>
             </View>
           </View>
         </Modal>
 
         <Modal
-          animationType="slide"
-          transparent={false}
+          animationType="fade"
+          transparent={true}
           visible={this.state.modal_edit_visible}
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
           }}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
+              <Text style={styles.headerText}>Edit Goal</Text>
               <TextField
                 inputContainerStyle={styles.inputContainer}
                 containerStyle={styles.fieldContainer}
@@ -397,30 +416,41 @@ export default class Goals extends Component {
                 }}
                 // ref={(input) => this.jobInput = input}
                 />
-              <DatePicker
-                style={{width: 200}}
-                date={this.getDate(this.state.date)}
-                mode="date"
-                placeholder="select date"
-                format="MM/DD/YYYY"
-                minDate="11/11/2018"
-                maxDate="12/31/2018"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                  dateIcon: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0
-                  },
-                  dateInput: {
-                    marginLeft: 36
-                  }
-                }}
-                onDateChange={(date) => {this.setState({date: date})}}
-                />
+              <Text style={styles.modalText}>Goal due date</Text>
+              <View style={styles.calendarContainer}>
+                <DatePicker
+                  style={{ width: '50%' }}
+                  date={this.getDate(this.state.date)}
+                  mode="date"
+                  placeholder="select date"
+                  format="MM/DD/YYYY"
+                  minDate="11/11/2018"
+                  maxDate="12/31/2018"
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  customStyles={{
+                    dateIcon: {
+                      position: 'absolute',
+                      left: 0,
+                      top: 4,
+                      marginLeft: 0
+                    },
+                    dateInput: {
+                      marginLeft: 36,
+                      borderRadius: 20,
+                    },
+                    btnTextConfirm: {
+                      color: '#FF8200'
+                    },
+                    btnTextCancel: {
+                      color: '#d50000'
+                    }
+                  }}
+                  onDateChange={(date) => {this.setState({date: date})}}
+                  />
+              </View>
 
+              <Text style={styles.modalText}>Mark goal as</Text>
               <RadioForm
                 radio_props={states}
                 initial={this.state.status}
@@ -428,28 +458,38 @@ export default class Goals extends Component {
                 selectedButtonColor={'#FF8200'}
                 formHorizontal={true}
                 labelHorizontal={true}
-                radioStyle={{paddingRight: 20}}
+                radioStyle={{paddingRight: 20, marginTop: 5}}
                 onPress={(value) => this.setStateHelper('status', value)}
                 />
 
-              <TouchableHighlight
-                onPress={this.updateGoal.bind(this)}>
-                <Text>Save</Text>
-              </TouchableHighlight>
-
-              <TouchableHighlight
-                onPress={() => {
-                  this.setModalVisible('modal_edit_visible', !this.state.modal_edit_visible);
-                }}>
-                <Text>Cancel</Text>
-              </TouchableHighlight>
-              <TouchableHighlight
-                onPress={this.removeGoal.bind(this)}>
-                <Text>Remove Goal</Text>
-              </TouchableHighlight>
+              <View style={styles.flexBlock}>
+                <View style={styles.flexContainer}>
+                  <TouchableHighlight
+                    style={styles.btnUpdate}
+                    onPress={this.updateGoal.bind(this)}>
+                    <Text style={styles.btnUpdateText}>Save</Text>
+                  </TouchableHighlight>
+                </View>
+                <View style={styles.flexContainer}>
+                  <TouchableHighlight
+                    style={styles.btnCancel}
+                    onPress={() => {
+                      this.setModalVisible('modal_edit_visible', !this.state.modal_edit_visible);
+                    }}>
+                    <Text style={styles.btnCancelText}>Cancel</Text>
+                  </TouchableHighlight>
+                </View>
+              </View>
+              <View style={{ alignItems: 'center'}}>
+                <TouchableHighlight
+                  style={styles.btnRemove}
+                  onPress={this.removeGoal.bind(this)}>
+                  <Text style={styles.btnRemoveText}>Remove Goal</Text>
+                </TouchableHighlight>
+              </View>
             </View>
           </View>
-        </Modal>
+      </Modal>
 
         <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
           <FlatList
@@ -574,9 +614,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#00000080'
   },
+  modalText: {
+    fontSize: 16,
+    color: '#58595B',
+    marginTop: 15,
+    fontWeight: 'bold'
+  },
   modalContent: {
     backgroundColor: '#fff',
-    padding: 20
+    padding: 20,
+    paddingRight: '5%',
+    paddingLeft: '5%',
+  },
+  calendarContainer: {
+    marginTop: 5,
+    marginBottom: 10
   },
   header: {
     alignItems: 'center',
@@ -594,12 +646,63 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
   image: {
     height: 100,
     width: 100,
     borderRadius: 50,
     borderColor: 'white',
     borderWidth: 2,
+  },
+  btnCancelText: {
+    textAlign: 'center',
+    color: '#d50000',
+    fontWeight: 'bold',
+  },
+  btnUpdateText: {
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  btnCancel: {
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    borderColor: '#d50000',
+    borderWidth: 1,
+    height: 36,
+    width: '50%',
+    borderRadius: 20,
+    marginTop: 35,
+    marginBottom: 25
+  },
+  btnRemove: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    backgroundColor: '#d50000',
+    width: '50%',
+    height: 36,
+    borderRadius: 20,
+    marginBottom: 25
+  },
+  btnRemoveText: {
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  btnUpdate: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#58595B',
+    width: '50%',
+    height: 36,
+    borderRadius: 20,
+    marginTop: 35,
+    marginBottom: 25
   },
   btnSurvey: {
     alignItems: 'center',
@@ -689,7 +792,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     paddingLeft: 12,
-    backgroundColor: '#F6F6F6',
+    backgroundColor: '#F6F6F6'
   },
   fieldContainer: {
     marginTop: 20

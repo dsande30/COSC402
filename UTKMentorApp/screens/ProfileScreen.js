@@ -239,53 +239,81 @@ export default class Profile extends Component {
                        onPress={() => this.props.navigation.navigate('Goals', { data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
                        <Text style={styles.btnText}>Edit Goals</Text>
                     </TouchableOpacity>
-        completeGoals = <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
-                        <FlatList
-                          data={this.state.goals.completeGoals}
-                          renderItem={({ item }) => (
-                            <ListItem
-                            avatar={<Avatar
-                              size="small"
-                              rounded
-                              source={require('../assets/complete.png')}
-                              onPress={() => console.log("Works!")}
-                              activeOpacity={0.7}
-                              />}
-                            title={item.description}
-                            containerStyle={{ borderBottomWidth: 0 }}
-                            onPress={() => console.log('pressed goal')}
-                            hideChevron
-                            avatarStyle={{backgroundColor:'#FFFFFF'}}
-                            />
-                          )}
-                          keyExtractor={item => item.description}
-                          ItemSeparatorComponent={this.renderSeparator}
-                        />
-                      </List>
-        incompleteGoals = <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
-                          <FlatList
-                            data={this.state.goals.incompleteGoals}
-                            renderItem={({ item }) => (
-                              <ListItem
-                              avatar={<Avatar
-                                size="small"
-                                rounded
-                                source={require('../assets/incomplete.png')}
-                                onPress={() => console.log("Works!")}
-                                activeOpacity={1}
-                                />}
-                              title={item.description}
-                              subtitle={this.getDueDate(item)}
-                              containerStyle={{ borderBottomWidth: 0 }}
-                              onPress={() => console.log('pressed goal')}
-                              hideChevron
-                              avatarStyle={{backgroundColor:'#FFFFFF'}}
-                              />
-                            )}
-                            keyExtractor={item => item.description}
-                            ItemSeparatorComponent={this.renderSeparator}
-                          />
-                        </List>
+        goalsHeader =
+        <View>
+        <Text style={styles.goalHeader}>Your Goals</Text>
+        <View style={styles.line}></View>
+        </View>
+        completeGoals =
+        <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+          <FlatList
+            data={this.state.goals.completeGoals}
+            extraData={this.state}
+            renderItem={({ item }) => (
+              <ListItem
+                containerStyle={styles.listContainerComplete}
+                titleStyle={styles.titleStyle}
+                hideChevron
+                leftIcon={<Icon
+                          name='checkbox-marked'
+                          type='material-community'
+                          size={30}
+                          color='rgba(0, 0, 0, 0.6)'/>}
+                title={item.description}
+                />
+              )}
+              keyExtractor={item => item.description}
+              ItemSeparatorComponent={this.renderSeparator}
+              />
+          </List>
+        incompleteGoals =
+        <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+          <FlatList
+            data={this.state.goals.incompleteGoals}
+            extraData={this.state}
+            renderItem={({ item }) => (
+              <ListItem
+                containerStyle={styles.listContainerIncomplete}
+                titleStyle={styles.titleStyle}
+                hideChevron
+                leftIcon={<Icon
+                        name='checkbox-blank'
+                        type='material-community'
+                        color='rgba(0, 0, 0, 0.6)'
+                        size={30}
+                        />}
+                title={item.description}
+                subtitle={this.getDueDate(item)}
+                avatarStyle={{backgroundColor:'#FFFFFF'}}
+                />
+              )}
+              keyExtractor={item => item.description}
+              ItemSeparatorComponent={this.renderSeparator}
+              />
+          </List>
+          missedGoals =
+          <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+            <FlatList
+              data={this.state.goals.missedGoals}
+              extraData={this.state}
+              renderItem={({ item }) => (
+                <ListItem
+                  containerStyle={styles.listContainerMissed}
+                  titleStyle={styles.titleStyle}
+                  hideChevron
+                  leftIcon={<Icon
+                    name='alert-box'
+                    type='material-community'
+                    size={30}
+                    color='rgba(0, 0, 0, 0.6)'/>}
+                    title={item.description}
+                    avatarStyle={{backgroundColor:'#FFFFFF'}}
+                    />
+                  )}
+                  keyExtractor={item => item.description}
+                  ItemSeparatorComponent={this.renderSeparator}
+                  />
+              </List>
       }
     }
     else if (this.state.role == 'Mentor') {
