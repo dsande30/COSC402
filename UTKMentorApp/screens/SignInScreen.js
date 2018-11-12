@@ -179,7 +179,7 @@ export default class SignIn extends React.Component {
                 style={styles.logo}
                 source={require('../assets/logo.png')}
               />
-              <Text style={styles.title}>The Engineering Mentor Program</Text>
+              <Text style={styles.title}>The University of Tennessee Engineering Mentor Program</Text>
             </View>
             <KeyboardAvoidingView style={styles.form} behavior="padding" enabled>
               <TextField
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   title: {
     color: '#58595B',
     fontWeight: 'bold',
-    width: '50%',
+    width: '80%',
     textAlign: 'center',
     fontSize: 24
   },

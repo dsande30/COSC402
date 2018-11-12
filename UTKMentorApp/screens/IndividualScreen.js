@@ -11,13 +11,15 @@ import {
   Modal,
   TouchableHighlight,
   Keyboard,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import {
   KeyboardAwareScrollView
 } from 'react-native-keyboard-aware-scroll-view';
 import { ListItem } from 'react-native-elements'
 import { TextField } from 'react-native-material-textfield';
+import { LinearGradient } from 'expo';
 
 
 import Amplify, { Auth, API } from 'aws-amplify';
@@ -99,19 +101,22 @@ export default class Individual extends Component {
     return (
       <KeyboardAwareScrollView style={styles.container} enableOnAndroid={true}
        enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
-        <View style={styles.header}>
-          <View style={styles.imageContainer}>
-            <Image
-              style={styles.image}
-              source={require('../assets/andrey.jpeg')}
-            />
+        <LinearGradient style={styles.header}
+          colors={['#006C93', '#FFFFFF']}>
+          <View style={styles.headerContent}>
+            <View style={styles.imageContainer}>
+              <Image
+                style={styles.image}
+                source={require('../assets/andrey.jpeg')}
+              />
+            </View>
+            <View style={styles.bio}>
+              <Text style={styles.nameText}>{navi.name}</Text>
+              <Text style={styles.subText}>{navi.form_data.major}{', '}{year}</Text>
+              <Text style={styles.subText}>{navi.form_data.minors}</Text>
+            </View>
           </View>
-          <View style={styles.bio}>
-            <Text style={styles.nameText}>{navi.name}</Text>
-            <Text style={styles.subText}>{navi.form_data.major}{', '}{year}</Text>
-            <Text style={styles.subText}>{navi.form_data.minors}</Text>
-          </View>
-        </View>
+        </LinearGradient>
         <View style={styles.headForm}>
         {
           headList.map((l, i) => (
@@ -218,6 +223,11 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     backgroundColor: '#B9E1E2',
+    justifyContent: 'center',
+    padding: 10
+  },
+  headerContent: {
+    alignItems: 'center',
     justifyContent: 'center',
     padding: 10
   },
