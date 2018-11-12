@@ -18,6 +18,10 @@ export default class Search extends Component {
     this.arrayholder = [];
   }
 
+  static navigationOptions = {
+    title: 'Browse Others'
+  }
+
   setData() {
     let { navigation } = this.props;
     let role = navigation.getParam('role', 'NO-ID');
