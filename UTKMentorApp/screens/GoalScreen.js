@@ -682,7 +682,6 @@ const styles = StyleSheet.create({
   btnRemove: {
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign: 'center',
     backgroundColor: '#d50000',
     width: '50%',
     height: 36,

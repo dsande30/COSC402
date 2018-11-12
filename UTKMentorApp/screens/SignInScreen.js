@@ -215,7 +215,7 @@ export default class SignIn extends React.Component {
                 label='Password'
                 value={this.state.password}
                 error={this.state.password_error}
-                title='At least one lower, upper, and symbol'
+                title='Requires upper, lower, number, & length of 8'
                 /*style={styles.input}*/
                 secureTextEntry={true}
                 blurOnSubmit={false}
