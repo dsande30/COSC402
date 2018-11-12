@@ -89,7 +89,7 @@ export default class MentorApplication extends Component {
                 "due": "NULL",
                 "status": 1,
                 "creator": "EMP",
-                "reminder": "NULL"
+                "reminder": ['The day of']
               }
             ],
           "incompleteGoals":
@@ -99,23 +99,24 @@ export default class MentorApplication extends Component {
               "due": "NULL",
               "status": 0,
               "creator": "EMP",
-              "reminder": "NULL"
+              "reminder": ['The day of']
             },
             {
               "description": "Get paired with a mentee",
               "due": "08/31/2019",
               "status": 0,
               "creator": "EMP",
-              "reminder": "NULL"
+              "reminder": ['The day of']
             },
             {
               "description": "Meet with your mentee",
               "due": "NULL",
               "status": 0,
               "creator": "EMP",
-              "reminder": "NULL"
+              "reminder": ['The day of']
             }
-          ]
+          ],
+          "missedGoals": []
         }
         let put_body = {
           body: {
