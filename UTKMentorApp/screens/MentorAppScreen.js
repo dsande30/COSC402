@@ -578,7 +578,6 @@ const styles = StyleSheet.create({
   },
   modalSelectBtn: {
     borderColor: '#FF8200',
-    color: '#FF8200'
   },
   modalSelectText: {
     color: '#FF8200'

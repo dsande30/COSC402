@@ -480,7 +480,6 @@ const styles = StyleSheet.create({
   },
   viewBtn: {
     alignItems: 'center',
-    textAlign: 'center',
     borderRadius: 20,
     height: 28,
     backgroundColor: '#A7A9AC',
@@ -490,7 +489,6 @@ const styles = StyleSheet.create({
   },
   viewMentorsBtn: {
     alignItems: 'center',
-    textAlign: 'center',
     borderRadius: 20,
     backgroundColor: '#A7A9AC',
     height: 28,

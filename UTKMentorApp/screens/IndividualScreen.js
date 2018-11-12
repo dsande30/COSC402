@@ -168,7 +168,7 @@ export default class Individual extends Component {
         <View style={styles.form}>
           <TextField
             label='My dream job'
-            labelFontSize='16'
+            labelFontSize={16}
             value={navi.form_data.job}
             /*style={styles.input}*/
             secureTextEntry={false}
@@ -177,12 +177,12 @@ export default class Individual extends Component {
             baseColor='#E65933'
             underlineColorAndroid='transparent'
             multiline={true}
-            lineWidth='0'
+            lineWidth={0}
             /*placeholder='password'*/
           />
           <TextField
             label='My typical weekend'
-            labelFontSize='16'
+            labelFontSize={16}
             value={navi.form_data.weekend}
             /*style={styles.input}*/
             secureTextEntry={false}
@@ -191,7 +191,7 @@ export default class Individual extends Component {
             baseColor='#E65933'
             underlineColorAndroid='transparent'
             multiline={true}
-            lineWidth='0'
+            lineWidth={0}
             /*placeholder='password'*/
           />
         </View>
@@ -203,7 +203,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    color: '#58595B'
   },
   imageContainer: {
     height: 120,

@@ -436,7 +436,7 @@ export default class MenteeApplication extends Component {
             tintColor='#FF8200'
             underlineColorAndroid='transparent'
             keyboardAppearance='dark'
-            characterRestriction='200'
+            characterRestriction={200}
             /*placeholder='password'*/
             returnKeyType='next'
             onBlur={() => {
@@ -467,7 +467,7 @@ export default class MenteeApplication extends Component {
             tintColor='#FF8200'
             underlineColorAndroid='transparent'
             keyboardAppearance='dark'
-            characterRestriction='200'
+            characterRestriction={200}
             /*placeholder='password'*/
             returnKeyType='done'
             onBlur={() => {
