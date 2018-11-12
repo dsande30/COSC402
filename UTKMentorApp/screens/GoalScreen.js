@@ -723,8 +723,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#82CA9D'
   },
   listContainerIncomplete: {
-    // backgroundColor: '#FFF79A'
-    backgroundColor: '#F6F6F6'
+    backgroundColor: '#E2E2DE'
   },
   listContainerMissed: {
     backgroundColor: '#FF817B'

@@ -454,7 +454,7 @@ export default class Profile extends Component {
       }
     }
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <LinearGradient
           style={styles.header}
           colors={['#87898C', '#FFF']}
@@ -477,6 +477,7 @@ export default class Profile extends Component {
           </View>
           <Text style={styles.nameText}>Hi, {this.state.name}!</Text>
         </LinearGradient>
+        {body}
         {goalsHeader}
         {incompleteGoals}
         {missedGoals}
@@ -489,7 +490,7 @@ export default class Profile extends Component {
             <Text style={styles.btnSignOutText}>Sign Out</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -516,8 +517,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#A7A9AC',
   },
   listContainerIncomplete: {
-    // backgroundColor: '#FFF79A'
-    backgroundColor: '#F6F6F6',
+    backgroundColor: '#E2E2DE',
     borderBottomColor: '#A7A9AC',
   },
   listContainerMissed: {
