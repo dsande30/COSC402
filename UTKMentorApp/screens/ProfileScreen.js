@@ -440,7 +440,7 @@ export default class Profile extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: '#FFFFFF',
   },
   imageBlock: {
     flexDirection: 'row',
@@ -482,20 +482,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlign: 'center',
     borderRadius: 20,
+    height: 28,
+    backgroundColor: '#A7A9AC',
     marginTop: 5,
+    justifyContent: 'center',
     backgroundColor: 'rgba(240,237,227,0.6)',
-    width: '25%',
   },
   viewMentorsBtn: {
     alignItems: 'center',
     textAlign: 'center',
     borderRadius: 20,
+    backgroundColor: '#A7A9AC',
+    height: 28,
     marginTop: 5,
+    justifyContent: 'center',
     backgroundColor: 'rgba(240,237,227,0.6)',
-    width: '65%',
   },
   viewTxt: {
-    color: 'black'
+    color: 'black',
+    marginRight: 12,
+    marginLeft: 12
   },
   btnSignOutContainer: {
     marginTop: 150,
@@ -540,7 +546,7 @@ const styles = StyleSheet.create({
     marginBottom: 25
   },
   nameText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 24,
     textAlign: 'center',
