@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 import Amplify, { Auth, API } from 'aws-amplify';
-import { List, Avatar, ListItem, SearchBar } from 'react-native-elements';
+import { Icon, List, Avatar, ListItem, SearchBar } from 'react-native-elements';
 import { LinearGradient } from 'expo';
 
 export default class Profile extends Component {
@@ -107,7 +107,6 @@ export default class Profile extends Component {
         style={{
           height: 1,
           width: '86%',
-          backgroundColor: '#CED0CE',
           marginLeft: '14%',
         }}
       />
@@ -172,14 +171,13 @@ export default class Profile extends Component {
         style={{
           height: 1,
           width: '86%',
-          backgroundColor: '#CED0CE',
           marginLeft: '14%',
         }}
       />
     );
   };
   render () {
-    let body, appButton, yourImage, mentorImage, viewYou, viewMentors, completeGoals, incompleteGoals;
+    let body, appButton, yourImage, mentorImage, viewYou, viewMentors, completeGoals, incompleteGoals, missedGoals, goalsHeader;
 
     // HomeScreen either shows "start survey" or goals and stuff
     if (this.state.role == 'Mentee') {
@@ -350,60 +348,88 @@ export default class Profile extends Component {
                        onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
                        <Text style={styles.viewTxt}>Browse Mentees</Text>
                      </TouchableOpacity>
-       completeGoals = <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
-                       <FlatList
-                         data={this.state.goals.completeGoals}
-                         renderItem={({ item }) => (
-                           <ListItem
-                           avatar={<Avatar
-                             size="small"
-                             rounded
-                             source={require('../assets/complete.png')}
-                             onPress={() => console.log("Works!")}
-                             activeOpacity={0.7}
-                             />}
-                           title={item.description}
-                           containerStyle={{ borderBottomWidth: 0 }}
-                           onPress={() => console.log('pressed goal')}
-                           hideChevron
-                           avatarStyle={{backgroundColor:'#FFFFFF'}}
-                           />
-                         )}
-                         keyExtractor={item => item.description}
-                         ItemSeparatorComponent={this.renderSeparator}
-                       />
-                     </List>
-       incompleteGoals = <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
-                         <FlatList
-                           data={this.state.goals.incompleteGoals}
-                           renderItem={({ item }) => (
-                             <ListItem
-                             avatar={<Avatar
-                               size="small"
-                               rounded
-                               source={require('../assets/incomplete.png')}
-                               onPress={() => console.log("Works!")}
-                               activeOpacity={1}
-                               />}
-                             title={item.description}
-                             subtitle={this.getDueDate(item)}
-                             containerStyle={{ borderBottomWidth: 0 }}
-                             onPress={() => console.log('pressed goal')}
-                             hideChevron
-                             avatarStyle={{backgroundColor:'#FFFFFF'}}
-                             />
-                           )}
-                           keyExtractor={item => item.description}
-                           ItemSeparatorComponent={this.renderSeparator}
-                         />
-                       </List>
+       goalsHeader =
+       <View>
+       <Text style={styles.goalHeader}>Your Goals</Text>
+       <View style={styles.line}></View>
+       </View>
+       completeGoals =
+       <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+         <FlatList
+           data={this.state.goals.completeGoals}
+           extraData={this.state}
+           renderItem={({ item }) => (
+             <ListItem
+               containerStyle={styles.listContainerComplete}
+               titleStyle={styles.titleStyle}
+               hideChevron
+               leftIcon={<Icon
+                         name='checkbox-marked'
+                         type='material-community'
+                         size={30}
+                         color='rgba(0, 0, 0, 0.6)'/>}
+               title={item.description}
+               />
+             )}
+             keyExtractor={item => item.description}
+             ItemSeparatorComponent={this.renderSeparator}
+             />
+         </List>
+       incompleteGoals =
+       <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+         <FlatList
+           data={this.state.goals.incompleteGoals}
+           extraData={this.state}
+           renderItem={({ item }) => (
+             <ListItem
+               containerStyle={styles.listContainerIncomplete}
+               titleStyle={styles.titleStyle}
+               hideChevron
+               leftIcon={<Icon
+                       name='checkbox-blank'
+                       type='material-community'
+                       color='rgba(0, 0, 0, 0.6)'
+                       size={30}
+                       />}
+               title={item.description}
+               subtitle={this.getDueDate(item)}
+               avatarStyle={{backgroundColor:'#FFFFFF'}}
+               />
+             )}
+             keyExtractor={item => item.description}
+             ItemSeparatorComponent={this.renderSeparator}
+             />
+         </List>
+         missedGoals =
+         <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+           <FlatList
+             data={this.state.goals.missedGoals}
+             extraData={this.state}
+             renderItem={({ item }) => (
+               <ListItem
+                 containerStyle={styles.listContainerMissed}
+                 titleStyle={styles.titleStyle}
+                 hideChevron
+                 leftIcon={<Icon
+                   name='alert-box'
+                   type='material-community'
+                   size={30}
+                   color='rgba(0, 0, 0, 0.6)'/>}
+                   title={item.description}
+                   avatarStyle={{backgroundColor:'#FFFFFF'}}
+                   />
+                 )}
+                 keyExtractor={item => item.description}
+                 ItemSeparatorComponent={this.renderSeparator}
+                 />
+             </List>
       }
     }
     return (
       <View style={styles.container}>
         <LinearGradient
           style={styles.header}
-          colors={['#00746F', '#E65933']}
+          colors={['#87898C', '#FFF']}
           >
           <View style={styles.imageBlock}>
             <View style={styles.imageContainer}>
@@ -421,15 +447,18 @@ export default class Profile extends Component {
               {viewMentors}
             </View>
           </View>
-          <Text style={styles.nameText}>{this.state.name + `'s`} Dashboard</Text>
+          <Text style={styles.nameText}>Hi, {this.state.name}!</Text>
         </LinearGradient>
-        {completeGoals}
+        {goalsHeader}
         {incompleteGoals}
+        {missedGoals}
+        {completeGoals}
         <View style={styles.btnContainer}>
+          {appButton}
           <TouchableOpacity
             style={styles.btnSignOut}
             onPress={this.signOut.bind(this)}>
-            <Text style={styles.btnText}>Sign Out</Text>
+            <Text style={styles.btnSignOutText}>Sign Out</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -454,6 +483,36 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 10,
   },
+  listContainerComplete: {
+    backgroundColor: '#82CA9D',
+    borderBottomColor: '#A7A9AC',
+  },
+  listContainerIncomplete: {
+    // backgroundColor: '#FFF79A'
+    backgroundColor: '#F6F6F6',
+    borderBottomColor: '#A7A9AC',
+  },
+  listContainerMissed: {
+    backgroundColor: '#FF817B',
+    borderBottomColor: '#A7A9AC',
+  },
+  titleStyle: {
+    marginLeft: 12,
+    color: '#58595B'
+  },
+  goalHeader: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 24,
+    marginTop: 25,
+    color: '#58595B'
+  },
+  textLeftContainer: {
+    paddingLeft: 12,
+  },
+  subtitleText: {
+    color: 'grey',
+  },
   imageContainer: {
     flex: 1,
     height: 100,
@@ -472,7 +531,7 @@ const styles = StyleSheet.create({
   },
   btnSurvey: {
     alignItems: 'center',
-    backgroundColor: '#E65933',
+    backgroundColor: '#58595B',
     width: '50%',
     borderRadius: 20,
     padding: 10,
@@ -483,23 +542,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderRadius: 20,
     height: 28,
-    backgroundColor: '#A7A9AC',
     marginTop: 5,
     justifyContent: 'center',
-    backgroundColor: 'rgba(240,237,227,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.35)',
   },
   viewMentorsBtn: {
     alignItems: 'center',
     textAlign: 'center',
     borderRadius: 20,
-    backgroundColor: '#A7A9AC',
     height: 28,
     marginTop: 5,
     justifyContent: 'center',
-    backgroundColor: 'rgba(240,237,227,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.35)',
   },
   viewTxt: {
-    color: 'black',
+    color: 'white',
     marginRight: 12,
     marginLeft: 12
   },
@@ -522,9 +579,13 @@ const styles = StyleSheet.create({
   },
   subtitleText: {
     color: 'grey',
-    fontWeight: 'bold'
   },
   btnText: {
+    textAlign: 'center',
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+  btnSignOutText: {
     textAlign: 'center',
     color: '#d50000',
     fontWeight: 'bold',
@@ -536,21 +597,29 @@ const styles = StyleSheet.create({
   },
   btnSignOut: {
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'transparent',
     borderColor: '#d50000',
     borderWidth: 1,
     height: 36,
     width: '50%',
     borderRadius: 20,
-    marginTop: 20,
+    marginTop: 35,
     marginBottom: 25
   },
+  line: {
+    borderBottomColor: '#888888',
+    borderBottomWidth: 1,
+    marginTop: 5,
+    marginBottom: 10,
+    marginLeft: '5%',
+    marginRight: '5%',
+  },
   nameText: {
-    color: '#FFFFFF',
+    color: '#58595B',
     fontWeight: 'bold',
     fontSize: 24,
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: 25,
   },
   formText: {
     textAlign: 'center',

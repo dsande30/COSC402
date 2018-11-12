@@ -102,7 +102,7 @@ export default class Individual extends Component {
       <KeyboardAwareScrollView style={styles.container} enableOnAndroid={true}
        enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
         <LinearGradient style={styles.header}
-          colors={['#006C93', '#FFFFFF']}>
+          colors={['#87898C', '#FFFFFF']}>
           <View style={styles.headerContent}>
             <View style={styles.imageContainer}>
               <Image
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     height: 120,
     width: 120,
     borderRadius: 60,
-    borderColor: '#517C96',
+    borderColor: '#FFFFFF',
     borderWidth: 2,
 
   },
