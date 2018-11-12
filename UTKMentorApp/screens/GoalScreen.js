@@ -14,7 +14,14 @@ import {
   Keyboard
 } from 'react-native';
 
+import RadioForm, {
+  RadioButton,
+  RadioButtonInput,
+  RadioButtonLabel
+} from 'react-native-simple-radio-button';
+
 import DatePicker from 'react-native-datepicker';
+import MultipleChoice from 'rn-multiple-choice';
 import { TextField } from 'react-native-material-textfield';
 import { List, Icon, Avatar, ListItem, SearchBar } from 'react-native-elements';
 import Amplify, { Auth, API } from 'aws-amplify';
@@ -36,10 +43,15 @@ export default class Goals extends Component {
       curr_goal: {
         'description': '',
         'due': '',
-        'status': 0
+        'status': 0,
+        'reminder': [],
+        'creator': 'User'
       },
       newDescription: '',
-      date: ''
+      date: '',
+      reminder: [],
+      creator: 'User',
+      status: 0
     }
   }
 
@@ -50,10 +62,15 @@ export default class Goals extends Component {
     old_state.modal_add_visible = false;
     old_state.newDescription = '';
     old_state.date = '';
+    old_state.creator = '',
+    old_state.reminder = [],
+    old_state.status = 0,
     old_state.curr_goal = {
       'description': '',
       'due': '',
-      'status': 0
+      'status': 0,
+      'creator': '',
+      'reminder': []
     };
     console.log(old_state)
     if (this.state.user_id == '') {
@@ -98,7 +115,9 @@ export default class Goals extends Component {
     let newGoal = {
       'description': this.state.newDescription,
       'due': this.state.date,
-      'status': 0
+      'status': 0,
+      'creator': 'User',
+      'reminder': this.state.reminder
     }
     let copy = this.state.goals
     copy['incompleteGoals'].push(newGoal);
@@ -107,26 +126,81 @@ export default class Goals extends Component {
   }
 
   editGoal(item) {
-    this.setStateHelper('curr_goal', item);
+    this.setState({
+      newDescription: item.description,
+      date: item.due,
+      status: item.status,
+      creator: item.creator,
+      reminder: item.reminder,
+      curr_goal: item
+    })
+    console.log("SELECT GOALS: " + this.state.curr_goal.reminder)
     this.setModalVisible('modal_edit_visible', true);
   }
 
   updateGoal() {
     let index;
     let goals = this.state.goals;
-    let array = this.state.goals.incompleteGoals;
+    let array = this.state.goals.completeGoals;
+    let array2 = this.state.goals.incompleteGoals;
+    let array3 = this.state.goals.missedGoals;
     let updated;
 
     updated = {
       'description': this.state.newDescription,
       'due': this.state.date,
-      'status': 0
+      'status': this.state.status,
+      'creator': 'User',
+      'reminder': this.state.reminder
     }
 
     index = array.findIndex(item => item.description === this.state.curr_goal.description)
-    array[index] = updated;
-    goals.incompleteGoals = array;
-    this.setStateHelper('goals', goals);
+    index2 = array2.findIndex(item => item.description === this.state.curr_goal.description)
+    index3 = array3.findIndex(item => item.description === this.state.curr_goal.description)
+
+    if (index != -1) {
+      if (updated.status === 1) {
+        goals.completeGoals[index] = updated;
+      }
+      else {
+        goals.completeGoals.splice(index, 1);
+        if (updated.status === 0) {
+          goals['incompleteGoals'].push(updated);
+        }
+        else {
+          goals['missedGoals'].push(updated);
+        }
+      }
+    }
+    else if (index2 != -1) {
+      if (updated.status === 0) {
+        goals.incompleteGoals[index2] = updated;
+      }
+      else {
+        goals.incompleteGoals.splice(index2, 1);
+        if (updated.status === 1) {
+          goals['completeGoals'].push(updated);
+        }
+        else {
+          goals['missedGoals'].push(updated);
+        }
+      }
+    }
+    else if (index3 != -1) {
+      if (updated.status === 2) {
+        goals.missedGoals[index3] = updated;
+      }
+      else {
+        goals.missedGoals.splice(index3, 1)
+        if (updated.status === 1) {
+          goals['completeGoals'].push(updated);
+        }
+        else {
+          goals['incompleteGoals'].push(updated);
+        }
+      }
+    }
+    this.setStateHelper('goals', goals)
     this.setModalVisible('modal_edit_visible', !this.state.modal_edit_visible);
   }
 
@@ -137,6 +211,24 @@ export default class Goals extends Component {
     else rv = date;
 
     return rv;
+  }
+
+  setStateInterest(value) {
+    if (this.state.reminder.includes(value)) {
+      console.log("removing " + value)
+      let copy = [...this.state.reminder]
+      copy.splice(copy.indexOf(value), 1)
+      console.log(copy)
+      this.setState({
+        reminder: copy
+      })
+    }
+    else {
+      console.log("inserting " + value)
+      this.setState({
+        reminder: [...this.state.reminder, value]
+      })
+    }
   }
 
   getDiff(date) {
@@ -174,6 +266,11 @@ export default class Goals extends Component {
   };
 
   render () {
+    let states = [
+      {label: 'In Progress', value: 0 },
+      {label: 'Complete', value: 1 },
+      {label: 'Missed', value: 2 },
+    ];
     return (
       <View>
         <Modal
@@ -208,8 +305,8 @@ export default class Goals extends Component {
                   Keyboard.dismiss()
                 }}
                 // ref={(input) => this.jobInput = input}
-
               />
+
             <DatePicker
               style={{width: 200}}
               date={this.state.date}
@@ -233,6 +330,18 @@ export default class Goals extends Component {
               }}
               onDateChange={(date) => {this.setState({date: date})}}
               />
+
+            <RadioForm
+              radio_props={states}
+              initial={this.state.status}
+              buttonColor={'#FF8200'}
+              selectedButtonColor={'#FF8200'}
+              formHorizontal={true}
+              labelHorizontal={true}
+              radioStyle={{paddingRight: 20}}
+              onPress={(value) => this.setStateHelper('status', value)}
+              />
+
               <TouchableHighlight
                 onPress={this.addNewGoal.bind(this)}>
                 <Text>Add Goal</Text>
@@ -280,7 +389,7 @@ export default class Goals extends Component {
                   Keyboard.dismiss()
                 }}
                 // ref={(input) => this.jobInput = input}
-              />
+                />
               <DatePicker
                 style={{width: 200}}
                 date={this.getDate(this.state.date)}
@@ -305,6 +414,17 @@ export default class Goals extends Component {
                 onDateChange={(date) => {this.setState({date: date})}}
                 />
 
+              <RadioForm
+                radio_props={states}
+                initial={this.state.status}
+                buttonColor={'#FF8200'}
+                selectedButtonColor={'#FF8200'}
+                formHorizontal={true}
+                labelHorizontal={true}
+                radioStyle={{paddingRight: 20}}
+                onPress={(value) => this.setStateHelper('status', value)}
+                />
+
               <TouchableHighlight
                 onPress={this.updateGoal.bind(this)}>
                 <Text>Save</Text>
@@ -327,10 +447,11 @@ export default class Goals extends Component {
         <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
           <FlatList
             data={this.state.goals.completeGoals}
+            extraData={this.state}
             renderItem={({ item }) => (
               <ListItem
                   leftIcon={<Icon
-                            name={'checksquare'}
+                            name={'check'}
                             size={30}
                             onPress={() => this.removeGoal(item)}/>}
                   rightIcon={<Icon
@@ -339,7 +460,7 @@ export default class Goals extends Component {
                               onPress={() => this.removeGoal(item)}/>}
                   title={item.description}
                   containerStyle={{ borderBottomWidth: 0 }}
-                  onPress={() => console.log('pressed goal')}
+                  onPress={() => this.editGoal(item)}
                   avatarStyle={{backgroundColor:'#FFFFFF'}}
                   />
               )}
