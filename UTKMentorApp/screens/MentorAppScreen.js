@@ -343,7 +343,6 @@ export default class MentorApplication extends Component {
             tintColor='#FF8200'
             underlineColorAndroid='transparent'
             keyboardAppearance='dark'
-            keyboardType='email-address'
             /*placeholder='password'*/
             returnKeyType='done'
             onBlur={() => {
