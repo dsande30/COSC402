@@ -14,7 +14,7 @@ AWS.config.update({ region: process.env.TABLE_REGION });
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-let tableName = "profile_data";
+let tableName = "profiles";
 
 const userIdPresent = false; // TODO: update in case is required to use that definition
 const partitionKeyName = "userid";
@@ -47,6 +47,26 @@ const convertUrlType = (param, type) => {
       return param;
   }
 }
+
+/********************************
+ * HTTP Get ALL *
+ ********************************/
+app.get(path, function (req, res) {
+  var params = {
+    TableName: tableName,
+    Select: 'ALL_ATTRIBUTES',
+  };
+  dynamodb.scan(params, (err, data) => {
+    if (err) {
+      res.json({ error: 'Could not load items: ' + err.message });
+    }
+    res.json({
+      data: data.Items.map(item => {
+        return item;
+      })
+    });
+  });
+});
 
 /********************************
  * HTTP Get method for list objects *

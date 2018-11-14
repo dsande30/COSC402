@@ -31,75 +31,181 @@ export default class SignUp extends React.Component {
 
   state = {
     email: '',
+    email_error: '',
     password: '',
+    password_error: '',
+    confirm: '',
+    confirm_error: '',
     phone_number: '',
-    name: '',
-    role: 'Mentee'
-  };
-
-  onChangeText(key, value) {
-    console.log(value);
-    this.setState({
-      [key]: value
-    })
+    phone_error: '',
+    firstname: '',
+    firstname_error: '',
+    lastname: '',
+    lastname_error: '',
+    role: 'Mentee',
+    disabled: false
   }
 
-  checkNumber(number){
-      if(number.slice(0, 2) != '+1'){
-          console.log('not +1')
-          this.state.phone_number = '+1' + number
-      }
-      if(number.length != 10 || number.length != 12){
+  valid_email = [ 'utk.edu', 'tennessee.edu', 'vols.utk.edu', 'live.utk.edu',
+                  'mail.tennessee.edu', 'volmail.utk.edu']
 
-      }
+  onChangeText(key, value) {
+    this.setState({
+      [key]: value,
+      [key+'_error']: ''
+    }, this.checkErrors())
+  }
+
+  onChangeEmail(value) {
+    vals = value.split('@')
+    if (vals.length != 2) {
+      this.setState({
+        ['email_error']: 'Invalid email address (starts with netID)',
+        ['email']: value
+      }, this.checkErrors())
+    }
+    else if (!(this.valid_email.includes(vals[1]))) {
+      this.setState({
+        ['email_error']: 'Invalid domain (try vols.utk.edu)',
+        ['email']: value
+      }, this.checkErrors())
+    }
+    else {
+      this.setState({
+        ['email_error']: '',
+        ['email']: value
+      }, this.checkErrors())
+    }
+  }
+
+  onChangePassword(value) {
+    if (!/[0-9]/.test(value)) {
+      this.setState({
+        ['password_error']: 'Must contain one number 0-9',
+        ['password']: value
+      }, this.checkErrors())
+    }
+    else if (!/[a-z]/.test(value)) {
+      this.setState({
+        ['password_error']: 'Must contain one lower case letter',
+        ['password']: value
+      }, this.checkErrors())
+    }
+    else if (!/[A-Z]/.test(value)) {
+      this.setState({
+        ['password_error']: 'Must contain one upper case letter',
+        ['password']: value
+      }, this.checkErrors())
+    }
+    else if (value.length < 8) {
+      this.setState({
+        ['password_error']: 'Must be at least 8 characters long',
+        ['password']: value
+      }, this.checkErrors())
+    }
+    else {
+      this.setState({
+        ['password_error']: '',
+        ['password']: value
+      }, this.checkErrors())
+    }
+  }
+
+  onChangeConfirm(value) {
+    if (value != this.state.password) {
+      this.setState({
+        ['confirm_error']: 'Passwords do not match',
+        ['confirm']: value
+      })
+    }
+    else {
+      this.setState({
+        ['confirm_error']: '',
+        ['confirm']: value
+      })
+    }
+  }
+
+  onChangePhone(value){
+    if (value.length != 10) {
+      this.setState({
+        ['phone_error']: 'Invalid phone number',
+        ['phone_number']: value
+      })
+    }
+    else {
+      this.setState({
+        ['phone_error']: '',
+        ['phone_number']: value
+      })
+    }
+  }
+
+  checkFull(key) {
+    if (this.state[key] == '') {
+      this.setState({
+        [key+'_error']: 'Oops! You forgot this one'
+      })
+    }
+  }
+
+  checkErrors() {
+    if (this.state.email_error == '' &&
+        this.state.password_error == '' &&
+        this.state.confirm_error == '' &&
+        this.state.firstname_error == '' &&
+        this.state.lastname_error == '' &&
+        this.state.phone_error == '')
+    {
+      console.log('enable button')
+      this.setState({
+        ['disabled']: false
+      })
+    } else {
+      console.log('disable button')
+      this.setState({
+        ['disabled']: true
+      })
+    }
   }
 
   signUp() {
-    num = this.checkNumber(this.state.phone_number)
     Auth.signUp({
       username: this.state.email,
       password: this.state.password,
       attributes: {
         email: this.state.email,
-        name: this.state.name,
-        phone_number: this.state.phone_number,
+        name: this.state.firstname + ' ' + this.state.lastname,
+        phone_number: '+1' + this.state.phone_number,
         'custom:role': this.state.role
       }
     })
-    .then( () => {
-      Auth.signIn(this.state.email, this.state.password)
-      .then( async () => {
-        let form_data = {}
-        let sample_goals = {}
-        let sample_pair = []
-        let user_role = false
-        form_data.name = this.state.name
-        form_data.email = this.state.email
-        form_data.phone = this.state.phone_number
-        if (this.state.role === 'Mentee') {
-          user_role = false
-        }
-        else {
-          user_role = true
-        }
-        console.log('calling api');
-        const response = await API.post('dynamoAPI', '/items', {
-          body: {
-            userid: this.state.email,
-            form_data: form_data,
-            mentor: user_role,
-            pairings: sample_pair,
-            goals: sample_goals
-          }
-        });
+    .then(data => {
+      console.log("success!" + data)
+      this.props.navigation.navigate('Verify', {
+        username: this.state.email,
+        password: this.state.password,
+        name: this.state.firstname + ' ' + this.state.lastname,
+        phone_number: '+1' + this.state.phone_number,
+        role: this.state.role,
       })
-      .then(user => {
-        this.props.navigation.navigate('Home', { data: user })
-        console.log('successful sign in!')
-      })
-      .catch(err => console.log('error signing in: ', err))
     })
-    .catch(err => console.log('error signing up: ', err))
+    .catch(err => {
+      console.log('error signing in: ', err)
+      if (err.code == 'UsernameExistsException') {
+        console.log('User already exists');
+        this.setState({
+          ['email_error']: 'A user with this email already exists'
+        });
+      }
+      if (err.trim() == 'Password cannot be empty') {
+         console.log('Password field empty, from API')
+         this.setState({
+          ['password_error']: 'Oops! You forgot this one'
+         })
+      }
+    this.scrollRef.props.scrollToPosition(0, 0);
+    })
   }
 
   render() {
@@ -109,7 +215,8 @@ export default class SignUp extends React.Component {
     ];
     return (
       <KeyboardAwareScrollView enableOnAndroid={true}
-       enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
+       enableAutoAutomaticScroll={(Platform.OS === 'ios')}
+       innerRef={(ref) => {this.scrollRef = ref}}>
           <KeyboardAvoidingView style={styles.container}  behavior="padding" enabled>
             <View style={styles.logoContainer}>
               <Image
@@ -118,67 +225,194 @@ export default class SignUp extends React.Component {
                 />
             </View>
             <View style={styles.form}>
+
               <Text style={styles.title}>New Account Registration</Text>
-              <TextInput
-                onChangeText={value => this.onChangeText('email', value)}
+
+              <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
+                onChangeText={value => this.onChangeEmail(value)}
+                label='UTK Email Address'
+                value={this.state.email}
+                error={this.state.email_error}
+                title='Starts with your netID'
                 /*style={styles.input}*/
-                keyboardType='email-address'
-                keyboardAppearance='dark'
-                autoCorrect={false}
-                autoCapitalize='none'
+                secureTextEntry={false}
                 blurOnSubmit={false}
+                tintColor='#FF8200'
                 underlineColorAndroid='transparent'
-                onSubmitEditing={() => this.passwordInput.focus()}
+                keyboardAppearance='dark'
+                keyboardType='email-address'
+                /*placeholder='password'*/
                 returnKeyType='next'
-                placeholder='email'
+                onBlur={() => {
+                  this.checkFull('email')
+                  this.checkErrors()
+                }}
+                onSubmitEditing={() => {
+                  this.passwordInput.focus()
+                  this.checkFull('email')
+                  this.checkErrors()
+                }}
               />
-          <TextField
-                onChangeText={value => this.onChangeText('password', value)}
+
+              <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
+                onChangeText={value => this.onChangePassword(value)}
                 label='Password'
                 value={this.state.password}
-                error={this.state.error}
+                error={this.state.password_error}
+                title={'Requires upper, lower, number, & length of 8'}
                 /*style={styles.input}*/
                 secureTextEntry={true}
                 blurOnSubmit={false}
+                tintColor='#FF8200'
                 underlineColorAndroid='transparent'
                 keyboardAppearance='dark'
                 /*placeholder='password'*/
                 returnKeyType='next'
+                onBlur={() => {
+                  this.checkFull('password')
+                  this.checkErrors()
+                }}
                 onSubmitEditing={() => {
-                    this.nameInput.focus()
-                    console.log(this.state.password.length)
-                    if(this.state.password.length < 8){
-                        this.setState({error: 'Text must be entered!'});
-                    }
-                    else{
-                        this.setState({error: ''});
-                    }
+                  this.confirmInput.focus()
+                  this.checkFull('password')
+                  this.checkErrors()
                 }}
                 ref={(input) => this.passwordInput = input}
               />
-              <TextInput
-                onChangeText={value => this.onChangeText('name', value)}
+
+              <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
+                onChangeText={value => this.onChangeConfirm(value)}
+                label='Confirm Password'
+                value={this.state.confirm}
+                error={this.state.confirm_error}
                 /*style={styles.input}*/
+                secureTextEntry={true}
                 blurOnSubmit={false}
-                keyboardAppearance='dark'
+                tintColor='#FF8200'
                 underlineColorAndroid='transparent'
-                placeholder='name'
+                keyboardAppearance='dark'
+                /*placeholder='password'*/
                 returnKeyType='next'
-                onSubmitEditing={() => this.phoneInput.focus()}
-                ref={(input) => this.nameInput = input}
+                onBlur={() => {
+                  this.checkFull('confirm')
+                  this.checkErrors()
+                }}
+                onSubmitEditing={() => {
+                  this.firstnameInput.focus()
+                  this.checkFull('confirm')
+                  this.checkErrors()
+                }}
+                ref={(input) => this.confirmInput = input}
               />
-              <TextInput
-                onChangeText={value => this.onChangeText('phone_number', value)}
+
+              <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
+                onChangeText={value => this.onChangeText('firstname', value)}
+                label='First Name'
+                value={this.state.firstname}
+                error={this.state.firstname_error}
                 /*style={styles.input}*/
+                secureTextEntry={false}
                 blurOnSubmit={false}
-                keyboardType='phone-pad'
-                keyboardAppearance='dark'
-                returnKeyType='done'
+                tintColor='#FF8200'
                 underlineColorAndroid='transparent'
-                placeholder='phone number'
-                onSubmitEditing={() => Keyboard.dismiss()}
+                keyboardAppearance='dark'
+                /*placeholder='password'*/
+                returnKeyType='next'
+                onBlur={() => {
+                  this.checkFull('firstname')
+                  this.checkErrors()
+                }}
+                onSubmitEditing={() => {
+                  this.lastnameInput.focus()
+                  this.checkFull('firstname')
+                  this.checkErrors()
+                }}
+                ref={(input) => this.firstnameInput = input}
+              />
+
+              <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
+                onChangeText={value => this.onChangeText('lastname', value)}
+                label='Last Name'
+                value={this.state.lastname}
+                error={this.state.lastname_error}
+                /*style={styles.input}*/
+                secureTextEntry={false}
+                blurOnSubmit={false}
+                tintColor='#FF8200'
+                underlineColorAndroid='transparent'
+                keyboardAppearance='dark'
+                /*placeholder='password'*/
+                returnKeyType='next'
+                onBlur={() => {
+                  this.checkFull('lastname')
+                  this.checkErrors()
+                }}
+                onSubmitEditing={() => {
+                  this.phoneInput.focus()
+                  this.checkFull('lastname')
+                  this.checkErrors()
+                }}
+                ref={(input) => this.lastnameInput = input}
+              />
+
+              <TextField
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.fieldContainer}
+                labelTextStyle={styles.inputText}
+                titleTextStyle={styles.inputText}
+                affixTextStyle={styles.inputText}
+                onChangeText={value => this.onChangePhone(value)}
+                label='Phone Number'
+                value={this.state.phone_number}
+                error={this.state.phone_error}
+                prefix='+1'
+                /*style={styles.input}*/
+                secureTextEntry={false}
+                blurOnSubmit={false}
+                tintColor='#FF8200'
+                underlineColorAndroid='transparent'
+                keyboardAppearance='dark'
+                keyboardType='number-pad'
+                /*placeholder='password'*/
+                returnKeyType='done'
+                onBlur={() => {
+                  this.checkFull('phone')
+                  this.checkErrors()
+                }}
+                onSubmitEditing={() => {
+                  Keyboard.dismiss()
+                  this.checkFull('phone')
+                  this.checkErrors()
+                }}
                 ref={(input) => this.phoneInput = input}
               />
+
+
             <View style={styles.registeringAs}>
                 <Text style={styles.registerText}>Registering as:</Text>
               </View>
@@ -195,9 +429,12 @@ export default class SignUp extends React.Component {
                 />
               </View>
             </View>
+
             <View style={styles.btnContainer}>
+              <Text style={styles.signUpText}>Please double-check your form</Text>
               <TouchableOpacity
                 style={styles.btnSignUp}
+                disabled = {this.state.disabled}
                 onPress={this.signUp.bind(this)}>
                 <Text style={styles.btnText}>Sign Up</Text>
               </TouchableOpacity>
@@ -219,6 +456,10 @@ const styles = StyleSheet.create({
   },
   form: {
     padding: 20,
+  },
+  signUpText: {
+    textAlign: 'center',
+    fontSize: 18,
   },
   logo: {
     width: 100,
@@ -266,4 +507,14 @@ const styles = StyleSheet.create({
   registeringAs: {
     margin: 10,
   },
+  inputText: {
+    paddingLeft: 12,
+  },
+  inputContainer: {
+    paddingLeft: 12,
+    backgroundColor: '#F6F6F6',
+  },
+  fieldContainer: {
+    marginBottom: 20
+  }
 });

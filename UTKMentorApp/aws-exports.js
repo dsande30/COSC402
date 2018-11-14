@@ -9,14 +9,14 @@ const awsmobile =  {
     "aws_dynamodb_all_tables_region": "us-east-1",
     "aws_dynamodb_table_schemas": [
         {
-            "tableName": "profile_data",
+            "tableName": "profiles",
             "region": "us-east-1"
         }
     ],
     "aws_cloud_logic_custom": [
         {
             "name": "dynamoAPI",
-            "endpoint": "https://yzt4bz7ei8.execute-api.us-east-1.amazonaws.com/Prod",
+            "endpoint": "https://0nwve2n1ca.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
         }
     ]

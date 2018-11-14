@@ -11,6 +11,7 @@ import Amplify, { Auth, API } from 'aws-amplify';
 
 export default class Home extends Component {
   state = {
+    user_id: '',
     name: '',
     role: ''
   }
@@ -41,6 +42,7 @@ export default class Home extends Component {
 
   setAttributes() {
     this.getUser().then((data) => this.setState({
+      user_id: data.attributes.email,
       name: data.attributes.name,
       role: data.attributes['custom:role']
     }))
@@ -55,7 +57,7 @@ export default class Home extends Component {
     console.log('calling api');
     const response = await API.post('dynamoAPI', '/items', {
       body: {
-        userid: 'akarnauc@vols.utk.edu',
+        user_id: this.state.user_id,
         form_data: sample_form,
         mentor: false,
         pairings: sample_pair,
@@ -66,12 +68,12 @@ export default class Home extends Component {
   }
   get = async () => {
     console.log('calling api');
-    const response = await API.get('dynamoAPI', '/items/akarnauc@vols.utk.edu');
+    const response = await API.get('dynamoAPI', '/items/' + this.state.user_id);
     alert(JSON.stringify(response, null, 2));
   }
   list = async () => {
     console.log('calling api');
-    const response = await API.get('dynamoAPI', '/items/akarnauc@vols.utk.edu');
+    const response = await API.get('dynamoAPI', '/items/' + this.state.user_id);
     alert(JSON.stringify(response, null, 2));
   }
 
@@ -85,7 +87,7 @@ export default class Home extends Component {
           To help us learn more about your interests and find your mentor,
           please fill out the survey below.
         </Text>
-      appButton = <Button title="Begin Survey" onPress={() => this.props.navigation.navigate('MenteeApp')} />
+      appButton = <Button title="Begin Survey" onPress={() => this.props.navigation.navigate('MenteeApp', { user_id: this.state.user_id })} />
     }
     else if (this.state.role === 'Mentor') {
       body = <Text style={styles.formText}>You have signed up as a
@@ -93,7 +95,7 @@ export default class Home extends Component {
           To help us learn more about your interests and match you with mentees,
           please fill out the survey below.
         </Text>
-      appButton = <Button title="Begin Survey" onPress={() => this.props.navigation.navigate('MentorApp')} />
+      appButton = <Button title="Begin Survey" onPress={() => this.props.navigation.navigate('MentorApp', { user_id: this.state.user_id })} />
     }
     return (
       <View style={styles.container}>
