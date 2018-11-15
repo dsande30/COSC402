@@ -95,7 +95,8 @@ export default class Profile extends Component {
           form_data: rv[0].form_data,
           goals: rv[0].goals,
           mentor: rv[0].mentor,
-          pairings: rv[0].pairings
+          pairings: rv[0].pairings,
+          user_data: rv[0].user_data
         }, function () { console.log('set that state')})
       })
     })
@@ -153,14 +154,24 @@ export default class Profile extends Component {
   getDueDate(item) {
     let body;
 
-    if (item.due != "NULL") {
+    if (item.due != 'NULL') {
       const days = this.getDiff(item.due)
-      body =
-      <View style={styles.flexBlock}>
-        <View style={styles.textLeftContainer}>
-          <Text style={styles.subtitleText}>Due: {item.due} ({days} days)</Text>
+      if (days >= 0) {
+        body =
+        <View style={styles.flexBlock}>
+          <View style={styles.textLeftContainer}>
+            <Text style={styles.subtitleText}>Due: {item.due} ({days} days)</Text>
+          </View>
         </View>
-      </View>
+      }
+      else if (days < 0) {
+        body =
+        <View style={styles.flexBlock}>
+          <View style={styles.textLeftContainer}>
+            <Text style={styles.subtitleText}>Due: {item.due} ({Math.abs(days)} days past due)</Text>
+          </View>
+        </View>
+      }
     }
     return body;
   }
@@ -300,6 +311,7 @@ export default class Profile extends Component {
                 <ListItem
                   containerStyle={styles.listContainerMissed}
                   titleStyle={styles.titleStyle}
+                  subtitle={this.getDueDate(item)}
                   hideChevron
                   leftIcon={<Icon
                     name='alert-box'
@@ -438,6 +450,7 @@ export default class Profile extends Component {
                  containerStyle={styles.listContainerMissed}
                  titleStyle={styles.titleStyle}
                  hideChevron
+                 subtitle={this.getDueDate(item)}
                  leftIcon={<Icon
                    name='alert-box'
                    type='material-community'
