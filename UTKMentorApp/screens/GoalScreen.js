@@ -38,17 +38,19 @@ export default class Goals extends Component {
       mentor: '',
       pairings: [],
       photo: '',
+      user_data: {},
       modal_edit_visible: false,
       modal_add_visible: false,
       curr_goal: {
         'description': '',
-        'due': '',
+        'due': 'NULL',
         'status': 0,
         'reminder': [],
         'creator': 'User'
       },
       newDescription: '',
       date: '',
+      new_date: '',
       reminder: [],
       creator: 'User',
       status: 0
@@ -69,9 +71,10 @@ export default class Goals extends Component {
     old_state.creator = '',
     old_state.reminder = [],
     old_state.status = 0,
+    old_state.new_date = '',
     old_state.curr_goal = {
       'description': '',
-      'due': '',
+      'due': 'NULL',
       'status': 0,
       'creator': '',
       'reminder': []
@@ -86,20 +89,39 @@ export default class Goals extends Component {
     let goals = this.state.goals
     let compGoals = goals.completeGoals;
     let incompGoals = goals.incompleteGoals;
+    let missedGoals = goals.missedGoals;
     let target = this.state.curr_goal
     let index, index2;
 
     index = compGoals.indexOf(target);
     index2 = incompGoals.indexOf(target);
+    index3 = missedGoals.indexOf(target);
 
     if (index !== -1) compGoals.splice(index, 1);
     else if (index2 !== -1) incompGoals.splice(index2, 1);
+    else if (index3 !== -1) missedGoals.splice(index3, 1);
 
     goals.completeGoals = compGoals;
     goals.incompleteGoals = incompGoals;
+    goals.missedGoals = missedGoals;
 
     this.setStateHelper('goals', goals);
     this.setModalVisible('modal_edit_visible', !this.state.modal_edit_visible);
+  }
+
+  async putData() {
+    let put_body = {
+      body: {
+        userid: this.state.user_id,
+        user_data: this.state.user_data,
+        form_data: this.state.form_data,
+        goals: this.state.goals,
+        mentor: this.state.mentor,
+        pairings: this.state.pairings
+      }
+    }
+    const put_response = await API.put('dynamoAPI', '/items?userid=' + this.state.user_id, put_body);
+    return put_response;
   }
 
   setStateHelper(key, value) {
@@ -118,14 +140,22 @@ export default class Goals extends Component {
     console.log('adding new goal')
     let newGoal = {
       'description': this.state.newDescription,
-      'due': this.state.date,
-      'status': 0,
+      'due': this.state.new_date,
+      'status': this.state.status,
       'creator': 'User',
       'reminder': this.state.reminder
     }
     let copy = this.state.goals
-    copy['incompleteGoals'].push(newGoal);
+
+    if (newGoal.status === 0)
+      copy['incompleteGoals'].push(newGoal);
+    else if (newGoal.status === 1)
+      copy['completeGoals'].push(newGoal);
+    else if (newGoal.status === 2)
+      copy['missedGoals'].push(newGoal);
+
     this.setStateHelper('goals', copy);
+    this.setStateHelper('new_date', '');
     this.setModalVisible('modal_add_visible', !this.state.modal_add_visible);
   }
 
@@ -235,23 +265,44 @@ export default class Goals extends Component {
     }
   }
 
+  submitChanges() {
+    this.putData()
+    .then((rv) => {
+      console.log(rv)
+      this.props.navigation.state.params.onNavigateBack()
+      this.props.navigation.goBack();
+    })
+    .catch((err) => console.log(err));
+  }
+
   getDiff(date) {
     dt1 = new Date()
     dt2 = new Date(date)
+    console.log((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate()) ) /(1000 * 60 * 60 * 24))
     return Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate()) ) /(1000 * 60 * 60 * 24))
   }
 
   getDueDate(item) {
     let body;
 
-    if (item.due != "NULL") {
+    if (item.due != 'NULL') {
       const days = this.getDiff(item.due)
-      body =
-      <View style={styles.flexBlock}>
-        <View style={styles.textLeftContainer}>
-          <Text style={styles.subtitleText}>Due: {item.due} ({days} days)</Text>
+      if (days >= 0) {
+        body =
+        <View style={styles.flexBlock}>
+          <View style={styles.textLeftContainer}>
+            <Text style={styles.subtitleText}>Due: {item.due} ({days} days)</Text>
+          </View>
         </View>
-      </View>
+      }
+      else if (days < 0) {
+        body =
+        <View style={styles.flexBlock}>
+          <View style={styles.textLeftContainer}>
+            <Text style={styles.subtitleText}>Due: {item.due} ({Math.abs(days)} days past due)</Text>
+          </View>
+        </View>
+      }
     }
     return body;
   }
@@ -318,7 +369,7 @@ export default class Goals extends Component {
             <View style={styles.calendarContainer}>
               <DatePicker
                 style={{ width: '50%'}}
-                date={this.getDate(this.state.date)}
+                date={this.getDate(this.state.new_date)}
                 mode="date"
                 placeholder="select date"
                 format="MM/DD/YYYY"
@@ -344,7 +395,7 @@ export default class Goals extends Component {
                     color: '#d50000'
                   }
                 }}
-                onDateChange={(date) => {this.setState({date: date})}}
+                onDateChange={(date) => {this.setState({new_date: date})}}
               />
             </View>
             <Text style={styles.modalText}>Mark goal as:</Text>
@@ -504,14 +555,14 @@ export default class Goals extends Component {
                         type='material-community'
                         color='rgba(0, 0, 0, 0.6)'
                         size={30}
-                        onPress={() => this.removeGoal(item)}
+                        onPress={() => this.editGoal(item)}
                         />}
                 rightIcon={<Icon
                             name='lead-pencil'
                             type='material-community'
                             color='rgba(0, 0, 0, 0.6)'
                             size={20}
-                            onPress={() => this.removeGoal(item)}
+                            onPress={() => this.editGoal(item)}
                             />}
                 title={item.description}
                 subtitle={this.getDueDate(item)}
@@ -532,23 +583,25 @@ export default class Goals extends Component {
                 <ListItem
                   containerStyle={styles.listContainerMissed}
                   titleStyle={styles.titleStyle}
+                  subtitle={this.getDueDate(item)}
+                  onPress={() => this.editGoal(item)}
                   leftIcon={<Icon
                             name='alert-box'
                             type='material-community'
                             size={30}
                             color='rgba(0, 0, 0, 0.6)'
-                            onPress={() => this.removeGoal(item)}/>}
+                            onPress={() => this.editGoal(item)}/>}
                   rightIcon={<Icon
                             name='lead-pencil'
                             type='material-community'
                             size={20}
                             color='rgba(0, 0, 0, 0.6)'
-                            onPress={() => this.removeGoal(item)}/>}
+                            onPress={() => this.editGoal(item)}/>}
                             title={item.description}
                             onPress={() => this.editGoal(item)}
                             avatarStyle={{backgroundColor:'#FFFFFF'}}
                             />
-                          )}
+                  )}
                   keyExtractor={item => item.description}
                   ItemSeparatorComponent={this.renderSeparator}
                   />
@@ -567,13 +620,13 @@ export default class Goals extends Component {
                                 type='material-community'
                                 size={30}
                                 color='rgba(0, 0, 0, 0.6)'
-                                onPress={() => this.removeGoal(item)}/>}
+                                onPress={() => this.editGoal(item)}/>}
                       rightIcon={<Icon
                                 name='lead-pencil'
                                 type='material-community'
                                 size={20}
                                 color='rgba(0, 0, 0, 0.6)'
-                                onPress={() => this.removeGoal(item)}/>}
+                                onPress={() => this.editGoal(item)}/>}
                       title={item.description}
                       onPress={() => this.editGoal(item)}
                       avatarStyle={{backgroundColor:'#FFFFFF'}}
@@ -594,6 +647,13 @@ export default class Goals extends Component {
                 onPress={() => this.setModalVisible('modal_add_visible', true)}
               />
             </TouchableHighlight>
+            <View style={styles.flexContainer}>
+              <TouchableHighlight
+                style={styles.btnUpdate}
+                onPress={this.submitChanges.bind(this)}>
+                <Text style={styles.btnUpdateText}>Save Changes</Text>
+              </TouchableHighlight>
+            </View>
         </ScrollView>
     );
   }
