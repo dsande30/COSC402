@@ -143,8 +143,6 @@ export default class MenteeApplication extends Component {
             pairings: pairings
           }
         }
-        console.log('7&&&&&')
-        console.log(put_body)
         const put_response = await API.put('dynamoAPI', '/items?userid=' + user, put_body);
         return put_response;
       }
@@ -169,12 +167,13 @@ export default class MenteeApplication extends Component {
   }
 
   setModalVisible(visibleVal) {
-    console.log('in visible')
     var anEmpty = false
     var haveThree = false
     var anError = false
     let wanted = ['class_year', 'gender', 'major', 'high_GPA', 'grad_interested',
                   'grad_school', 'research', 'honors']
+
+    Keyboard.dismiss()
     for (var data in this.state) {
       if (wanted.includes(data)) {
         const input = this.state[data];
@@ -206,11 +205,6 @@ export default class MenteeApplication extends Component {
         ['minors_error']: 'Character limit exceeded'
       })
       anError = true
-    }
-    else if (this.state.minors == '') {
-      this.setState({
-        ['minors']: 'NULL'
-      })
     }
 
     if (this.state.weekend.length > 200) {
@@ -249,6 +243,11 @@ export default class MenteeApplication extends Component {
     }
     else if (anError) {
       return -1
+    }
+    if (this.state.minors == '') {
+      this.setState({
+        ['minors']: 'NULL'
+      })
     }
     this.setState({visible: visibleVal});
   }
@@ -471,6 +470,7 @@ export default class MenteeApplication extends Component {
               characterRestriction={75}
               onBlur={() => {
                 this.checkErrors()
+                Keyboard.dismiss()
               }}
               onSubmitEditing={() => {
                 this.checkErrors()
@@ -584,6 +584,7 @@ export default class MenteeApplication extends Component {
             onBlur={() => {
               this.checkErrors()
               this.checkFull('weekend')
+              Keyboard.dismiss()
             }}
             onSubmitEditing={() => {
               this.jobInput.focus()
@@ -615,6 +616,7 @@ export default class MenteeApplication extends Component {
             onBlur={() => {
               this.checkErrors()
               this.checkFull('job')
+              Keyboard.dismiss()
             }}
             onSubmitEditing={() => {
               Keyboard.dismiss()
