@@ -72,12 +72,14 @@ export default class Individual extends Component {
       })
     }
 
-    var year = ''
-    if (navi.form_data.class_year == 'Fifth Year+') {
+    var year = navi.form_data.class_year.split(' ').slice(0,1)
+    if (year == 'Fifth') {
       year = 'Super Senior'
     }
-    else {
-      year = navi.form_data.class_year
+
+    var minor = navi.form_data.minors
+    if (minor == 'NULL') {
+      minor = ''
     }
 
     const interestList1 = []
@@ -113,7 +115,7 @@ export default class Individual extends Component {
             <View style={styles.bio}>
               <Text style={styles.nameText}>{navi.name}</Text>
               <Text style={styles.subText}>{navi.form_data.major}{', '}{year}</Text>
-              <Text style={styles.subText}>{navi.form_data.minors}</Text>
+              <Text style={styles.subText}>{minor}</Text>
             </View>
           </View>
         </LinearGradient>
