@@ -220,7 +220,7 @@ export default class Profile extends Component {
         yourImage = <TouchableHighlight
                       underlayColor='transparent'
                       activeOpacity={0.2}
-                      onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
+                      onPress={() => this.props.navigation.navigate('Individual', {data: this.state, from: 'profile'})}>
                       <Image
                         style={styles.image}
                         source={this.state.photo}
