@@ -11,6 +11,7 @@ import {
   TouchableHighlight,
   Keyboard,
 } from 'react-native';
+import { Icon } from 'react-native-elements';
 import ModalSelector from 'react-native-modal-selector';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MultipleChoice from 'rn-multiple-choice';
@@ -560,7 +561,7 @@ export default class MenteeApplication extends Component {
             onChange={(option) => this.setStateHelper('honors', option.key)} />
 
           <Text style={multipleChoiceStyle}>What are your interest? (Select at least three)</Text>
-          <MultipleChoice style={styles.multChoice}
+          <MultipleChoice
             options={[
               'Cooking / Baking',
               'Coops / Internships',
@@ -578,8 +579,17 @@ export default class MenteeApplication extends Component {
               'Travel',
               'Video Games'
             ]}
-            onSelection={(option) => this.setStateInterest(option)
-            }
+            onSelection={(option) => this.setStateInterest(option)}
+            renderIndicator={(option) => {
+              return(
+                <Icon
+                  name='check'
+                  type='material-community'
+                  color='rgba(171, 193, 120, 1)'
+                  size={30}
+                />
+              )
+            }}
             optionStyle={styles.mcOption}
           />
 
@@ -802,4 +812,7 @@ const styles = StyleSheet.create({
   errorSelectText: {
     color: '#d50000'
   },
+  mcOption: {
+    height: 44,
+  }
 });

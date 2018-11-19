@@ -15,6 +15,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
+import { Icon } from 'react-native-elements';
 import ModalSelector from 'react-native-modal-selector';
 import MultipleChoice from 'rn-multiple-choice';
 import Amplify, { Auth, API } from 'aws-amplify';
@@ -50,7 +51,7 @@ export default class MenteeApplication extends Component {
     job_error: '',
     agree: false,
     visible: false,
-    disabled: true
+    disabled: true,
   }
 
   setStateHelper(key, value) {
@@ -82,7 +83,7 @@ export default class MenteeApplication extends Component {
       let form_data = {}
       let not_wanted = ['user_id', 'visible', 'disabled', 'job_error', 'weekend_error', 'class_year_error',
                         'gender_error', 'major_error', 'minors_error', 'high_GPA_error', 'grad_interested_error',
-                        'grad_school_error', 'research_error', 'honors_error']
+                        'grad_school_error', 'research_error', 'honors_error', 'checked']
       let user = this.state['user_id']
       for (var data in this.state) {
         if (!not_wanted.includes(data)) {
@@ -397,7 +398,6 @@ export default class MenteeApplication extends Component {
         modalStyles[wanted[item]] = error
       }
     }
-    console.log(this.state.minors_error)
 
     return (
         <KeyboardAwareScrollView style={styles.container}
@@ -539,7 +539,7 @@ export default class MenteeApplication extends Component {
             onChange={(option) => this.setStateHelper('honors', option.key)} />
 
           <Text style={multipleChoiceStyle}>What are your interest? (Select at least three)</Text>
-          <MultipleChoice style={styles.multChoice}
+          <MultipleChoice
             options={[
               'Cooking / Baking',
               'Coops / Internships',
@@ -557,8 +557,18 @@ export default class MenteeApplication extends Component {
               'Travel',
               'Video Games'
             ]}
-            onSelection={(option) => this.setStateInterest(option)
-            }
+            renderIndicator={(option) => {
+              return(
+                <Icon
+                  name='check'
+                  type='material-community'
+                  color='rgba(171, 193, 120, 1)'
+                  size={30}
+                />
+              )
+            }}
+            onSelection={(option) => this.setStateInterest(option)}
+            optionStyle={styles.mcOption}
           />
 
           <TextField
@@ -619,9 +629,9 @@ export default class MenteeApplication extends Component {
               Keyboard.dismiss()
             }}
             onSubmitEditing={() => {
-              Keyboard.dismiss()
               this.checkFull('job')
               this.checkErrors()
+              Keyboard.dismiss()
             }}
             ref={(input) => this.jobInput = input}
 
@@ -782,4 +792,7 @@ const styles = StyleSheet.create({
   errorSelectText: {
     color: '#d50000'
   },
+  mcOption: {
+    height: 44,
+  }
 });

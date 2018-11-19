@@ -91,7 +91,7 @@ export default class Search extends Component {
         else obj.role = 'Mentee'
       }
     }
-    this.props.navigation.navigate('Individual', { data: obj });
+    this.props.navigation.navigate('Individual', { data: obj, from: 'search' });
   }
 
   searchFilterFunction = text => {

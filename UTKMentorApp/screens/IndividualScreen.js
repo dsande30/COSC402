@@ -17,6 +17,7 @@ import {
 import {
   KeyboardAwareScrollView
 } from 'react-native-keyboard-aware-scroll-view';
+import { Icon } from 'react-native-elements';
 import { ListItem } from 'react-native-elements'
 import { TextField } from 'react-native-material-textfield';
 import { LinearGradient } from 'expo';
@@ -29,8 +30,13 @@ export default class Individual extends Component {
     user_id: ''
   }
 
+  preferUser() {
+    console.log('prefered')
+  }
+
   render () {
     const { navigation } = this.props
+    from = navigation.getParam('from')
     navi = navigation.getParam('data')
     console.log(navi)
 
@@ -100,6 +106,20 @@ export default class Individual extends Component {
       }
     }
 
+    var prefer = null
+    if (from == 'search') {
+      prefer = <TouchableOpacity style = {styles.preferBtn}
+        onPress={this.preferUser.bind(this)}>
+        <Icon
+          name='account-plus'
+          type='material-community'
+          color='rgba(255,255,255,0.70)'
+          size={18}
+        />
+        <Text style={styles.preferText}>Prefer</Text>
+      </TouchableOpacity>
+    }
+
     return (
       <KeyboardAwareScrollView style={styles.container} enableOnAndroid={true}
        enableAutoAutomaticScroll={(Platform.OS === 'ios')}>
@@ -112,6 +132,7 @@ export default class Individual extends Component {
                 source={require('../assets/andrey.jpeg')}
               />
             </View>
+            {prefer}
             <View style={styles.bio}>
               <Text style={styles.nameText}>{navi.name}</Text>
               <Text style={styles.subText}>{navi.form_data.major}{', '}{year}</Text>
@@ -305,5 +326,22 @@ const styles = StyleSheet.create({
   headForm: {
     paddingLeft: '2.5%',
     paddingRight: '2.5%',
+  },
+  preferBtn: {
+    backgroundColor: '#ABC178',
+    borderRadius: 20,
+    padding: 10,
+    width: '50%',
+    height: 36,
+    alignItems: 'center',
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  preferText: {
+    color: 'rgba(255,255,255,0.70)',
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingLeft: 8
   }
 });
