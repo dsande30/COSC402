@@ -26,64 +26,116 @@ import { LinearGradient } from 'expo';
 import Amplify, { Auth, API } from 'aws-amplify';
 
 export default class Individual extends Component {
-  state = {
-    user_id: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      user_id: '',
+      user_data: {},
+      navi: {},
+      from: ''
+    }
+  }
+
+  componentWillMount() {
+    console.log('Fired')
+    this.setData();
   }
 
   preferUser() {
     console.log('prefered')
+    let tmp = this.state.user_data
+    tmp.pairings.push(this.state.navi.userid)
+    this.setState({
+      user_data: tmp
+    }), this.putData()
+  }
+
+  preferUndo() {
+    console.log('undo')
+    let tmp = this.state.user_data
+    var index = tmp.pairings.indexOf(this.state.navi.userid)
+    if (index !== -1) {
+      tmp.pairings.splice(index, 1);
+    }
+    this.setState({
+      user_data: tmp
+    }), this.putData()
+  }
+
+  setData() {
+    let { navigation } = this.props;
+    let from = navigation.getParam('from')
+    let user_data = navigation.getParam('user_data')
+    let navi = navigation.getParam('data')
+    this.setState({
+      user_data: user_data,
+      navi: navi,
+      from: from
+    });
+  }
+
+  async putData() {
+    let put_body = {
+      body: {
+        userid: this.state.user_data.user_id,
+        user_data: this.state.user_data.user_data,
+        form_data: this.state.user_data.form_data,
+        goals: this.state.user_data.goals,
+        mentor: this.state.user_data.mentor,
+        pairings: this.state.user_data.pairings
+      }
+    }
+    const put_response = await API.put('dynamoAPI', '/items?userid=' + this.state.user_data.userid, put_body);
+    return put_response;
   }
 
   render () {
     const { navigation } = this.props
-    from = navigation.getParam('from')
-    navi = navigation.getParam('data')
-    console.log(navi)
 
     const headList = []
 
-    if (navi.role == 'Mentor') {
-      if (navi.form_data.research == 'Yes') {
+    if (this.state.navi.role == 'Mentor') {
+      if (this.state.navi.form_data.research == 'Yes') {
         headList.push({
           title: 'Doing research on campus',
           avatar: require('../assets/flask.png')
         })
       }
     }
-    else if (navi.role == 'Mentee') {
-      if (navi.form_data.research == 'Yes') {
+    else if (this.state.navi.role == 'Mentee') {
+      if (this.state.navi.form_data.research == 'Yes') {
         headList.push({
           title: 'Interested in doing research',
           avatar: require('../assets/flask.png')
         })
       }
-      else if (navi.form_data.research == 'Currently') {
+      else if (this.state.navi.form_data.research == 'Currently') {
         headList.push({
           title: 'Doing research on campus',
           avatar: require('../assets/flask.png')
         })
       }
     }
-    if (navi.form_data.honors == 'Yes') {
+    if (this.state.navi.form_data.honors == 'Yes') {
       headList.push({
         title: 'In honors program',
         avatar: require('../assets/star.png')
       })
     }
-    if (navi.form_data.grad_interested == 'Yes' &&
-        navi.form_data.grad_school != 'None') {
+    if (this.state.navi.form_data.grad_interested == 'Yes' &&
+        this.state.navi.form_data.grad_school != 'None') {
       headList.push({
-        title: 'Pursuing '+ navi.form_data.grad_school.toLowerCase(),
+        title: 'Pursuing '+ this.state.navi.form_data.grad_school.toLowerCase(),
         avatar: require('../assets/cap.png')
       })
     }
 
-    var year = navi.form_data.class_year.split(' ').slice(0,1)
+    var year = this.state.navi.form_data.class_year.split(' ').slice(0,1)
     if (year == 'Fifth') {
       year = 'Super Senior'
     }
 
-    var minor = navi.form_data.minors
+    var minor = this.state.navi.form_data.minors
     if (minor == 'NULL') {
       minor = ''
     }
@@ -92,33 +144,48 @@ export default class Individual extends Component {
     const interestList2 = []
 
 
-    for (var i in navi.form_data.interests) {
-      if ( i < navi.form_data.interests.length / 2) {
+    for (var i in this.state.navi.form_data.interests) {
+      if ( i < this.state.navi.form_data.interests.length / 2) {
         console.log('1')
         interestList1.push({
-          title: navi.form_data.interests[i]
+          title: this.state.navi.form_data.interests[i]
         })
       } else {
         console.log('2')
         interestList2.push({
-          title: navi.form_data.interests[i]
+          title: this.state.navi.form_data.interests[i]
         })
       }
     }
 
     var prefer = null
-    if (from == 'search') {
-      prefer = <TouchableOpacity style = {styles.preferBtn}
-        onPress={this.preferUser.bind(this)}>
-        <Icon
-          name='account-plus'
-          type='material-community'
-          color='rgba(255,255,255,0.70)'
-          size={18}
-        />
-        <Text style={styles.preferText}>Prefer</Text>
-      </TouchableOpacity>
+    if (this.state.from == 'search') {
+      if (this.state.user_data.pairings.includes(this.state.navi.userid)) {
+        prefer = <TouchableOpacity style = {styles.preferBtn}
+          onPress={this.preferUndo.bind(this)}>
+          <Icon
+            name='account-check'
+            type='material-community'
+            color='rgba(255,255,255,0.70)'
+            size={18}
+          />
+          <Text style={styles.preferText}>Prefered</Text>
+        </TouchableOpacity>
+      }
+      else {
+        prefer = <TouchableOpacity style = {styles.preferBtn}
+          onPress={this.preferUser.bind(this)}>
+          <Icon
+            name='account-plus'
+            type='material-community'
+            color='rgba(255,255,255,0.70)'
+            size={18}
+          />
+          <Text style={styles.preferText}>Prefer</Text>
+        </TouchableOpacity>
+      }
     }
+
 
     return (
       <KeyboardAwareScrollView style={styles.container} enableOnAndroid={true}
@@ -134,9 +201,9 @@ export default class Individual extends Component {
             </View>
             {prefer}
             <View style={styles.bio}>
-              <Text style={styles.nameText}>{navi.name}</Text>
-              <Text style={styles.subText}>{navi.form_data.major}{', '}{year}</Text>
-              <Text style={styles.subText}>{minor}</Text>
+              <Text style={styles.nameText}>{this.state.navi.name}</Text>
+              <Text style={styles.subText}>{this.state.navi.form_data.major}{', '}{year}</Text>
+              <Text style={styles.subText}>{this.state.minor}</Text>
             </View>
           </View>
         </LinearGradient>
@@ -192,7 +259,7 @@ export default class Individual extends Component {
           <TextField
             label='My dream job'
             labelFontSize={16}
-            value={navi.form_data.job}
+            value={this.state.navi.form_data.job}
             /*style={styles.input}*/
             secureTextEntry={false}
             blurOnSubmit={false}
@@ -206,7 +273,7 @@ export default class Individual extends Component {
           <TextField
             label='My typical weekend'
             labelFontSize={16}
-            value={navi.form_data.weekend}
+            value={this.state.navi.form_data.weekend}
             /*style={styles.input}*/
             secureTextEntry={false}
             blurOnSubmit={false}

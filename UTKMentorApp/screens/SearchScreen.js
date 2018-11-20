@@ -12,7 +12,8 @@ export default class Search extends Component {
       loading: false,
       data: [],
       error: null,
-      role: ''
+      role: '',
+      user_data: ''
     };
 
     this.arrayholder = [];
@@ -25,9 +26,11 @@ export default class Search extends Component {
   setData() {
     let { navigation } = this.props;
     let role = navigation.getParam('role', 'NO-ID');
+    let user_data = navigation.getParam('user_data')
     if (this.state.role == '') {
       this.setState({
         role: role,
+        user_data: user_data
       });
     }
     this.getData()
@@ -91,7 +94,8 @@ export default class Search extends Component {
         else obj.role = 'Mentee'
       }
     }
-    this.props.navigation.navigate('Individual', { data: obj, from: 'search' });
+
+    this.props.navigation.navigate('Individual', { data: obj, from: 'search', user_data: this.state.user_data });
   }
 
   searchFilterFunction = text => {

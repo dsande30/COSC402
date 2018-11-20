@@ -229,7 +229,7 @@ export default class Profile extends Component {
         mentorImage = <TouchableHighlight
                         underlayColor='transparent'
                         activeOpacity={0.2}
-                        onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
+                        onPress={() => this.props.navigation.navigate('Search', {role: this.state.role, user_data: this.state})}>
                         <Image
                           style={styles.image}
                           source={require('../assets/question-mark.png')}
@@ -242,7 +242,7 @@ export default class Profile extends Component {
                     </TouchableOpacity>
         viewMentors = <TouchableOpacity
                        style={styles.viewMentorsBtn}
-                       onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
+                       onPress={() => this.props.navigation.navigate('Search', {role: this.state.role, user_data: this.state})}>
                        <Text style={styles.viewTxt}>Browse Mentors</Text>
                      </TouchableOpacity>
         appButton = <TouchableOpacity
