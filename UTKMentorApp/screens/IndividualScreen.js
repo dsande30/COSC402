@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   View,
+  Alert,
   Text,
   Image,
   TextInput,
@@ -41,10 +42,35 @@ export default class Individual extends Component {
     this.setData();
   }
 
+  preferUserMentee() {
+    let tmp = this.state.user_data
+    tmp.pairings = [this.state.navi.userid]
+    this.setState({
+      user_data: tmp
+    }), this.putData()
+  }
+
   preferUser() {
     console.log('prefered')
+    console.log(this.state.user_data)
     let tmp = this.state.user_data
-    tmp.pairings.push(this.state.navi.userid)
+    if (tmp.mentor) {
+      tmp.pairings.push(this.state.navi.userid)
+    }
+    else {
+      if (tmp.pairings.length != 0) {
+        Alert.alert(
+          'Warning!',
+          'You have already preferred a mentor. To prefer this mentor instead, press OK. To keep your current preference, press Cancel.',
+          [
+            {text: 'OK', onPress: () => this.preferUserMentee()},
+            {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          ],
+          { cancelable: false }
+        )
+      }
+      else tmp.pairings = [this.state.navi.userid]
+    }
     this.setState({
       user_data: tmp
     }), this.putData()
@@ -136,6 +162,7 @@ export default class Individual extends Component {
     }
 
     var minor = this.state.navi.form_data.minors
+    console.log(minor)
     if (minor == 'NULL') {
       minor = ''
     }
@@ -160,6 +187,7 @@ export default class Individual extends Component {
 
     var prefer = null
     if (this.state.from == 'search') {
+      console.log(this.state.user_data.pairings)
       if (this.state.user_data.pairings.includes(this.state.navi.userid)) {
         prefer = <TouchableOpacity style = {styles.preferBtn}
           onPress={this.preferUndo.bind(this)}>
@@ -203,7 +231,7 @@ export default class Individual extends Component {
             <View style={styles.bio}>
               <Text style={styles.nameText}>{this.state.navi.name}</Text>
               <Text style={styles.subText}>{this.state.navi.form_data.major}{', '}{year}</Text>
-              <Text style={styles.subText}>{this.state.minor}</Text>
+              <Text style={styles.subText}>{minor}</Text>
             </View>
           </View>
         </LinearGradient>
