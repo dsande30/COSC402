@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   View,
+  Alert,
   Text,
   Image,
   TextInput,
@@ -17,6 +18,7 @@ import {
 import {
   KeyboardAwareScrollView
 } from 'react-native-keyboard-aware-scroll-view';
+import { Icon } from 'react-native-elements';
 import { ListItem } from 'react-native-elements'
 import { TextField } from 'react-native-material-textfield';
 import { LinearGradient } from 'expo';
@@ -25,78 +27,193 @@ import { LinearGradient } from 'expo';
 import Amplify, { Auth, API } from 'aws-amplify';
 
 export default class Individual extends Component {
-  state = {
-    user_id: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      user_id: '',
+      user_data: {},
+      navi: {},
+      from: ''
+    }
+  }
+
+  componentWillMount() {
+    console.log('Fired')
+    this.setData();
+  }
+
+  preferUserMentee() {
+    let tmp = this.state.user_data
+    tmp.pairings = [this.state.navi.userid]
+    this.setState({
+      user_data: tmp
+    }), this.putData()
+  }
+
+  preferUser() {
+    console.log('prefered')
+    console.log(this.state.user_data)
+    let tmp = this.state.user_data
+    if (tmp.mentor) {
+      tmp.pairings.push(this.state.navi.userid)
+    }
+    else {
+      if (tmp.pairings.length != 0) {
+        Alert.alert(
+          'Warning!',
+          'You have already preferred a mentor. To prefer this mentor instead, press OK. To keep your current preference, press Cancel.',
+          [
+            {text: 'OK', onPress: () => this.preferUserMentee()},
+            {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          ],
+          { cancelable: false }
+        )
+      }
+      else tmp.pairings = [this.state.navi.userid]
+    }
+    this.setState({
+      user_data: tmp
+    }), this.putData()
+  }
+
+  preferUndo() {
+    console.log('undo')
+    let tmp = this.state.user_data
+    var index = tmp.pairings.indexOf(this.state.navi.userid)
+    if (index !== -1) {
+      tmp.pairings.splice(index, 1);
+    }
+    this.setState({
+      user_data: tmp
+    }), this.putData()
+  }
+
+  setData() {
+    let { navigation } = this.props;
+    let from = navigation.getParam('from')
+    let user_data = navigation.getParam('user_data')
+    let navi = navigation.getParam('data')
+    this.setState({
+      user_data: user_data,
+      navi: navi,
+      from: from
+    });
+  }
+
+  async putData() {
+    let put_body = {
+      body: {
+        userid: this.state.user_data.user_id,
+        user_data: this.state.user_data.user_data,
+        form_data: this.state.user_data.form_data,
+        goals: this.state.user_data.goals,
+        mentor: this.state.user_data.mentor,
+        pairings: this.state.user_data.pairings
+      }
+    }
+    const put_response = await API.put('dynamoAPI', '/items?userid=' + this.state.user_data.userid, put_body);
+    return put_response;
   }
 
   render () {
     const { navigation } = this.props
-    navi = navigation.getParam('data')
-    console.log(navi)
 
     const headList = []
 
-    if (navi.role == 'Mentor') {
-      if (navi.form_data.research == 'Yes') {
+    if (this.state.navi.role == 'Mentor') {
+      if (this.state.navi.form_data.research == 'Yes') {
         headList.push({
           title: 'Doing research on campus',
           avatar: require('../assets/flask.png')
         })
       }
     }
-    else if (navi.role == 'Mentee') {
-      if (navi.form_data.research == 'Yes') {
+    else if (this.state.navi.role == 'Mentee') {
+      if (this.state.navi.form_data.research == 'Yes') {
         headList.push({
           title: 'Interested in doing research',
           avatar: require('../assets/flask.png')
         })
       }
-      else if (navi.form_data.research == 'Currently') {
+      else if (this.state.navi.form_data.research == 'Currently') {
         headList.push({
           title: 'Doing research on campus',
           avatar: require('../assets/flask.png')
         })
       }
     }
-    if (navi.form_data.honors == 'Yes') {
+    if (this.state.navi.form_data.honors == 'Yes') {
       headList.push({
         title: 'In honors program',
         avatar: require('../assets/star.png')
       })
     }
-    if (navi.form_data.grad_interested == 'Yes' &&
-        navi.form_data.grad_school != 'None') {
+    if (this.state.navi.form_data.grad_interested == 'Yes' &&
+        this.state.navi.form_data.grad_school != 'None') {
       headList.push({
-        title: 'Pursuing '+ navi.form_data.grad_school.toLowerCase(),
+        title: 'Pursuing '+ this.state.navi.form_data.grad_school.toLowerCase(),
         avatar: require('../assets/cap.png')
       })
     }
 
-    var year = ''
-    if (navi.form_data.class_year == 'Fifth Year+') {
+    var year = this.state.navi.form_data.class_year.split(' ').slice(0,1)
+    if (year == 'Fifth') {
       year = 'Super Senior'
     }
-    else {
-      year = navi.form_data.class_year
+
+    var minor = this.state.navi.form_data.minors
+    console.log(minor)
+    if (minor == 'NULL') {
+      minor = ''
     }
 
     const interestList1 = []
     const interestList2 = []
 
 
-    for (var i in navi.form_data.interests) {
-      if ( i < navi.form_data.interests.length / 2) {
+    for (var i in this.state.navi.form_data.interests) {
+      if ( i < this.state.navi.form_data.interests.length / 2) {
         console.log('1')
         interestList1.push({
-          title: navi.form_data.interests[i]
+          title: this.state.navi.form_data.interests[i]
         })
       } else {
         console.log('2')
         interestList2.push({
-          title: navi.form_data.interests[i]
+          title: this.state.navi.form_data.interests[i]
         })
       }
     }
+
+    var prefer = null
+    if (this.state.from == 'search') {
+      console.log(this.state.user_data.pairings)
+      if (this.state.user_data.pairings.includes(this.state.navi.userid)) {
+        prefer = <TouchableOpacity style = {styles.preferBtn}
+          onPress={this.preferUndo.bind(this)}>
+          <Icon
+            name='account-check'
+            type='material-community'
+            color='rgba(255,255,255,0.70)'
+            size={18}
+          />
+          <Text style={styles.preferText}>Prefered</Text>
+        </TouchableOpacity>
+      }
+      else {
+        prefer = <TouchableOpacity style = {styles.preferBtn}
+          onPress={this.preferUser.bind(this)}>
+          <Icon
+            name='account-plus'
+            type='material-community'
+            color='rgba(255,255,255,0.70)'
+            size={18}
+          />
+          <Text style={styles.preferText}>Prefer</Text>
+        </TouchableOpacity>
+      }
+    }
+
 
     return (
       <KeyboardAwareScrollView style={styles.container} enableOnAndroid={true}
@@ -110,10 +227,11 @@ export default class Individual extends Component {
                 source={require('../assets/andrey.jpeg')}
               />
             </View>
+            {prefer}
             <View style={styles.bio}>
-              <Text style={styles.nameText}>{navi.name}</Text>
-              <Text style={styles.subText}>{navi.form_data.major}{', '}{year}</Text>
-              <Text style={styles.subText}>{navi.form_data.minors}</Text>
+              <Text style={styles.nameText}>{this.state.navi.name}</Text>
+              <Text style={styles.subText}>{this.state.navi.form_data.major}{', '}{year}</Text>
+              <Text style={styles.subText}>{minor}</Text>
             </View>
           </View>
         </LinearGradient>
@@ -169,7 +287,7 @@ export default class Individual extends Component {
           <TextField
             label='My dream job'
             labelFontSize={16}
-            value={navi.form_data.job}
+            value={this.state.navi.form_data.job}
             /*style={styles.input}*/
             secureTextEntry={false}
             blurOnSubmit={false}
@@ -183,7 +301,7 @@ export default class Individual extends Component {
           <TextField
             label='My typical weekend'
             labelFontSize={16}
-            value={navi.form_data.weekend}
+            value={this.state.navi.form_data.weekend}
             /*style={styles.input}*/
             secureTextEntry={false}
             blurOnSubmit={false}
@@ -303,5 +421,22 @@ const styles = StyleSheet.create({
   headForm: {
     paddingLeft: '2.5%',
     paddingRight: '2.5%',
+  },
+  preferBtn: {
+    backgroundColor: '#ABC178',
+    borderRadius: 20,
+    padding: 10,
+    width: '50%',
+    height: 36,
+    alignItems: 'center',
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  preferText: {
+    color: 'rgba(255,255,255,0.70)',
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingLeft: 8
   }
 });

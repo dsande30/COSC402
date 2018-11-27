@@ -15,6 +15,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
+import { Icon } from 'react-native-elements';
 import ModalSelector from 'react-native-modal-selector';
 import MultipleChoice from 'rn-multiple-choice';
 import Amplify, { Auth, API } from 'aws-amplify';
@@ -27,22 +28,30 @@ export default class MenteeApplication extends Component {
   state = {
     user_id: '',
     class_year: '',
+    class_year_error: false,
     gender: '',
+    gender_error: false,
     major: '',
+    major_error: false,
     minors: '',
-    high_GPA: '',
+    minors_error: '',
     grad_interested: '',
+    grad_interested_error: false,
     grad_school: '',
+    grad_school_error: false,
     research: '',
+    research_error: false,
     honors: '',
+    honors_error: false,
     interests: ['EMP'],
+    interests_error: '',
     weekend: '',
     weekend_error: '',
     job: '',
     job_error: '',
     agree: false,
     visible: false,
-    disabled: true
+    disabled: true,
   }
 
   setStateHelper(key, value) {
@@ -72,17 +81,13 @@ export default class MenteeApplication extends Component {
       let pairings = []
       let mentor = false
       let form_data = {}
-      let not_wanted = ['user_id', 'visible', 'disabled', 'job_error', 'weekend_error']
+      let not_wanted = ['user_id', 'visible', 'disabled', 'job_error', 'weekend_error', 'class_year_error',
+                        'gender_error', 'major_error', 'minors_error', 'high_GPA_error', 'grad_interested_error',
+                        'grad_school_error', 'research_error', 'honors_error', 'checked']
       let user = this.state['user_id']
       for (var data in this.state) {
-        if (!(data in not_wanted)) {
+        if (!not_wanted.includes(data)) {
           const input = this.state[data];
-          if (data != 'interests') {
-            input = String.prototype.trim.call(input);
-            if (input == '') {
-              input = "NULL";
-            }
-          }
           form_data[data] = input;
         }
       }
@@ -100,7 +105,7 @@ export default class MenteeApplication extends Component {
                 "due": "NULL",
                 "status": 1,
                 "creator": "EMP",
-                "reminder": ['The day of']
+                "reminder": []
               }
             ],
           "incompleteGoals":
@@ -110,21 +115,21 @@ export default class MenteeApplication extends Component {
               "due": "NULL",
               "status": 0,
               "creator": "EMP",
-              "reminder": ['The day of']
+              "reminder": []
             },
             {
               "description": "Get paired with a mentor",
               "due": "08/31/2019",
               "status": 0,
               "creator": "EMP",
-              "reminder": ['The day of']
+              "reminder": []
             },
             {
               "description": "Meet with your mentor",
               "due": "NULL",
               "status": 0,
               "creator": "EMP",
-              "reminder": ['The day of']
+              "reminder": []
             }
           ],
           "missedGoals": []
@@ -163,6 +168,88 @@ export default class MenteeApplication extends Component {
   }
 
   setModalVisible(visibleVal) {
+    var anEmpty = false
+    var haveThree = false
+    var anError = false
+    let wanted = ['class_year', 'gender', 'major', 'high_GPA', 'grad_interested',
+                  'grad_school', 'research', 'honors']
+
+    Keyboard.dismiss()
+    for (var data in this.state) {
+      if (wanted.includes(data)) {
+        const input = this.state[data];
+        console.log(input)
+        input = String.prototype.trim.call(input);
+        if (input == '') {
+          this.setState({
+            [data+'_error']: true
+          })
+          anEmpty = true
+        }
+      }
+    }
+
+    if (this.state.interests.length >= 4) {
+      haveThree = true
+      this.setState({
+        ['interests_error']: false
+      })
+    }
+    else {
+      this.setState({
+        ['interests_error']: true
+      })
+    }
+
+    if (this.state.minors.length > 75) {
+      this.setState({
+        ['minors_error']: 'Character limit exceeded'
+      })
+      anError = true
+    }
+
+    if (this.state.weekend.length > 200) {
+      this.setState({
+        ['weekend_error']: 'Character limit exceeded'
+      })
+      anError = true
+    }
+    else if (this.state.weekend == '') {
+      this.setState({
+        ['weekend_error']: 'Oops! You forgot this one'
+      })
+      anError = true
+    }
+
+    if (this.state.job.length > 200) {
+      this.setState({
+        ['job_error']: 'Character limit exceeded'
+      })
+      anError = true
+    }
+    else if (this.state.job == '') {
+      this.setState({
+        ['job_error']: 'Oops! You forgot this one'
+      })
+      anError = true
+    }
+
+    if (anEmpty) {
+      this.scrollRef.props.scrollToPosition(0, 0);
+      return -1
+    }
+    else if (!haveThree) {
+      this.scrollRef.props.scrollToPosition(0, 550)
+      return -1
+    }
+    else if (anError) {
+      return -1
+    }
+    if (this.state.minors == '') {
+      this.setState({
+        ['minors']: 'NULL'
+      })
+    }
     this.setState({visible: visibleVal});
   }
 
@@ -209,14 +296,14 @@ export default class MenteeApplication extends Component {
 
   render () {
     let class_years = [
-      {key: 'Freshman', label: 'Freshman Engineering Student'},
-      {key: 'Sophomore', label: 'Sophomore Engineering Student'}
+      {key: 'Freshman Engineering Student', label: 'Freshman Engineering Student'},
+      {key: 'Sophomore Engineering Student', label: 'Sophomore Engineering Student'}
     ];
     let genders = [
       {key: 'Male', label: 'Male'},
       {key: 'Female', label: 'Female'},
       {key: 'Other', label: 'Other'},
-      {key: 'NA', label: 'Prefer not to say'}
+      {key: 'Prefer not to say', label: 'Prefer not to say'}
     ];
     let majors = [
       {key: 'Aerospace Engineering', label: 'Aerospace Engineering'},
@@ -251,7 +338,7 @@ export default class MenteeApplication extends Component {
     let research_involvement = [
       {key: 'Yes', label: 'Yes'},
       {key: 'No', label: 'No'},
-      {key: 'Currently', label: 'I already am'}
+      {key: 'I already am', label: 'I already am'}
     ];
     let in_honors = [
       {key: 'Yes', label: 'Yes'},
@@ -265,14 +352,61 @@ export default class MenteeApplication extends Component {
         user_id: user_id
       });
     }
+    let modal = {
+      btnStyle: styles.modalSelectBtn,
+      textStyle: styles.modalSelectText,
+      init: 'Select'
+    }
+    let error = {
+      btnStyle: styles.errorSelectBtn,
+      textStyle: styles.errorSelectText,
+      init: 'Oops! You forgot this one'
+    }
+
+    let modalStyles = {
+      class_year: {},
+      gender: {},
+      major: {},
+      high_GPA: {},
+      grad_interested: {},
+      grad_school: {},
+      research: {},
+      honors: {}
+    }
+
+    let wanted = ['class_year', 'gender', 'major', 'high_GPA', 'grad_interested',
+                  'grad_school', 'research', 'honors']
+
+    var multipleChoiceStyle
+
+    if (this.state.interests_error == true) {
+      console.log('^^^^^^')
+      multipleChoiceStyle = styles.errorInterestText
+    }
+    else {
+      multipleChoiceStyle = styles.interestText
+    }
+
+    for (var item in wanted) {
+      if (this.state[wanted[item]+'_error'] == false) {
+        modalStyles[wanted[item]] = Object.assign({}, modal)
+        if (this.state[wanted[item]] != 'NULL' && this.state[wanted[item]] != '') {
+          modalStyles[wanted[item]].init = this.state[wanted[item]]
+        }
+      }
+      else {
+        modalStyles[wanted[item]] = error
+      }
+    }
 
     return (
-        <KeyboardAwareScrollView style={styles.container}>
+        <KeyboardAwareScrollView style={styles.container}
+          innerRef={(ref) => {this.scrollRef = ref}}>
           <View style={styles.formContainer}>
             <Text style={styles.modalText}>Class for this academic year?</Text>
             <ModalSelector style={styles.selector}
-              selectStyle={styles.modalSelectBtn}
-              selectTextStyle={styles.modalSelectText}
+              selectStyle={modalStyles.class_year.btnStyle}
+              selectTextStyle={modalStyles.class_year.textStyle}
               selectedItemTextStyle={styles.selectedItemText}
               optionTextStyle={styles.optionText}
               optionContainerStyle={styles.optionContainer}
@@ -281,13 +415,13 @@ export default class MenteeApplication extends Component {
               cancelText='Cancel'
               cancelTextStyle={styles.cancelTextStyle}
               data={class_years}
-              initValue="Select"
+              initValue={modalStyles.class_year.init}
               onChange={(option) => this.setStateHelper('class_year', option.key)} />
 
             <Text style={styles.modalText}>Gender?</Text>
             <ModalSelector style={styles.selector}
-              selectStyle={styles.modalSelectBtn}
-              selectTextStyle={styles.modalSelectText}
+              selectStyle={modalStyles.gender.btnStyle}
+              selectTextStyle={modalStyles.gender.textStyle}
               selectedItemTextStyle={styles.selectedItemText}
               optionTextStyle={styles.optionText}
               optionContainerStyle={styles.optionContainer}
@@ -296,13 +430,13 @@ export default class MenteeApplication extends Component {
               cancelText='Cancel'
               cancelTextStyle={styles.cancelTextStyle}
               data={genders}
-              initValue="Select"
+              initValue={modalStyles.gender.init}
               onChange={(option) => this.setStateHelper('gender', option.key)} />
 
             <Text style={styles.modalText}>Major?</Text>
             <ModalSelector style={styles.selector}
-              selectStyle={styles.modalSelectBtn}
-              selectTextStyle={styles.modalSelectText}
+              selectStyle={modalStyles.major.btnStyle}
+              selectTextStyle={modalStyles.major.textStyle}
               selectedItemTextStyle={styles.selectedItemText}
               optionTextStyle={styles.optionText}
               optionContainerStyle={styles.optionContainer}
@@ -311,7 +445,7 @@ export default class MenteeApplication extends Component {
               cancelText='Cancel'
               cancelTextStyle={styles.cancelTextStyle}
               data={majors}
-              initValue="Select"
+              initValue={modalStyles.major.init}
               onChange={(option) => this.setStateHelper('major', option.key)} />
 
             <TextField
@@ -323,6 +457,7 @@ export default class MenteeApplication extends Component {
               onChangeText={value => this.setStateHelper('minors', value)}
               label='Minor(s)?'
               value={this.state.minors}
+              error={this.state.minors_error}
               title='Optional (leave blank if none)'
               /*style={styles.input}*/
               secureTextEntry={false}
@@ -332,8 +467,10 @@ export default class MenteeApplication extends Component {
               keyboardAppearance='dark'
               /*placeholder='password'*/
               returnKeyType='done'
+              characterRestriction={75}
               onBlur={() => {
                 this.checkErrors()
+                Keyboard.dismiss()
               }}
               onSubmitEditing={() => {
                 this.checkErrors()
@@ -343,17 +480,23 @@ export default class MenteeApplication extends Component {
 
           <Text style={styles.modalText}>Are you interested in graduate or professional education?</Text>
           <ModalSelector style={styles.selector}
-            selectStyle={styles.modalSelectBtn}
-            selectTextStyle={styles.modalSelectText}
+            selectStyle={modalStyles.grad_interested.btnStyle}
+            selectTextStyle={modalStyles.grad_interested.textStyle}
+            selectedItemTextStyle={styles.selectedItemText}
+            optionTextStyle={styles.optionText}
+            optionContainerStyle={styles.optionContainer}
+            cancelContainerStyle={styles.cancelContainer}
             animationType='fade'
+            cancelText='Cancel'
+            cancelTextStyle={styles.cancelTextStyle}
             data={prof_options}
-            initValue="Select"
+            initValue={modalStyles.grad_interested.init}
             onChange={(option) => this.setStateHelper('grad_interested', option.key)} />
 
           <Text style={styles.modalText}>What type of postsecondary education?</Text>
           <ModalSelector style={styles.selector}
-            selectStyle={styles.modalSelectBtn}
-            selectTextStyle={styles.modalSelectText}
+            selectStyle={modalStyles.grad_school.btnStyle}
+            selectTextStyle={modalStyles.grad_school.textStyle}
             selectedItemTextStyle={styles.selectedItemText}
             optionTextStyle={styles.optionText}
             optionContainerStyle={styles.optionContainer}
@@ -362,13 +505,13 @@ export default class MenteeApplication extends Component {
             cancelText='Cancel'
             cancelTextStyle={styles.cancelTextStyle}
             data={grad_schools}
-            initValue="Select"
+            initValue={modalStyles.grad_school.init}
             onChange={(option) => this.setStateHelper('grad_school', option.key)} />
 
           <Text style={styles.modalText}>Are you interested in research at UT?</Text>
           <ModalSelector style={styles.selector}
-            selectStyle={styles.modalSelectBtn}
-            selectTextStyle={styles.modalSelectText}
+            selectStyle={modalStyles.research.btnStyle}
+            selectTextStyle={modalStyles.research.textStyle}
             selectedItemTextStyle={styles.selectedItemText}
             optionTextStyle={styles.optionText}
             optionContainerStyle={styles.optionContainer}
@@ -377,13 +520,13 @@ export default class MenteeApplication extends Component {
             cancelText='Cancel'
             cancelTextStyle={styles.cancelTextStyle}
             data={research_involvement}
-            initValue="Select"
+            initValue={modalStyles.research.init}
             onChange={(option) => this.setStateHelper('research', option.key)} />
 
           <Text style={styles.modalText}>Are you in an honors program? (CHP, Engineering Honors, etc)</Text>
           <ModalSelector style={styles.selector}
-            selectStyle={styles.modalSelectBtn}
-            selectTextStyle={styles.modalSelectText}
+            selectStyle={modalStyles.honors.btnStyle}
+            selectTextStyle={modalStyles.honors.textStyle}
             selectedItemTextStyle={styles.selectedItemText}
             optionTextStyle={styles.optionText}
             optionContainerStyle={styles.optionContainer}
@@ -392,11 +535,11 @@ export default class MenteeApplication extends Component {
             cancelText='Cancel'
             cancelTextStyle={styles.cancelTextStyle}
             data={in_honors}
-            initValue="Select"
+            initValue={modalStyles.honors.init}
             onChange={(option) => this.setStateHelper('honors', option.key)} />
 
-          <Text style={styles.interestText}>What are your interest? (Select at least three)</Text>
-          <MultipleChoice style={styles.multChoice}
+          <Text style={multipleChoiceStyle}>What are your interest? (Select at least three)</Text>
+          <MultipleChoice
             options={[
               'Cooking / Baking',
               'Coops / Internships',
@@ -414,8 +557,18 @@ export default class MenteeApplication extends Component {
               'Travel',
               'Video Games'
             ]}
-            onSelection={(option) => this.setStateInterest(option)
-            }
+            renderIndicator={(option) => {
+              return(
+                <Icon
+                  name='check'
+                  type='material-community'
+                  color='rgba(171, 193, 120, 1)'
+                  size={30}
+                />
+              )
+            }}
+            onSelection={(option) => this.setStateInterest(option)}
+            optionStyle={styles.mcOption}
           />
 
           <TextField
@@ -441,6 +594,7 @@ export default class MenteeApplication extends Component {
             onBlur={() => {
               this.checkErrors()
               this.checkFull('weekend')
+              Keyboard.dismiss()
             }}
             onSubmitEditing={() => {
               this.jobInput.focus()
@@ -472,11 +626,12 @@ export default class MenteeApplication extends Component {
             onBlur={() => {
               this.checkErrors()
               this.checkFull('job')
+              Keyboard.dismiss()
             }}
             onSubmitEditing={() => {
-              Keyboard.dismiss()
               this.checkFull('job')
               this.checkErrors()
+              Keyboard.dismiss()
             }}
             ref={(input) => this.jobInput = input}
 
@@ -485,7 +640,7 @@ export default class MenteeApplication extends Component {
 
         <TouchableOpacity
           style={styles.openTermsButton}
-          onPress={() => {this.setState({ visible: true })}}>
+          onPress={() => this.setModalVisible(!this.state.visible)}>
           <Text style={styles.btnText}>Terms and Conditions</Text>
         </TouchableOpacity>
         <Modal
@@ -537,18 +692,16 @@ const styles = StyleSheet.create({
     marginTop: 15,
     fontWeight: 'bold'
   },
-  modalSelectBtn: {
-    borderColor: '#FF8200'
-  },
-  modalSelectText: {
-    color: '#FF8200'
-  },
-  multChoice: {
-
-  },
   interestText: {
     fontSize: 16,
     color: '#58595B',
+    marginTop: 25,
+    marginBottom: 10,
+    fontWeight: 'bold'
+  },
+  errorInterestText: {
+    fontSize: 16,
+    color: '#d50000',
     marginTop: 25,
     marginBottom: 10,
     fontWeight: 'bold'
@@ -626,5 +779,20 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 5,
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
+  },
+  modalSelectBtn: {
+    borderColor: '#FF8200'
+  },
+  modalSelectText: {
+    color: '#FF8200'
+  },
+  errorSelectBtn: {
+    borderColor: '#d50000'
+  },
+  errorSelectText: {
+    color: '#d50000'
+  },
+  mcOption: {
+    height: 44,
   }
 });

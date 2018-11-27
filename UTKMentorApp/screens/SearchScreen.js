@@ -12,7 +12,8 @@ export default class Search extends Component {
       loading: false,
       data: [],
       error: null,
-      role: ''
+      role: '',
+      user_data: ''
     };
 
     this.arrayholder = [];
@@ -24,10 +25,36 @@ export default class Search extends Component {
 
   setData() {
     let { navigation } = this.props;
-    let role = navigation.getParam('role', 'NO-ID');
+    let role = navigation.getParam('role', 'NO-ID')
+    let user_data = navigation.getParam('user_data')
+    this.props.navigation.state.params.onNavigateBack()
+
+    // Mark the "search profile" goal as done if its their first time
+    let goals = user_data.goals
+    let incompGoals = user_data.goals.incompleteGoals
+    if (user_data.mentor) {
+      index = incompGoals.findIndex(item => item.description === "Search mentee profiles" && item.creator === "EMP")
+    }
+    else {
+      index = incompGoals.findIndex(item => item.description === "Search mentor profiles" && item.creator === "EMP")
+    }
+
+    if (index != -1) {
+      let compGoal = incompGoals[index]
+      compGoal.status = 1
+      goals.incompleteGoals.splice(index, 1);
+      goals['completeGoals'].push(compGoal);
+      console.log(goals)
+    }
+
     if (this.state.role == '') {
       this.setState({
         role: role,
+        user_data: user_data
+      }, () => {
+        if (index != -1) {
+          this.putData()
+        }
       });
     }
     this.getData()
@@ -35,6 +62,21 @@ export default class Search extends Component {
       this.getMentors(rv.data);
     })
     .catch((err) => console.log(err.response));
+  }
+
+  async putData() {
+    let put_body = {
+      body: {
+        userid: this.state.user_data.user_id,
+        user_data: this.state.user_data.user_data,
+        form_data: this.state.user_data.form_data,
+        goals: this.state.user_data.goals,
+        mentor: this.state.user_data.mentor,
+        pairings: this.state.user_data.pairings
+      }
+    }
+    const put_response = await API.put('dynamoAPI', '/items?userid=' + this.state.user_data.user_id, put_body);
+    return put_response;
   }
 
   componentDidMount() {
@@ -91,7 +133,8 @@ export default class Search extends Component {
         else obj.role = 'Mentee'
       }
     }
-    this.props.navigation.navigate('Individual', { data: obj });
+
+    this.props.navigation.navigate('Individual', { data: obj, from: 'search', user_data: this.state.user_data });
   }
 
   searchFilterFunction = text => {
