@@ -72,6 +72,13 @@ export default class Profile extends Component {
     )
   }
 
+  willFocus = this.props.navigation.addListener(
+    'willFocus',
+    payload => {
+      this.setUserAttributes();
+    }
+  );
+
   setUserAttributes() {
     this.getUser()
     .then((data) =>
@@ -85,8 +92,6 @@ export default class Profile extends Component {
       else photo = require('../assets/andrey.jpeg')
       this.getData()
       .then((rv) => {
-        console.log('setting dynamo data')
-        console.log(rv)
         this.setState({
           user_id: this.user_id,
           name: this.name,
@@ -229,7 +234,7 @@ export default class Profile extends Component {
         mentorImage = <TouchableHighlight
                         underlayColor='transparent'
                         activeOpacity={0.2}
-                        onPress={() => this.props.navigation.navigate('Search', {role: this.state.role, user_data: this.state})}>
+                        onPress={() => this.props.navigation.navigate('Search', {role: this.state.role, user_data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
                         <Image
                           style={styles.image}
                           source={require('../assets/question-mark.png')}
@@ -242,7 +247,7 @@ export default class Profile extends Component {
                     </TouchableOpacity>
         viewMentors = <TouchableOpacity
                        style={styles.viewMentorsBtn}
-                       onPress={() => this.props.navigation.navigate('Search', {role: this.state.role, user_data: this.state})}>
+                       onPress={() => this.props.navigation.navigate('Search', {role: this.state.role, user_data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
                        <Text style={styles.viewTxt}>Browse Mentors</Text>
                      </TouchableOpacity>
         appButton = <TouchableOpacity
@@ -367,7 +372,7 @@ export default class Profile extends Component {
         mentorImage = <TouchableHighlight
                         underlayColor='transparent'
                         activeOpacity={0.2}
-                        onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
+                        onPress={() => this.props.navigation.navigate('Search', {role: this.state.role, user_data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
                         <Image
                           style={styles.image}
                           source={require('../assets/question-mark.png')}
@@ -385,7 +390,7 @@ export default class Profile extends Component {
                     </TouchableOpacity>
         viewMentors = <TouchableOpacity
                        style={styles.viewMentorsBtn}
-                       onPress={() => this.props.navigation.navigate('Search', {role: this.state.role})}>
+                       onPress={() => this.props.navigation.navigate('Search', {role: this.state.role, user_data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
                        <Text style={styles.viewTxt}>Browse Mentees</Text>
                      </TouchableOpacity>
        goalsHeader =
