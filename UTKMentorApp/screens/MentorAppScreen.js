@@ -132,7 +132,16 @@ export default class MenteeApplication extends Component {
               "reminder": []
             }
           ],
-          "missedGoals": []
+          "missedGoals":
+          [
+            {
+              "description": "Feel free to delete this example goal",
+              "due": "NULL",
+              "status": 0,
+              "creator": "EMP",
+              "reminder": []
+            }
+          ]
         }
         let put_body = {
           body: {
@@ -190,7 +199,7 @@ export default class MenteeApplication extends Component {
       }
     }
 
-    if (this.state.interests.length >= 4) {
+    if (this.state.interests.length == 4) {
       haveThree = true
       this.setState({
         ['interests_error']: false
@@ -265,10 +274,24 @@ export default class MenteeApplication extends Component {
       })
     }
     else {
-      console.log("inserting " + value)
-      this.setState({
-        interests: [...this.state.interests, value]
-      })
+      console.log(this.state.interests.length)
+      if (this.state.interests.length < 4) {
+        console.log("inserting " + value)
+        this.setState({
+          interests: [...this.state.interests, value]
+        })
+      }
+      else {
+        console.log("removing " + this.state.interests[1])
+        let copy = [...this.state.interests]
+        copy.splice(1, 1)
+        console.log("inserting " + value)
+        copy.push(value)
+        console.log(copy)
+        this.setState({
+          interests: copy
+        })
+      }
     }
   }
 
@@ -560,7 +583,7 @@ export default class MenteeApplication extends Component {
             initValue={modalStyles.honors.init}
             onChange={(option) => this.setStateHelper('honors', option.key)} />
 
-          <Text style={multipleChoiceStyle}>What are your interest? (Select at least three)</Text>
+          <Text style={multipleChoiceStyle}>Please choose your top three interests</Text>
           <MultipleChoice
             options={[
               'Cooking / Baking',
@@ -590,6 +613,7 @@ export default class MenteeApplication extends Component {
                 />
               )
             }}
+            maxSelectedOptions={3}
             optionStyle={styles.mcOption}
           />
 
