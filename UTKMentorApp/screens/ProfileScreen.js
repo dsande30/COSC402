@@ -194,6 +194,7 @@ export default class Profile extends Component {
   };
   render () {
     let body, appButton, yourImage, mentorImage, viewYou, viewMentors, completeGoals, incompleteGoals, missedGoals, goalsHeader;
+    let incompleteHeader, completeHeader, missedHeader, goalInterface;
 
     // HomeScreen either shows "start survey" or goals and stuff
     if (this.state.role == 'Mentee') {
@@ -251,17 +252,38 @@ export default class Profile extends Component {
                        <Text style={styles.viewTxt}>Browse Mentors</Text>
                      </TouchableOpacity>
         appButton = <TouchableOpacity
-                       style={styles.btnSurvey}
+                       style={styles.btnEdit}
                        onPress={() => this.props.navigation.navigate('Goals', { data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
-                       <Text style={styles.btnText}>Edit Goals</Text>
+                       <Icon
+                         name='lead-pencil'
+                         type='material-community'
+                         color='rgba(255,255,255,0.70)'
+                         size={25}
+                       />
                     </TouchableOpacity>
         goalsHeader =
         <View>
         <Text style={styles.goalHeader}>Your Goals</Text>
         <View style={styles.line}></View>
         </View>
+
+        incompleteHeader =
+        <View>
+        <Text style={styles.goalLabel}>In-Progress</Text>
+        </View>
+
+        missedHeader =
+        <View>
+        <Text style={styles.goalLabel}>Missed</Text>
+        </View>
+
+        completeHeader =
+        <View>
+        <Text style={styles.goalLabel}>Completed</Text>
+        </View>
+
         completeGoals =
-        <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+        <List containerStyle={styles.listContainer}>
           <FlatList
             data={this.state.goals.completeGoals}
             extraData={this.state}
@@ -283,7 +305,7 @@ export default class Profile extends Component {
               />
           </List>
         incompleteGoals =
-        <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+        <List containerStyle={styles.listContainer}>
           <FlatList
             data={this.state.goals.incompleteGoals}
             extraData={this.state}
@@ -308,7 +330,7 @@ export default class Profile extends Component {
               />
           </List>
           missedGoals =
-          <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+          <List containerStyle={styles.listContainer}>
             <FlatList
               data={this.state.goals.missedGoals}
               extraData={this.state}
@@ -331,6 +353,20 @@ export default class Profile extends Component {
                   ItemSeparatorComponent={this.renderSeparator}
                   />
               </List>
+          goalInterface =
+        <View style={styles.goalContainer}>
+          {body}
+          {goalsHeader}
+          {incompleteHeader}
+          {incompleteGoals}
+          {missedHeader}
+          {missedGoals}
+          {completeHeader}
+          {completeGoals}
+          <View style={styles.btnContainer}>
+            {appButton}
+          </View>
+        </View>
       }
     }
     else if (this.state.role == 'Mentor') {
@@ -384,9 +420,14 @@ export default class Profile extends Component {
                        <Text style={styles.viewTxt}>View</Text>
                     </TouchableOpacity>
         appButton = <TouchableOpacity
-                       style={styles.btnSurvey}
+                       style={styles.btnEdit}
                        onPress={() => this.props.navigation.navigate('Goals', { data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
-                       <Text style={styles.btnText}>Edit Goals</Text>
+                       <Icon
+                         name='lead-pencil'
+                         type='material-community'
+                         color='rgba(255,255,255,0.70)'
+                         size={25}
+                       />
                     </TouchableOpacity>
         viewMentors = <TouchableOpacity
                        style={styles.viewMentorsBtn}
@@ -398,8 +439,24 @@ export default class Profile extends Component {
        <Text style={styles.goalHeader}>Your Goals</Text>
        <View style={styles.line}></View>
        </View>
+
+      incompleteHeader =
+      <View>
+      <Text style={styles.goalLabel}>In-Progress</Text>
+      </View>
+
+      missedHeader =
+      <View>
+      <Text style={styles.goalLabel}>Missed</Text>
+      </View>
+
+      completeHeader =
+      <View>
+      <Text style={styles.goalLabel}>Completed</Text>
+      </View>
+
        completeGoals =
-       <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+       <List containerStyle={styles.listContainer}>
          <FlatList
            data={this.state.goals.completeGoals}
            extraData={this.state}
@@ -421,7 +478,7 @@ export default class Profile extends Component {
              />
          </List>
        incompleteGoals =
-       <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+       <List containerStyle={styles.listContainer}>
          <FlatList
            data={this.state.goals.incompleteGoals}
            extraData={this.state}
@@ -446,7 +503,7 @@ export default class Profile extends Component {
              />
          </List>
          missedGoals =
-         <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+         <List containerStyle={styles.listContainer}>
            <FlatList
              data={this.state.goals.missedGoals}
              extraData={this.state}
@@ -469,6 +526,20 @@ export default class Profile extends Component {
                  ItemSeparatorComponent={this.renderSeparator}
                  />
              </List>
+          goalInterface =
+        <View style={styles.goalContainer}>
+          {body}
+          {goalsHeader}
+          {incompleteHeader}
+          {incompleteGoals}
+          {missedHeader}
+          {missedGoals}
+          {completeHeader}
+          {completeGoals}
+          <View style={styles.btnContainer}>
+            {appButton}
+          </View>
+        </View>
       }
     }
     return (
@@ -495,13 +566,10 @@ export default class Profile extends Component {
           </View>
           <Text style={styles.nameText}>Hi, {this.state.name}!</Text>
         </LinearGradient>
-        {body}
-        {goalsHeader}
-        {incompleteGoals}
-        {missedGoals}
-        {completeGoals}
+
+        {goalInterface}
+
         <View style={styles.btnContainer}>
-          {appButton}
           <TouchableOpacity
             style={styles.btnSignOut}
             onPress={this.signOut.bind(this)}>
@@ -533,14 +601,20 @@ const styles = StyleSheet.create({
   listContainerComplete: {
     backgroundColor: '#82CA9D',
     borderBottomColor: '#A7A9AC',
+    borderBottomWidth: 0,
+    borderRadius: 10
   },
   listContainerIncomplete: {
     backgroundColor: '#E2E2DE',
     borderBottomColor: '#A7A9AC',
+    borderBottomWidth: 0,
+    borderRadius: 10
   },
   listContainerMissed: {
     backgroundColor: '#FF817B',
     borderBottomColor: '#A7A9AC',
+    borderBottomWidth: 0,
+    borderRadius: 10
   },
   titleStyle: {
     marginLeft: 12,
@@ -550,8 +624,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 24,
-    marginTop: 25,
-    color: '#58595B'
+    marginTop: 15,
+    color: '#FFFFFF'
   },
   textLeftContainer: {
     paddingLeft: 12,
@@ -605,7 +679,8 @@ const styles = StyleSheet.create({
     marginLeft: 12
   },
   btnSignOutContainer: {
-    marginTop: 150,
+    marginTop: 120,
+    marginBottom: 20
   },
   flexBlock: {
     flexDirection: 'row',
@@ -651,12 +726,13 @@ const styles = StyleSheet.create({
     marginBottom: 25
   },
   line: {
-    borderBottomColor: '#888888',
-    borderBottomWidth: 1,
+    borderBottomColor: '#58595B',
+    borderBottomWidth: 2,
     marginTop: 5,
-    marginBottom: 10,
-    marginLeft: '5%',
-    marginRight: '5%',
+    marginBottom: 0,
+    marginLeft: '3%',
+    marginRight: '3%',
+    borderRadius: 10
   },
   nameText: {
     color: '#58595B',
@@ -670,5 +746,38 @@ const styles = StyleSheet.create({
     fontSize: 20,
     padding: 20,
     color: '#58595B'
-  }
+  },
+  goalLabel: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 25,
+    color: '#FFFFFF',
+  },
+  listContainer: {
+    marginTop: 5,
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    backgroundColor: 'transparent'
+  },
+  goalContainer: {
+    backgroundColor: '#A7A9AC',
+    paddingBottom: 10,
+    paddingLeft: 5,
+    paddingRight: 5,
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 5,
+    borderRadius: 15
+  },
+  btnEdit: {
+    backgroundColor: '#58595B',
+    borderRadius: 30,
+    width: 48,
+    height: 48,
+    alignItems: 'center',
+    marginBottom: 10,
+    justifyContent: 'center',
+    marginTop: 20
+  },
 });
