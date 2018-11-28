@@ -108,7 +108,8 @@ export default class Profile extends Component {
           goals: rv[0].goals,
           mentor: rv[0].mentor,
           pairings: rv[0].pairings,
-          user_data: rv[0].user_data
+          user_data: rv[0].user_data,
+          match_text: match_text
         },
         () => this.getData(this.state.pairings[0])
         .then((rv) => {
