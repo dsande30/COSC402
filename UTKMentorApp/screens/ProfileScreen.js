@@ -200,7 +200,7 @@ export default class Profile extends Component {
     );
   };
   render () {
-    let body, appButton, yourImage, mentorImage, viewYou, viewMentors, completeGoals, incompleteGoals, missedGoals, goalsHeader;
+    let body, appButton, surveyButton, yourImage, mentorImage, viewYou, viewMentors, completeGoals, incompleteGoals, missedGoals, goalsHeader;
     let incompleteHeader, completeHeader, missedHeader, goalInterface;
 
     // HomeScreen either shows "start survey" or goals and stuff
@@ -223,7 +223,7 @@ export default class Profile extends Component {
                  To help us learn more about your interests and find your mentor,
                  please fill out the survey below.
                </Text>
-       appButton = <TouchableOpacity
+       surveyButton = <TouchableOpacity
                       style={styles.btnSurvey}
                       onPress={() => this.props.navigation.navigate('MenteeForm', { user_id: this.state.user_id, onNavigateBack: this.handleOnNavigateBack })}>
                       <Text style={styles.btnText}>Begin Survey</Text>
@@ -274,20 +274,24 @@ export default class Profile extends Component {
         <View style={styles.line}></View>
         </View>
 
+      if (this.state.goals.incompleteGoals.length > 0) {
         incompleteHeader =
         <View>
         <Text style={styles.goalLabel}>In-Progress</Text>
         </View>
-
+      }
+      if (this.state.goals.missedGoals.length > 0) {
         missedHeader =
         <View>
         <Text style={styles.goalLabel}>Missed</Text>
         </View>
-
+      }
+      if (this.state.goals.completeGoals.length > 0) {
         completeHeader =
         <View>
         <Text style={styles.goalLabel}>Completed</Text>
         </View>
+      }
 
         completeGoals =
         <List containerStyle={styles.listContainer}>
@@ -370,9 +374,9 @@ export default class Profile extends Component {
           {missedGoals}
           {completeHeader}
           {completeGoals}
-          <View style={styles.btnContainer}>
-            {appButton}
-          </View>
+        <View style={styles.btnContainer}>
+          {appButton}
+        </View>
         </View>
       }
     }
@@ -396,7 +400,7 @@ export default class Profile extends Component {
                  please fill out the survey below.
                </Text>
 
-       appButton = <TouchableOpacity
+       surveyButton = <TouchableOpacity
                       style={styles.btnSurvey}
                       onPress={() => this.props.navigation.navigate('MentorForm', { user_id: this.state.user_id, onNavigateBack: this.handleOnNavigateBack })}>
                       <Text style={styles.btnText}>Begin Survey</Text>
@@ -447,20 +451,24 @@ export default class Profile extends Component {
        <View style={styles.line}></View>
        </View>
 
-      incompleteHeader =
-      <View>
-      <Text style={styles.goalLabel}>In-Progress</Text>
-      </View>
-
-      missedHeader =
-      <View>
-      <Text style={styles.goalLabel}>Missed</Text>
-      </View>
-
-      completeHeader =
-      <View>
-      <Text style={styles.goalLabel}>Completed</Text>
-      </View>
+      if (this.state.goals.incompleteGoals.length > 0) {
+        incompleteHeader =
+        <View>
+        <Text style={styles.goalLabel}>In-Progress</Text>
+        </View>
+      }
+      if (this.state.goals.missedGoals.length > 0) {
+        missedHeader =
+        <View>
+        <Text style={styles.goalLabel}>Missed</Text>
+        </View>
+      }
+      if (this.state.goals.completeGoals.length > 0) {
+        completeHeader =
+        <View>
+        <Text style={styles.goalLabel}>Completed</Text>
+        </View>
+      }
 
        completeGoals =
        <List containerStyle={styles.listContainer}>
@@ -543,9 +551,9 @@ export default class Profile extends Component {
           {missedGoals}
           {completeHeader}
           {completeGoals}
-          <View style={styles.btnContainer}>
-            {appButton}
-          </View>
+        <View style={styles.btnContainer}>
+          {appButton}
+        </View>
         </View>
       }
     }
@@ -575,8 +583,8 @@ export default class Profile extends Component {
         </LinearGradient>
 
         {goalInterface}
-
         <View style={styles.btnContainer}>
+          {surveyButton}
           <TouchableOpacity
               style={styles.btnContact}
               onPress={() => this.sendEmail()}>
@@ -635,9 +643,9 @@ const styles = StyleSheet.create({
   goalHeader: {
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 24,
+    fontSize: 22,
     marginTop: 15,
-    color: '#FFFFFF'
+    color: '#58595B'
   },
   textLeftContainer: {
     paddingLeft: 12,
@@ -753,8 +761,8 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
   },
   line: {
-    borderBottomColor: '#58595B',
-    borderBottomWidth: 2,
+    borderBottomColor: '#D8D9DB',
+    borderBottomWidth: 1.5,
     marginTop: 5,
     marginBottom: 0,
     marginLeft: '3%',
@@ -764,7 +772,7 @@ const styles = StyleSheet.create({
   nameText: {
     color: '#58595B',
     fontWeight: 'bold',
-    fontSize: 24,
+    fontSize: 28,
     textAlign: 'center',
     marginTop: 25,
   },
@@ -775,11 +783,12 @@ const styles = StyleSheet.create({
     color: '#58595B'
   },
   goalLabel: {
-    textAlign: 'center',
+    textAlign: 'left',
+    marginLeft: 5,
     fontWeight: 'bold',
     fontSize: 16,
     marginTop: 25,
-    color: '#FFFFFF',
+    color: '#58595B',
   },
   listContainer: {
     marginTop: 5,
@@ -788,14 +797,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   goalContainer: {
-    backgroundColor: '#A7A9AC',
+    borderColor: '#58595B',
+    borderWidth: 1.5,
     paddingBottom: 10,
     paddingLeft: 5,
     paddingRight: 5,
-    marginLeft: 5,
-    marginRight: 5,
     marginTop: 5,
-    borderRadius: 15
+    borderRadius:10,
+    marginRight: 5,
+    marginLeft: 5
   },
   btnEdit: {
     backgroundColor: '#58595B',
