@@ -516,9 +516,9 @@ export default class Goals extends Component {
               <View style={styles.flexBlock}>
                 <View style={styles.flexContainer}>
                   <TouchableHighlight
-                    style={styles.btnUpdate}
-                    onPress={this.updateGoal.bind(this)}>
-                    <Text style={styles.btnUpdateText}>Save</Text>
+                    style={styles.btnRemove}
+                    onPress={this.removeGoal.bind(this)}>
+                    <Text style={styles.btnRemoveText}>Delete</Text>
                   </TouchableHighlight>
                 </View>
                 <View style={styles.flexContainer}>
@@ -533,15 +533,16 @@ export default class Goals extends Component {
               </View>
               <View style={{ alignItems: 'center'}}>
                 <TouchableHighlight
-                  style={styles.btnRemove}
-                  onPress={this.removeGoal.bind(this)}>
-                  <Text style={styles.btnRemoveText}>Remove Goal</Text>
+                  style={styles.btnUpdate}
+                  onPress={this.updateGoal.bind(this)}>
+                  <Text style={styles.btnUpdateText}>Save</Text>
                 </TouchableHighlight>
               </View>
             </View>
           </View>
       </Modal>
 
+        <View style={styles.goalContainer}>
         <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
           <FlatList
             data={this.state.goals.incompleteGoals}
@@ -606,7 +607,6 @@ export default class Goals extends Component {
                   ItemSeparatorComponent={this.renderSeparator}
                   />
               </List>
-
               <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
                 <FlatList
                   data={this.state.goals.completeGoals}
@@ -636,17 +636,21 @@ export default class Goals extends Component {
                     ItemSeparatorComponent={this.renderSeparator}
                     />
                 </List>
-            <TouchableHighlight
-              onPress={() => this.setModalVisible('modal_add_visible', true)}>
-              <Icon
-                name='plus-circle'
-                type='material-community'
-                size={80}
-                iconStyle={{ marginTop: 25 }}
-                color='#58595B'
+                </View>
+
+            <View style={styles.flexContainer}>
+              <TouchableOpacity
                 onPress={() => this.setModalVisible('modal_add_visible', true)}
-              />
-            </TouchableHighlight>
+                style={styles.btnAdd}>
+                <Icon
+                  name='plus'
+                  type='material-community'
+                  size={40}
+                  color='rgba(255,255,255,0.7)'
+                  onPress={() => this.setModalVisible('modal_add_visible', true)}
+                />
+              </TouchableOpacity>
+            </View>
             <View style={styles.flexContainer}>
               <TouchableHighlight
                 style={styles.btnUpdate}
@@ -654,6 +658,7 @@ export default class Goals extends Component {
                 <Text style={styles.btnUpdateText}>Save Changes</Text>
               </TouchableHighlight>
             </View>
+
         </ScrollView>
     );
   }
@@ -737,7 +742,7 @@ const styles = StyleSheet.create({
     width: '50%',
     borderRadius: 20,
     marginTop: 35,
-    marginBottom: 25
+    marginBottom: 15
   },
   btnRemove: {
     justifyContent: 'center',
@@ -746,7 +751,8 @@ const styles = StyleSheet.create({
     width: '50%',
     height: 36,
     borderRadius: 20,
-    marginBottom: 25
+    marginBottom: 15,
+    marginTop: 35
   },
   btnRemoveText: {
     textAlign: 'center',
@@ -780,13 +786,19 @@ const styles = StyleSheet.create({
     width: '25%',
   },
   listContainerComplete: {
-    backgroundColor: '#82CA9D'
+    backgroundColor: '#82CA9D',
+    borderRadius: 10,
+    borderBottomWidth: 0
   },
   listContainerIncomplete: {
-    backgroundColor: '#E2E2DE'
+    backgroundColor: '#E2E2DE',
+    borderRadius: 10,
+    borderBottomWidth: 0
   },
   listContainerMissed: {
-    backgroundColor: '#FF817B'
+    backgroundColor: '#FF817B',
+    borderRadius: 10,
+    borderBottomWidth: 0
   },
   titleStyle: {
     marginLeft: 12,
@@ -862,11 +874,31 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   line: {
-    borderBottomColor: '#888888',
-    borderBottomWidth: 1,
+    borderBottomColor: '#58595B',
+    borderBottomWidth: 2,
     marginTop: 5,
+    marginBottom: 0,
+    marginLeft: '3%',
+    marginRight: '3%',
+    borderRadius: 10
+  },
+  goalContainer: {
+    backgroundColor: 'transparent',
+    paddingBottom: 10,
+    paddingLeft: 5,
+    paddingRight: 5,
+    marginTop: 5,
+    borderRadius: 15
+  },
+  btnAdd: {
+    backgroundColor: '#58595B',
+    borderRadius: 30,
+    width: 48,
+    height: 48,
+    alignItems: 'center',
     marginBottom: 10,
-    marginLeft: '5%',
-    marginRight: '5%',
-  }
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingTop: 3
+  },
 });
