@@ -21,6 +21,7 @@
     "react-native-searchable-list": "^1.1.3",
     "react-native-simple-radio-button": "^2.7.3",
     "react-navigation": "^2.17.0",
-    "rn-multiple-choice": "0.0.5"
+    "rn-multiple-choice": "0.0.5",
+    "merge": ">=1.2.1"
   }
 }
