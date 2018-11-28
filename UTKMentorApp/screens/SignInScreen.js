@@ -8,6 +8,7 @@ import {
   StyleSheet,
   View,
   Image,
+  Linking,
   Text,
   TouchableOpacity,
   Keyboard
@@ -40,6 +41,12 @@ export default class SignIn extends React.Component {
       [key]: value,
       [key+'_error']: ''
     })
+  }
+
+  sendEmail(){
+      subject = "App contact from unregistered user"
+      // console.log(subject)
+      Linking.openURL('mailto:utkmentorapp@gmail.com?subject=' + subject)
   }
 
   checkFull(key) {
@@ -244,6 +251,11 @@ export default class SignIn extends React.Component {
                 <Text style={styles.btnText}>Create a New Account</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                  style={styles.btnSignUp}
+                  onPress={() => this.sendEmail()}>
+                  <Text style={styles.btnText}>Contact Us</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={styles.btnSignUp}
                 onPress={this.fastMenteeSignIn.bind(this)}>
                 <Text style={styles.btnText}>Fast Mentee Sign In</Text>
@@ -319,6 +331,21 @@ const styles = StyleSheet.create({
   btnContainer: {
     alignItems: 'center',
     marginBottom: 50,
+  },
+  btnContact: {
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+      borderColor: '#0091ea',
+      borderWidth: 1,
+      height: 36,
+      width: '50%',
+      borderRadius: 20,
+      marginTop: 20,
+  },
+  btnContactText: {
+      textAlign: 'center',
+      color: '#0091ea',
+      fontWeight: 'bold',
   },
   signUpText: {
     marginTop: 50,
