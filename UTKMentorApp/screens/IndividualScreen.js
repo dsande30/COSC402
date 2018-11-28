@@ -93,6 +93,8 @@ export default class Individual extends Component {
     let from = navigation.getParam('from')
     let user_data = navigation.getParam('user_data')
     let navi = navigation.getParam('data')
+    console.log("*************")
+    console.log(navi)
     this.setState({
       user_data: user_data,
       navi: navi,
@@ -120,7 +122,7 @@ export default class Individual extends Component {
 
     const headList = []
 
-    if (this.state.navi.role == 'Mentor') {
+    if (this.state.navi.mentor) {
       if (this.state.navi.form_data.research == 'Yes') {
         headList.push({
           title: 'Doing research on campus',
@@ -128,7 +130,7 @@ export default class Individual extends Component {
         })
       }
     }
-    else if (this.state.navi.role == 'Mentee') {
+    else if (this.state.navi.mentor == false) {
       if (this.state.navi.form_data.research == 'Yes') {
         headList.push({
           title: 'Interested in doing research',

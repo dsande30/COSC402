@@ -30,7 +30,12 @@ export default class Profile extends Component {
       goals: {},
       mentor: '',
       pairings: [],
-      photo: ''
+      photo: '',
+      match_data: {},
+      match_photo: require('../assets/question-mark.png'),
+      match_text: '',
+      match_browse: 'Search',
+      match_browse_data: {}
     }
     this.user_id = ''
     this.name = ''
@@ -50,8 +55,8 @@ export default class Profile extends Component {
   }
 
   //Get user's dynamo data
-  async getData() {
-    const get_response = await API.get('dynamoAPI', '/items/' + this.user_id);
+  async getData(user_id) {
+    const get_response = await API.get('dynamoAPI', '/items/' + user_id);
     return get_response;
   }
 
@@ -61,7 +66,7 @@ export default class Profile extends Component {
   }
 
   setData() {
-    this.getData()
+    this.getData(this.user_id)
     .then((rv) =>
       {
         console.log('setting dynamo data')
@@ -84,14 +89,16 @@ export default class Profile extends Component {
     this.getUser()
     .then((data) =>
     {
-      let photo;
+      let photo, match_text
       console.log('setting user data')
       this.user_id = data.attributes.email
       this.name = data.attributes.name.split(' ')[0]
       this.role = data.attributes['custom:role']
+      if (this.role == 'Mentee') match_text = 'Browse Mentors'
+      else match_text = 'Browse Mentees'
       if (this.user_id == 'jcate6@vols.utk.edu') photo = require('../assets/james.jpeg')
       else photo = require('../assets/andrey.jpeg')
-      this.getData()
+      this.getData(this.user_id)
       .then((rv) => {
         this.setState({
           user_id: this.user_id,
@@ -102,10 +109,25 @@ export default class Profile extends Component {
           goals: rv[0].goals,
           mentor: rv[0].mentor,
           pairings: rv[0].pairings,
-          user_data: rv[0].user_data
-        }, function () { console.log('set that state')})
-      })
+          user_data: rv[0].user_data,
+          match_text: match_text
+        },
+        () => this.getData(this.state.pairings[0])
+        .then((rv) => {
+          if (rv[0].pairings[0] == this.state.user_id) {
+            let match_data = rv[0]
+            match_data.name = match_data.user_data.name
+            this.setState({
+              match_data: match_data,
+              match_photo: require('../assets/face.jpg'),
+              match_text: 'View',
+              match_browse: 'Individual'
+            })
+          }
+        })
+      )
     })
+  })
   }
 
   renderSeparator = () => {
@@ -139,6 +161,15 @@ export default class Profile extends Component {
     this.setState({
       [key]: value
     })
+  }
+
+  getMatchData() {
+    if (this.state.match_browse == 'Search') {
+      return {role: this.state.role, user_data: this.state, onNavigateBack: this.handleOnNavigateBack }
+    }
+    else {
+      return {data: this.state.match_data, from: 'profile'}
+    }
   }
 
   getApplication(screenName) {
@@ -215,7 +246,7 @@ export default class Profile extends Component {
         mentorImage = <TouchableHighlight>
                         <Image
                           style={styles.image}
-                          source={require('../assets/question-mark.png')}
+                          source={this.state.match_photo}
                           />
                       </TouchableHighlight>
         body = <Text style={styles.formText}>Welcome! Thank you for creating an account as a
@@ -242,21 +273,21 @@ export default class Profile extends Component {
         mentorImage = <TouchableHighlight
                         underlayColor='transparent'
                         activeOpacity={0.2}
-                        onPress={() => this.props.navigation.navigate('Search', {role: this.state.role, user_data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
+                        onPress={() => this.props.navigation.navigate(this.state.match_browse, this.getMatchData())}>
                         <Image
                           style={styles.image}
-                          source={require('../assets/question-mark.png')}
+                          source={this.state.match_photo}
                           />
                       </TouchableHighlight>
         viewYou = <TouchableOpacity
                        style={styles.viewBtn}
-                       onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
+                       onPress={() => this.props.navigation.navigate('Individual', {data: this.state, from: 'profile'})}>
                        <Text style={styles.viewTxt}>View</Text>
                     </TouchableOpacity>
         viewMentors = <TouchableOpacity
                        style={styles.viewMentorsBtn}
-                       onPress={() => this.props.navigation.navigate('Search', {role: this.state.role, user_data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
-                       <Text style={styles.viewTxt}>Browse Mentors</Text>
+                       onPress={() => this.props.navigation.navigate(this.state.match_browse, this.getMatchData())}>
+                       <Text style={styles.viewTxt}>{this.state.match_text}</Text>
                      </TouchableOpacity>
         appButton = <TouchableOpacity
                        style={styles.btnEdit}
@@ -391,7 +422,7 @@ export default class Profile extends Component {
         mentorImage = <TouchableHighlight>
                         <Image
                           style={styles.image}
-                          source={require('../assets/question-mark.png')}
+                          source={this.state.match_photo}
                           />
                       </TouchableHighlight>
         body = <Text style={styles.formText}>You have signed up as a
@@ -410,24 +441,25 @@ export default class Profile extends Component {
         yourImage = <TouchableHighlight
                       underlayColor='transparent'
                       activeOpacity={0.2}
-                      onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
+                      onPress={() => this.props.navigation.navigate('Individual', {data: this.state, from: 'profile'})}>
                       <Image
                         style={styles.image}
                         source={this.state.photo}
                         />
                     </TouchableHighlight>
+
         mentorImage = <TouchableHighlight
                         underlayColor='transparent'
                         activeOpacity={0.2}
-                        onPress={() => this.props.navigation.navigate('Search', {role: this.state.role, user_data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
+                        onPress={() => this.props.navigation.navigate(this.state.match_browse, this.getMatchData())}>
                         <Image
                           style={styles.image}
-                          source={require('../assets/question-mark.png')}
+                          source={this.state.match_photo}
                           />
                       </TouchableHighlight>
         viewYou = <TouchableOpacity
                        style={styles.viewBtn}
-                       onPress={() => this.props.navigation.navigate('Individual', {data: this.state})}>
+                       onPress={() => this.props.navigation.navigate('Individual', {data: this.state, from: 'profile'})}>
                        <Text style={styles.viewTxt}>View</Text>
                     </TouchableOpacity>
         appButton = <TouchableOpacity
@@ -442,8 +474,8 @@ export default class Profile extends Component {
                     </TouchableOpacity>
         viewMentors = <TouchableOpacity
                        style={styles.viewMentorsBtn}
-                       onPress={() => this.props.navigation.navigate('Search', {role: this.state.role, user_data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
-                       <Text style={styles.viewTxt}>Browse Mentees</Text>
+                       onPress={() => this.props.navigation.navigate(this.state.match_browse, this.getMatchData())}>
+                       <Text style={styles.viewTxt}>{this.state.match_text}</Text>
                      </TouchableOpacity>
        goalsHeader =
        <View>
