@@ -5,6 +5,7 @@ import {
   Image,
   TextInput,
   StyleSheet,
+  Linking,
   TouchableOpacity,
   Button,
   FlatList,
@@ -126,6 +127,12 @@ export default class Profile extends Component {
         this.props.navigation.navigate('SignIn')
       })
       .catch(err => console.log(err));
+  }
+
+  sendEmail(){
+      subject = "App contact from " +  this.state.user_id
+      // console.log(subject)
+      Linking.openURL('mailto:utkmentorapp@gmail.com?subject=' + subject)
   }
 
   onChangeText(key, value) {
@@ -571,6 +578,11 @@ export default class Profile extends Component {
 
         <View style={styles.btnContainer}>
           <TouchableOpacity
+              style={styles.btnContact}
+              onPress={() => this.sendEmail()}>
+              <Text style={styles.btnContactText}>Contact Us</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             style={styles.btnSignOut}
             onPress={this.signOut.bind(this)}>
             <Text style={styles.btnSignOutText}>Sign Out</Text>
@@ -722,8 +734,23 @@ const styles = StyleSheet.create({
     height: 36,
     width: '50%',
     borderRadius: 20,
-    marginTop: 35,
+    marginTop: 20,
     marginBottom: 25
+  },
+  btnContact: {
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+      borderColor: '#0091ea',
+      borderWidth: 1,
+      height: 36,
+      width: '50%',
+      borderRadius: 20,
+      marginTop: 35,
+  },
+  btnContactText: {
+      textAlign: 'center',
+      color: '#0091ea',
+      fontWeight: 'bold',
   },
   line: {
     borderBottomColor: '#58595B',
