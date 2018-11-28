@@ -119,7 +119,7 @@ export default class MenteeApplication extends Component {
             },
             {
               "description": "Get paired with a mentee",
-              "due": "08/31/2019",
+              "due": "NULL",
               "status": 0,
               "creator": "EMP",
               "reminder": []
@@ -136,7 +136,7 @@ export default class MenteeApplication extends Component {
           [
             {
               "description": "Feel free to delete this example goal",
-              "due": "NULL",
+              "due": "06/01/2018",
               "status": 0,
               "creator": "EMP",
               "reminder": []
