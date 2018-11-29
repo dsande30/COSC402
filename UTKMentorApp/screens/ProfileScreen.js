@@ -32,10 +32,16 @@ export default class Profile extends Component {
       pairings: [],
       photo: '',
       match_data: {},
-      match_photo: require('../assets/question-mark.png'),
+      match_photo: require('../assets/question1.png'),
       match_text: '',
       match_browse: 'Search',
-      match_browse_data: {}
+      match_browse_data: {},
+      photos: {
+        'dsande30': require('../assets/dakota.jpg'),
+        'akarnauc': require('../assets/andrey.jpeg'),
+        'jcate6': require('../assets/james.jpeg'),
+        'hgd145': require('../assets/matt.jpg')
+      }
     }
     this.user_id = ''
     this.name = ''
@@ -118,7 +124,8 @@ export default class Profile extends Component {
         },
         () => this.getData(this.state.pairings[0])
         .then((rv) => {
-          let index = rv[0].pairings.indexOf(this.state.user_id)
+          let index = -1
+          if (rv.length != 0) index = rv[0].pairings.indexOf(this.state.user_id)
           if (index != -1) {
             let match_data = rv[0]
             match_data.name = match_data.user_data.name
@@ -255,7 +262,7 @@ export default class Profile extends Component {
         yourImage = <TouchableHighlight>
                       <Image
                         style={styles.image}
-                        source={this.state.photo}
+                        source={this.state.photos[this.state.user_id.substr(0, this.state.user_id.indexOf('@'))] || require('../assets/emo.png')}
                         />
                     </TouchableHighlight>
         mentorImage = <TouchableHighlight>
@@ -282,7 +289,7 @@ export default class Profile extends Component {
                       onPress={() => this.props.navigation.navigate('Individual', {data: this.state, from: 'profile'})}>
                       <Image
                         style={styles.image}
-                        source={this.state.photo}
+                        source={this.state.photos[this.state.user_id.substr(0, this.state.user_id.indexOf('@'))] || require('../assets/emo.png')}
                         />
                     </TouchableHighlight>
         mentorImage = <TouchableHighlight
@@ -434,7 +441,7 @@ export default class Profile extends Component {
         yourImage = <TouchableHighlight>
                       <Image
                         style={styles.image}
-                        source={this.state.photo}
+                        source={this.state.photos[this.state.user_id.substr(0, this.state.user_id.indexOf('@'))] || require('../assets/emo.png')}
                         />
                     </TouchableHighlight>
         mentorImage = <TouchableHighlight>
@@ -462,7 +469,7 @@ export default class Profile extends Component {
                       onPress={() => this.props.navigation.navigate('Individual', {data: this.state, from: 'profile'})}>
                       <Image
                         style={styles.image}
-                        source={this.state.photo}
+                        source={this.state.photos[this.state.user_id.substr(0, this.state.user_id.indexOf('@'))] || require('../assets/emo.png')}
                         />
                     </TouchableHighlight>
 
