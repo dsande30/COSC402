@@ -257,26 +257,6 @@ export default class SignIn extends React.Component {
                   onPress={() => this.sendEmail()}>
                   <Text style={styles.btnText}>Contact Us</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.btnSignUp}
-                onPress={this.fastMenteeSignIn.bind(this)}>
-                <Text style={styles.btnText}>Fast Mentee Sign In</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.btnSignUp}
-                onPress={this.fastMentorSignIn.bind(this)}>
-                <Text style={styles.btnText}>Fast Mentor Sign In</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.btnSignUp}
-                onPress={this.fastMenteeForm.bind(this)}>
-                <Text style={styles.btnText}>Fast Mentee Form</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.btnSignUp}
-                onPress={this.fastMentorForm.bind(this)}>
-                <Text style={styles.btnText}>Fast Mentor Form</Text>
-              </TouchableOpacity>
             </View>
         </KeyboardAwareScrollView>
     )
