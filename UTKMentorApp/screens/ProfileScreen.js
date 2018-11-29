@@ -131,7 +131,7 @@ export default class Profile extends Component {
             match_data.name = match_data.user_data.name
             this.setState({
               match_data: match_data,
-              match_photo: require('../assets/face.jpg'),
+              match_photo: this.state.photos[match_data.user_data.email.substr(0, match_data.user_data.email.indexOf('@'))] || require('../assets/emo.png'),
               match_text: 'View',
               match_browse: 'Individual'
             })
