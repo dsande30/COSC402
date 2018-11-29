@@ -18,6 +18,7 @@ import {
   KeyboardAwareScrollView
 } from 'react-native-keyboard-aware-scroll-view';
 import { TextField } from 'react-native-material-textfield';
+import { Icon } from 'react-native-elements';
 
 import RadioForm, {
   RadioButton,
@@ -48,6 +49,23 @@ export default class SignUp extends React.Component {
 
   valid_email = [ 'utk.edu', 'tennessee.edu', 'vols.utk.edu', 'live.utk.edu',
                   'mail.tennessee.edu', 'volmail.utk.edu']
+
+  static navigationOptions = {
+    title: <Icon
+                name='clipboard-account'
+                type='material-community'
+                color='rgba(255,255,255,0.70)'
+                size={30}
+              />,
+    headerStyle: {
+      backgroundColor: '#58595B',
+    },
+    headerTintColor: 'rgba(255,255,255,0.70)',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+    headerBackTitle: null,
+  }
 
   onChangeText(key, value) {
     this.setState({
@@ -174,7 +192,7 @@ export default class SignUp extends React.Component {
       username: this.state.email,
       password: this.state.password,
       attributes: {
-        email: this.state.email,
+        email: this.state.email.toLowerCase(),
         name: this.state.firstname + ' ' + this.state.lastname,
         phone_number: '+1' + this.state.phone_number,
         'custom:role': this.state.role
@@ -183,7 +201,7 @@ export default class SignUp extends React.Component {
     .then(data => {
       console.log("success!" + data)
       this.props.navigation.navigate('Verify', {
-        username: this.state.email,
+        username: this.state.email.toLowerCase(),
         password: this.state.password,
         name: this.state.firstname + ' ' + this.state.lastname,
         phone_number: '+1' + this.state.phone_number,

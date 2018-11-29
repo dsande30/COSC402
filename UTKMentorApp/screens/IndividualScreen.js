@@ -37,6 +37,23 @@ export default class Individual extends Component {
     }
   }
 
+  static navigationOptions = {
+    title: <Icon
+                name='account'
+                type='material-community'
+                color='rgba(255,255,255,0.70)'
+                size={30}
+              />,
+    headerStyle: {
+      backgroundColor: '#58595B',
+    },
+    headerTintColor: 'rgba(255,255,255,0.70)',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+    headerBackTitle: null,
+  }
+
   componentWillMount() {
     console.log('Fired')
     this.setData();
@@ -199,7 +216,7 @@ export default class Individual extends Component {
             color='rgba(255,255,255,0.70)'
             size={18}
           />
-          <Text style={styles.preferText}>Prefered</Text>
+          <Text style={styles.preferText}>Preferred</Text>
         </TouchableOpacity>
       }
       else {

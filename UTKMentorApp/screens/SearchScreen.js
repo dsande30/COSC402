@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Image, Text, FlatList, ActivityIndicator } from 'react-native';
-import { List, Avatar, ListItem, SearchBar } from 'react-native-elements';
+import { List, Avatar, ListItem, SearchBar, Icon } from 'react-native-elements';
 
 import Amplify, { API } from 'aws-amplify';
 
@@ -20,7 +20,20 @@ export default class Search extends Component {
   }
 
   static navigationOptions = {
-    title: 'Browse Others'
+    title:           <Icon
+                name='magnify'
+                type='material-community'
+                color='rgba(255,255,255,0.70)'
+                size={30}
+              />,
+    headerStyle: {
+      backgroundColor: '#58595B',
+    },
+    headerTintColor: 'rgba(255,255,255,0.70)',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+    headerBackTitle: null,
   }
 
   setData() {

@@ -25,7 +25,8 @@ export default class Verify extends React.Component {
   }
 
   static navigationOptions = {
-    header: null
+    header: null,
+    gesturesEnabled: false,
   }
 
   onChangeText(key, value) {
