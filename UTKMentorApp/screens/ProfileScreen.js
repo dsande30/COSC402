@@ -94,8 +94,7 @@ export default class Profile extends Component {
       this.user_id = data.attributes.email
       this.name = data.attributes.name.split(' ')[0]
       this.role = data.attributes['custom:role']
-      if (this.role == 'Mentee') match_text = 'Browse Mentors'
-      else match_text = 'Browse Mentees'
+      match_text = ''
       if (this.user_id == 'jcate6@vols.utk.edu') photo = require('../assets/james.jpeg')
       else photo = require('../assets/andrey.jpeg')
       this.getData(this.user_id)
@@ -122,6 +121,16 @@ export default class Profile extends Component {
               match_photo: require('../assets/face.jpg'),
               match_text: 'View',
               match_browse: 'Individual'
+            })
+          }
+          else if (this.role == 'Mentee') {
+            this.setState({
+              match_text: 'Browse Mentors',
+            })
+          }
+          else {
+            this.setState({
+              match_text: 'Browse Mentees',
             })
           }
         })
@@ -284,11 +293,14 @@ export default class Profile extends Component {
                        onPress={() => this.props.navigation.navigate('Individual', {data: this.state, from: 'profile'})}>
                        <Text style={styles.viewTxt}>View</Text>
                     </TouchableOpacity>
-        viewMentors = <TouchableOpacity
-                       style={styles.viewMentorsBtn}
-                       onPress={() => this.props.navigation.navigate(this.state.match_browse, this.getMatchData())}>
-                       <Text style={styles.viewTxt}>{this.state.match_text}</Text>
-                     </TouchableOpacity>
+        console.log(this.state.match_text)
+        if (this.state.match_text.length != 0) {
+          viewMentors = <TouchableOpacity
+                         style={styles.viewMentorsBtn}
+                         onPress={() => this.props.navigation.navigate(this.state.match_browse, this.getMatchData())}>
+                         <Text style={styles.viewTxt}>{this.state.match_text}</Text>
+                       </TouchableOpacity>
+        }
         appButton = <TouchableOpacity
                        style={styles.btnEdit}
                        onPress={() => this.props.navigation.navigate('Goals', { data: this.state, onNavigateBack: this.handleOnNavigateBack })}>
@@ -473,11 +485,13 @@ export default class Profile extends Component {
                          size={25}
                        />
                     </TouchableOpacity>
-        viewMentors = <TouchableOpacity
-                       style={styles.viewMentorsBtn}
-                       onPress={() => this.props.navigation.navigate(this.state.match_browse, this.getMatchData())}>
-                       <Text style={styles.viewTxt}>{this.state.match_text}</Text>
-                     </TouchableOpacity>
+        if (this.state.match_text.length != 0) {
+          viewMentors = <TouchableOpacity
+                         style={styles.viewMentorsBtn}
+                         onPress={() => this.props.navigation.navigate(this.state.match_browse, this.getMatchData())}>
+                         <Text style={styles.viewTxt}>{this.state.match_text}</Text>
+                       </TouchableOpacity>
+        }
        goalsHeader =
        <View>
        <Text style={styles.goalHeader}>Your Goals</Text>
