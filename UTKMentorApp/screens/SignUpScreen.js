@@ -51,7 +51,8 @@ export default class SignUp extends React.Component {
                   'mail.tennessee.edu', 'volmail.utk.edu']
 
   static navigationOptions = {
-    title: <Icon
+    headerLayoutPreset: 'center',
+    headerTitle: <Icon
                 name='clipboard-account'
                 type='material-community'
                 color='rgba(255,255,255,0.70)'
@@ -63,6 +64,8 @@ export default class SignUp extends React.Component {
     headerTintColor: 'rgba(255,255,255,0.70)',
     headerTitleStyle: {
       fontWeight: 'bold',
+      textAlign: 'center',
+      alignSelf: 'center'
     },
     headerBackTitle: null,
   }
