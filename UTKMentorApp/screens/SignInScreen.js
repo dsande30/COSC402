@@ -137,7 +137,7 @@ export default class SignIn extends React.Component {
   signIn() {
     let form_data = {};
     const { email, password } = this.state;
-    Auth.signIn(email, password)
+    Auth.signIn(email.toLowerCase(), password)
     .then(user => {
       this.setState({ user })
       this.getData()
