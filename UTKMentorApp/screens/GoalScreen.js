@@ -49,8 +49,8 @@ export default class Goals extends Component {
         'creator': 'User'
       },
       newDescription: '',
-      date: '',
-      new_date: '',
+      date: 'NULL',
+      new_date: 'NULL',
       reminder: [],
       creator: 'User',
       status: 0
@@ -67,11 +67,11 @@ export default class Goals extends Component {
     old_state.modal_edit_visible = false;
     old_state.modal_add_visible = false;
     old_state.newDescription = '';
-    old_state.date = '';
+    old_state.date = 'NULL';
     old_state.creator = '',
     old_state.reminder = [],
     old_state.status = 0,
-    old_state.new_date = '',
+    old_state.new_date = 'NULL',
     old_state.curr_goal = {
       'description': '',
       'due': 'NULL',
@@ -79,7 +79,7 @@ export default class Goals extends Component {
       'creator': '',
       'reminder': []
     };
-    console.log(old_state)
+    //console.log(old_state)
     if (this.state.user_id == '') {
       this.setState(old_state);
     }
@@ -128,7 +128,7 @@ export default class Goals extends Component {
     this.setState({
       [key]: value
     }, function(newState) {
-      console.log(this.state)
+      //console.log(this.state)
     })
   }
 
@@ -138,6 +138,7 @@ export default class Goals extends Component {
 
   addNewGoal() {
     console.log('adding new goal')
+    if (this.state.new_date == '') console.log('here')
     let newGoal = {
       'description': this.state.newDescription,
       'due': this.state.new_date,
@@ -155,11 +156,12 @@ export default class Goals extends Component {
       copy['missedGoals'].push(newGoal);
 
     this.setStateHelper('goals', copy);
-    this.setStateHelper('new_date', '');
+    this.setStateHelper('new_date', 'NULL');
     this.setModalVisible('modal_add_visible', !this.state.modal_add_visible);
   }
 
   editGoal(item) {
+    if (item.due == '') item.due = 'NULL'
     this.setState({
       newDescription: item.description,
       date: item.due,
@@ -366,38 +368,51 @@ export default class Goals extends Component {
                 // ref={(input) => this.jobInput = input}
               />
             <Text style={styles.modalText}>Goal due date (leave empty for none)</Text>
-            <View style={styles.calendarContainer}>
-              <DatePicker
-                style={{ width: '50%'}}
-                date={this.getDate(this.state.new_date)}
-                mode="date"
-                placeholder="select date"
-                format="MM/DD/YYYY"
-                minDate="11/11/2018"
-                maxDate="12/31/2018"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                  dateIcon: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0
-                  },
-                  dateInput: {
-                    marginLeft: 36,
-                    borderRadius: 20,
-                  },
-                  btnTextConfirm: {
-                    color: '#FF8200'
-                  },
-                  btnTextCancel: {
-                    color: '#d50000'
-                  }
-                }}
-                onDateChange={(date) => {this.setState({new_date: date})}}
-              />
+            <View style={styles.flexBlock}>
+              <View style={styles.flexCalendarContainer}>
+                <View style={styles.calendarContainer}>
+                  <DatePicker
+                    style={{ width: '100%'}}
+                    date={this.getDate(this.state.new_date)}
+                    mode="date"
+                    placeholder="select date"
+                    format="MM/DD/YYYY"
+                    minDate="11/11/2018"
+                    maxDate="12/31/2018"
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    customStyles={{
+                      dateIcon: {
+                        position: 'absolute',
+                        left: 0,
+                        top: 4,
+                        marginLeft: 0
+                      },
+                      dateInput: {
+                        marginLeft: 36,
+                        borderRadius: 20,
+                      },
+                      btnTextConfirm: {
+                        color: '#FF8200'
+                      },
+                      btnTextCancel: {
+                        color: '#d50000'
+                      }
+                    }}
+                    onDateChange={(date) => {this.setState({new_date: date})}}
+                  />
+                </View>
+              </View>
+              <View style={styles.flexCalendarContainer}>
+                <TouchableHighlight
+                  style={styles.clearCalendarBtn}
+                  underlayColor={'#F6F6F6'}
+                  onPress={() => this.setState({new_date: 'NULL'})}>
+                  <Text style={{color: '#d50000', fontWeight: 'bold'}}>Clear</Text>
+                </TouchableHighlight>
+              </View>
             </View>
+
             <Text style={styles.modalText}>Mark goal as:</Text>
             <RadioForm
               radio_props={states}
@@ -468,39 +483,50 @@ export default class Goals extends Component {
                 // ref={(input) => this.jobInput = input}
                 />
               <Text style={styles.modalText}>Goal due date</Text>
-              <View style={styles.calendarContainer}>
-                <DatePicker
-                  style={{ width: '50%' }}
-                  date={this.getDate(this.state.date)}
-                  mode="date"
-                  placeholder="select date"
-                  format="MM/DD/YYYY"
-                  minDate="11/11/2018"
-                  maxDate="12/31/2018"
-                  confirmBtnText="Confirm"
-                  cancelBtnText="Cancel"
-                  customStyles={{
-                    dateIcon: {
-                      position: 'absolute',
-                      left: 0,
-                      top: 4,
-                      marginLeft: 0
-                    },
-                    dateInput: {
-                      marginLeft: 36,
-                      borderRadius: 20,
-                    },
-                    btnTextConfirm: {
-                      color: '#FF8200'
-                    },
-                    btnTextCancel: {
-                      color: '#d50000'
-                    }
-                  }}
-                  onDateChange={(date) => {this.setState({date: date})}}
-                  />
+              <View style={styles.flexBlock}>
+                <View style={styles.flexCalendarContainer}>
+                  <View style={styles.calendarContainer}>
+                    <DatePicker
+                      style={{ width: '100%'}}
+                      date={this.getDate(this.state.date)}
+                      mode="date"
+                      placeholder="select date"
+                      format="MM/DD/YYYY"
+                      minDate="11/11/2018"
+                      maxDate="12/31/2018"
+                      confirmBtnText="Confirm"
+                      cancelBtnText="Cancel"
+                      customStyles={{
+                        dateIcon: {
+                          position: 'absolute',
+                          left: 0,
+                          top: 4,
+                          marginLeft: 0
+                        },
+                        dateInput: {
+                          marginLeft: 36,
+                          borderRadius: 20,
+                        },
+                        btnTextConfirm: {
+                          color: '#FF8200'
+                        },
+                        btnTextCancel: {
+                          color: '#d50000'
+                        }
+                      }}
+                      onDateChange={(date) => {this.setState({date: date})}}
+                      />
+                  </View>
+                </View>
+                <View style={styles.flexCalendarContainer}>
+                  <TouchableHighlight
+                    style={styles.clearCalendarBtn}
+                    underlayColor={'#F6F6F6'}
+                    onPress={() => this.setState({date: 'NULL'})}>
+                    <Text style={{color: '#d50000', fontWeight: 'bold'}}>Clear</Text>
+                  </TouchableHighlight>
+                </View>
               </View>
-
               <Text style={styles.modalText}>Mark goal as</Text>
               <RadioForm
                 radio_props={states}
@@ -615,6 +641,7 @@ export default class Goals extends Component {
                     <ListItem
                       containerStyle={styles.listContainerComplete}
                       titleStyle={styles.titleStyle}
+                      subtitle={this.getDueDate(item)}
                       leftIcon={<Icon
                                 name='checkbox-marked'
                                 type='material-community'
@@ -759,6 +786,18 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  clearCalendarBtn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    backgroundColor: 'transparent',
+    color: '#58595B',
+    borderColor: '#58595B',
+    borderWidth: 0,
+    marginLeft: '5%',
+    height: 36,
+    width: '50%'
+  },
   btnUpdate: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -825,6 +864,10 @@ const styles = StyleSheet.create({
   flexContainer: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center'
+  },
+  flexCalendarContainer: {
+    flex: 1,
     justifyContent: 'center'
   },
   textLeftContainer: {

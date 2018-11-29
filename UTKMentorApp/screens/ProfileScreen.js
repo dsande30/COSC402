@@ -333,6 +333,7 @@ export default class Profile extends Component {
               <ListItem
                 containerStyle={styles.listContainerComplete}
                 titleStyle={styles.titleStyle}
+                subtitle={this.getDueDate(item)}
                 hideChevron
                 leftIcon={<Icon
                           name='checkbox-marked'
@@ -511,6 +512,7 @@ export default class Profile extends Component {
              <ListItem
                containerStyle={styles.listContainerComplete}
                titleStyle={styles.titleStyle}
+               subtitle={this.getDueDate(item)}
                hideChevron
                leftIcon={<Icon
                          name='checkbox-marked'
