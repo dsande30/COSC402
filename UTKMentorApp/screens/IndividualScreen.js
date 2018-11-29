@@ -45,6 +45,17 @@ export default class Individual extends Component {
   preferUserMentee() {
     let tmp = this.state.user_data
     tmp.pairings = [this.state.navi.userid]
+    index = this.state.navi.pairings.indexOf(tmp.user_data.email);
+    if (index != -1) {
+      Alert.alert(
+        'Congratulations!',
+        'You have matched.',
+        [
+          {text: 'OK', onPress: () => { this.setState({ user_data: tmp}), this.putData().then((rv) => this.props.navigation.navigate('Profile')) }}
+        ],
+        { cancelable: false }
+      )
+    }
     this.setState({
       user_data: tmp
     }), this.putData()
@@ -56,6 +67,17 @@ export default class Individual extends Component {
     let tmp = this.state.user_data
     if (tmp.mentor) {
       tmp.pairings.push(this.state.navi.userid)
+      index = this.state.navi.pairings.indexOf(tmp.user_data.email);
+      if (index != -1) {
+        Alert.alert(
+          'Congratulations!',
+          'You have matched.',
+          [
+            {text: 'OK', onPress: () => { this.setState({ user_data: tmp}), this.putData().then((rv) => this.props.navigation.navigate('Profile')) }}
+          ],
+          { cancelable: false }
+        )
+      }
     }
     else {
       if (tmp.pairings.length != 0) {
@@ -69,7 +91,20 @@ export default class Individual extends Component {
           { cancelable: false }
         )
       }
-      else tmp.pairings = [this.state.navi.userid]
+      else {
+        tmp.pairings = [this.state.navi.userid]
+        index = this.state.navi.pairings.indexOf(tmp.user_data.email);
+        if (index != -1) {
+          Alert.alert(
+            'Congratulations!',
+            'You have matched.',
+            [
+              {text: 'OK', onPress: () => { this.setState({ user_data: tmp}), this.putData().then((rv) => this.props.navigation.navigate('Profile')) }}
+            ],
+            { cancelable: false }
+          )
+        }
+      }
     }
     this.setState({
       user_data: tmp

@@ -113,7 +113,8 @@ export default class Profile extends Component {
         },
         () => this.getData(this.state.pairings[0])
         .then((rv) => {
-          if (rv[0].pairings[0] == this.state.user_id) {
+          let index = rv[0].pairings.indexOf(this.state.user_id)
+          if (index != -1) {
             let match_data = rv[0]
             match_data.name = match_data.user_data.name
             this.setState({
