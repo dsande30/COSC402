@@ -33,13 +33,24 @@ export default class Individual extends Component {
       user_id: '',
       user_data: {},
       navi: {},
-      from: ''
+      from: '',
+      photos: {
+        'dsande30': require('../assets/dakota.jpg'),
+        'akarnauc': require('../assets/andrey.jpeg'),
+        'jcate6': require('../assets/james.jpeg'),
+        'hgd145': require('../assets/matt.jpg')
+      }
     }
   }
 
   componentWillMount() {
     console.log('Fired')
     this.setData();
+  }
+
+  async getData(user_id) {
+    const get_response = await API.get('dynamoAPI', '/items/' + user_id);
+    return get_response;
   }
 
   preferUserMentee() {
@@ -62,65 +73,88 @@ export default class Individual extends Component {
   }
 
   preferUser() {
-    console.log('prefered')
-    console.log(this.state.user_data)
     let tmp = this.state.user_data
-    if (tmp.mentor) {
-      tmp.pairings.push(this.state.navi.userid)
-      index = this.state.navi.pairings.indexOf(tmp.user_data.email);
-      if (index != -1) {
-        Alert.alert(
-          'Congratulations!',
-          'You have matched.',
-          [
-            {text: 'OK', onPress: () => { this.setState({ user_data: tmp}), this.putData().then((rv) => this.props.navigation.navigate('Profile')) }}
-          ],
-          { cancelable: false }
-        )
-      }
-    }
-    else {
-      if (tmp.pairings.length != 0) {
+    console.log("Email1" + tmp.user_data.email)
+    console.log("Email2" + this.state.navi.userid)
+    console.log(tmp.pairings)
+    this.getData(tmp.pairings[0])
+    .then((rv) => {
+      console.log('hereeeeeee')
+      console.log(rv)
+      let test = -1
+      if (rv.length != 0) test = rv[0].pairings.indexOf(tmp.user_data.email)
+      console.log(test)
+      if (test != -1) {
         Alert.alert(
           'Warning!',
-          'You have already preferred a mentor. To prefer this mentor instead, press OK. To keep your current preference, press Cancel.',
+          'You cannot select this user because you have already been matched.',
           [
-            {text: 'OK', onPress: () => this.preferUserMentee()},
-            {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+            {text: 'OK', onPress: () => this.props.navigation.navigate('Profile') }
           ],
           { cancelable: false }
         )
       }
       else {
-        tmp.pairings = [this.state.navi.userid]
-        index = this.state.navi.pairings.indexOf(tmp.user_data.email);
-        if (index != -1) {
+        console.log("Reached else")
+        console.log(tmp)
+        if (tmp.pairings.length != 0) {
           Alert.alert(
-            'Congratulations!',
-            'You have matched.',
+            'Warning!',
+            'You have already preferred someone. To prefer this person instead, press OK. To keep your current preference, press Cancel.',
             [
-              {text: 'OK', onPress: () => { this.setState({ user_data: tmp}), this.putData().then((rv) => this.props.navigation.navigate('Profile')) }}
+              {text: 'OK', onPress: () => this.preferUserMentee()},
+              {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
             ],
             { cancelable: false }
           )
         }
+        else {
+          tmp.pairings = [this.state.navi.userid]
+          index = this.state.navi.pairings.indexOf(tmp.user_data.email);
+          if (index != -1) {
+            Alert.alert(
+              'Congratulations!',
+              'You have matched.',
+              [
+                {text: 'OK', onPress: () => { this.setState({ user_data: tmp}), this.putData().then((rv) => this.props.navigation.navigate('Profile')) }}
+              ],
+              { cancelable: false }
+            )
+          }
+        }
+        this.setState({
+          user_data: tmp
+        }), this.putData()
       }
-    }
-    this.setState({
-      user_data: tmp
-    }), this.putData()
+    })
   }
 
   preferUndo() {
-    console.log('undo')
     let tmp = this.state.user_data
-    var index = tmp.pairings.indexOf(this.state.navi.userid)
-    if (index !== -1) {
-      tmp.pairings.splice(index, 1);
-    }
-    this.setState({
-      user_data: tmp
-    }), this.putData()
+    this.getData(tmp.pairings[0])
+    .then((rv) => {
+      let index = -1
+      if (rv.length != 0) index = rv[0].pairings.indexOf(tmp.user_data.email)
+      if (index != -1) {
+        Alert.alert(
+          'Congratulations!',
+          'You have matched.',
+          [
+            {text: 'OK', onPress: () => this.props.navigation.navigate('Profile') }
+          ],
+          { cancelable: false }
+        )
+      }
+      else {
+        let index2 = tmp.pairings.indexOf(this.state.navi.userid)
+        if (index2 !== -1) {
+          tmp.pairings.splice(index2, 1);
+        }
+        this.setState({
+          user_data: tmp
+        }), this.putData()
+      }
+    })
   }
 
   setData() {
@@ -261,7 +295,7 @@ export default class Individual extends Component {
             <View style={styles.imageContainer}>
               <Image
                 style={styles.image}
-                source={require('../assets/andrey.jpeg')}
+                source={this.state.photos[this.state.navi.user_data.email.substr(0, this.state.navi.user_data.email.indexOf('@'))] || require('../assets/emo.png')}
               />
             </View>
             {prefer}
