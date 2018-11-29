@@ -58,7 +58,7 @@ export default class SignIn extends React.Component {
   }
 
   async getData() {
-    const get_response = await API.get('dynamoAPI', '/items/' + this.state.email);
+    const get_response = await API.get('dynamoAPI', '/items/' + this.state.email.toLowerCase());
     return get_response;
   }
 
@@ -136,8 +136,10 @@ export default class SignIn extends React.Component {
 
   signIn() {
     let form_data = {};
-    const { email, password } = this.state;
-    Auth.signIn(email.toLowerCase(), password)
+    let { email, password } = this.state;
+    email = email.toLowerCase()
+    console.log(email)
+    Auth.signIn(email, password)
     .then(user => {
       this.setState({ user })
       this.getData()
@@ -153,7 +155,7 @@ export default class SignIn extends React.Component {
           this.props.navigation.navigate('Profile', {data: user});
         }
       })
-      .catch((err) => console.log('err'));
+      .catch((err) => console.log(err));
     })
     .catch(err => {
       console.log('error signing in: ', err)
