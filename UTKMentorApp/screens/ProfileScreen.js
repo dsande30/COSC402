@@ -47,7 +47,12 @@ export default class Profile extends Component {
   }
 
   static navigationOptions = {
-    header: null
+    header: null,
+    headerStyle: {
+      backgroundColor: '#58595B',
+    },
+    headerTintColor: 'rgba(255,255,255,0.70)',
+    headerBackTitle: null,
   }
 
   handleOnNavigateBack = () => {
@@ -411,7 +416,6 @@ export default class Profile extends Component {
               </List>
           goalInterface =
         <View style={styles.goalContainer}>
-          {body}
           {goalsHeader}
           {incompleteHeader}
           {incompleteGoals}
@@ -592,7 +596,6 @@ export default class Profile extends Component {
              </List>
           goalInterface =
         <View style={styles.goalContainer}>
-          {body}
           {goalsHeader}
           {incompleteHeader}
           {incompleteGoals}
@@ -630,7 +633,7 @@ export default class Profile extends Component {
           </View>
           <Text style={styles.nameText}>Hi, {this.state.name}!</Text>
         </LinearGradient>
-
+        {body}
         {goalInterface}
         <View style={styles.btnContainer}>
           {surveyButton}
@@ -792,7 +795,7 @@ const styles = StyleSheet.create({
     width: '50%',
     borderRadius: 20,
     marginTop: 20,
-    marginBottom: 25
+    marginBottom: 25,
   },
   btnContact: {
       justifyContent: 'center',
