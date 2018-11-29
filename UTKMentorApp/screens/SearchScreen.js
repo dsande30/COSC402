@@ -20,7 +20,7 @@ export default class Search extends Component {
   }
 
   static navigationOptions = {
-    title:           <Icon
+    headerTitle:           <Icon
                 name='magnify'
                 type='material-community'
                 color='rgba(255,255,255,0.70)'

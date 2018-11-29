@@ -58,7 +58,7 @@ export default class Goals extends Component {
   }
 
   static navigationOptions = {
-    title: <Icon
+    headerTitle: <Icon
                 name='calendar-range'
                 type='material-community'
                 color='rgba(255,255,255,0.70)'

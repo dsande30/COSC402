@@ -38,7 +38,7 @@ export default class Individual extends Component {
   }
 
   static navigationOptions = {
-    title: <Icon
+    headerTitle: <Icon
                 name='account'
                 type='material-community'
                 color='rgba(255,255,255,0.70)'
